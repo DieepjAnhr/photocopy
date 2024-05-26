@@ -6,7 +6,6 @@ import styles from './index.module.scss';
 import { SERVICES } from '@/constant/services';
 
 const Footer: React.FC = () => {
-    const services = SERVICES.map((item)=> <a href={item.path}>{item.label}</a>)
     return (
         <div className={styles.footerContainer}>
             <Row gutter={[16, 16]}>
@@ -18,7 +17,7 @@ const Footer: React.FC = () => {
                 </Col>
                 <Col xs={24} sm={12} md={6} className={styles.footerSection}>
                     <h3>Các dịch vụ</h3>
-                    {services}
+                    {SERVICES.map((item)=> <a href={item.path}>{item.label}</a>)}
                 </Col>
                 <Col xs={24} sm={12} md={6} className={styles.footerSection}>
                     <h3>Liên hệ với Photocopy 99</h3>

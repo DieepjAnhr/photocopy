@@ -4,6 +4,7 @@ import { Menu, Button, Drawer } from 'antd';
 import { MenuOutlined } from '@ant-design/icons';
 import Link from 'next/link';
 import styles from './index.module.scss';
+import { SERVICES } from '@/constant/services';
 
 const { Item } = Menu;
 
@@ -26,15 +27,7 @@ const Header: React.FC = () => {
         </div>
         <div className={styles.desktopMenu}>
           <Menu mode="horizontal">
-            <Item key="home">
-              <Link href="/">Home</Link>
-            </Item>
-            <Item key="about">
-              <Link href="/about">About</Link>
-            </Item>
-            <Item key="contact">
-              <Link href="/contact">Contact</Link>
-            </Item>
+            {SERVICES.map((item) => <Item key={item.key}><Link href={item.path}>{item.label}</Link></Item>)}
           </Menu>
         </div>
       </div>
@@ -47,15 +40,7 @@ const Header: React.FC = () => {
         visible={visible}
       >
         <Menu mode="vertical">
-          <Item key="home">
-            <Link href="/" onClick={onClose}>Home</Link>
-          </Item>
-          <Item key="about">
-            <Link href="/about" onClick={onClose}>About</Link>
-          </Item>
-          <Item key="contact">
-            <Link href="/contact" onClick={onClose}>Contact</Link>
-          </Item>
+          {SERVICES.map((item) => <Item key={item.key}><Link href={item.path} onClick={onClose}>{item.label}</Link></Item>)}
         </Menu>
       </Drawer>
     </>
