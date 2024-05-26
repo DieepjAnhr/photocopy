@@ -1,0 +1,35 @@
+.sliderContainer {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .slider {
+    .contentStyle{
+      height: '160px';
+      color: '#fff';
+      line-height: '160px';
+      text-align: 'center';
+      background: '#364d79';
+      img{
+        height: 200px;
+      }
+    }
+    .slick-slide {
+      text-align: center;
+      height: 300px;
+      line-height: 300px;
+      background: #364d79;
+      color: #fff;
+      overflow: hidden;
+    }
+  
+    .slick-dots li button:before {
+      font-size: 12px;
+    }
+  
+    .slick-dots li.slick-active button:before {
+      color: #1890ff;
+    }
+  }
+  

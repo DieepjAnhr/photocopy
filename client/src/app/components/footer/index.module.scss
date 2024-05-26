@@ -1,0 +1,34 @@
+// styles/Footer.module.scss
+.footerContainer {
+    background-color: #a06cd5;
+    color: #fff;
+    padding: 40px 20px;
+    text-align: center;
+  }
+  
+  .footerSection {
+    margin-bottom: 20px;
+  }
+  
+  .footerSection h3 {
+    color: #fff;
+    margin-bottom: 15px;
+  }
+  
+  .footerSection a {
+    color: #1890ff;
+    display: block;
+    margin-bottom: 10px;
+    text-decoration: none;
+  }
+  
+  .socialIcons {
+    margin-top: 20px;
+  }
+  
+  .socialIcons a {
+    color: #fff;
+    margin: 0 10px;
+    font-size: 20px;
+  }
+  
