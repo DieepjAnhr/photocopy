@@ -17,7 +17,7 @@ const Footer: React.FC = () => {
                 </Col>
                 <Col xs={24} sm={12} md={6} className={styles.footerSection}>
                     <h3>Các dịch vụ</h3>
-                    {SERVICES.map((item)=> <a href={item.path}>{item.label}</a>)}
+                    {SERVICES.map((item, index)=> <a key={index} href={item.path}>{item.label}</a>)}
                 </Col>
                 <Col xs={24} sm={12} md={6} className={styles.footerSection}>
                     <h3>Liên hệ với Photocopy 99</h3>

@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import { Menu, Button, Drawer } from 'antd';
+import { Menu, Button, Drawer, MenuProps } from 'antd';
 import { MenuOutlined } from '@ant-design/icons';
 import Link from 'next/link';
 import styles from './index.module.scss';
@@ -9,39 +9,38 @@ import { SERVICES } from '@/constant/services';
 const { Item } = Menu;
 
 const Header: React.FC = () => {
-  const [visible, setVisible] = useState(false);
+  const [open, setOpen] = useState(false);
 
   const showDrawer = () => {
-    setVisible(true);
+    setOpen(true);
   };
 
   const onClose = () => {
-    setVisible(false);
+    setOpen(false);
   };
+
+  const menuDesktopItems: MenuProps['items'] = SERVICES.map((item, index) => ({
+    key: index,
+    label: <Link href={item.path}>{item.label}</Link>
+  }))
+  const menuMobileItems: MenuProps['items'] = SERVICES.map((item, index) => ({
+    key: index,
+    label: <Link href={item.path} onClick={onClose}>{item.label}</Link>
+  }))
 
   return (
     <>
       <div className={styles.menuContainer}>
         <div className={styles.mobileMenuButton}>
-          <Button type="primary" onClick={showDrawer} icon={<MenuOutlined />} />
+          <Button type="primary" icon={<MenuOutlined/>} onClick={showDrawer}/>
         </div>
         <div className={styles.desktopMenu}>
-          <Menu mode="horizontal">
-            {SERVICES.map((item) => <Item key={item.key}><Link href={item.path}>{item.label}</Link></Item>)}
-          </Menu>
+          <Menu mode="horizontal" items={menuDesktopItems}/>
         </div>
       </div>
 
-      <Drawer
-        title="Menu"
-        placement="right"
-        closable={true}
-        onClose={onClose}
-        visible={visible}
-      >
-        <Menu mode="vertical">
-          {SERVICES.map((item) => <Item key={item.key}><Link href={item.path} onClick={onClose}>{item.label}</Link></Item>)}
-        </Menu>
+      <Drawer title="Menu" placement="right" maskClosable={true} onClose={onClose} open={open}>
+        <Menu mode="vertical" items={menuMobileItems}/>
       </Drawer>
     </>
   );

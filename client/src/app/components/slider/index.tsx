@@ -5,10 +5,15 @@ import styles from './index.module.scss';
 import { SLIDER_IMAGES } from '@/constant/slider-image';
 
 const Slider: React.FC = () => {
+  const imageSliders = SLIDER_IMAGES.map((item, index) => {
+    return <div key={index} className={styles.contentStyle}>
+      <img src={item.url}/>
+    </div>
+  })
   return (
     <div className={styles.sliderContainer}>
-        <Carousel effect="fade" autoplay className={styles.slider}>
-            {SLIDER_IMAGES.map((item) => <div><img className={styles.contentStyle} src={item.url}></img></div>)}
+        <Carousel className={styles.slider} effect="fade" autoplay>
+            {imageSliders}
         </Carousel>
     </div>
   );
