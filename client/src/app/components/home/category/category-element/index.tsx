@@ -2,32 +2,28 @@
 import React from 'react';
 import { Row, Col } from 'antd';
 import styles from './index.module.scss';
+import CategoryCard from './category-card';
+import Link from 'next/link';
 
-interface IProps {
-  name: string,
-  image: string,
-  description: string,
-  path: string,
-  is_leaf: boolean,
-  childrens: IProps[]
-}
-
-const HomeCategoryElement: React.FC<IProps> = ({
+const HomeCategoryElement: React.FC<ICategory> = ({
   name,
   image,
+  image_configs: {
+    display_in_pages
+  },
   description,
   childrens
 }) => {
-  const similarServices = childrens.slice(1, 4).map((item, index) => {
+  const similarServices = childrens.slice(0, 4).map((item, index) => {
     return <Col key={index}
-            span={8}
+            span={12}
             xs={24} 
             sm={24} 
             md={24}   
-            lg={8}
-            xl={8}
-            xxl={8}>
-      <img className={styles.childRepresentImg} src={item.image}/>
+            lg={12}
+            xl={12}
+            xxl={12}>
+        <Link href={item.path}><CategoryCard key={index} { ...item } /></Link>
     </Col>
   })
   return (
@@ -42,7 +38,9 @@ const HomeCategoryElement: React.FC<IProps> = ({
           xxl={11}>
           <div className={styles.categoryTitle}><b>{name.toUpperCase()}</b></div>
           <div className={styles.categoryDescription}>{description}</div>
-          <div className={styles.categoryImage}>{image ? <img src={image}/> : null}</div>
+          <div className={styles.categoryImage}>
+            {image && display_in_pages.includes('home') ? <img src={image}/> : null}
+          </div>
         </Col>
         <Col 
           xs={22} 
@@ -52,26 +50,7 @@ const HomeCategoryElement: React.FC<IProps> = ({
           xl={11}
           xxl={11}>
           <div className={styles.categoryChildren}>
-            <Row gutter={[16, 16]} justify="center">
-              <Col 
-                xs={24} 
-                sm={24} 
-                md={24} 
-                lg={24}
-                xl={24}
-                xxl={24}>
-                <img className={styles.representImg} src={childrens[0]?.image}/>
-              </Col>
-              <Col
-                xs={24} 
-                sm={24} 
-                md={24} 
-                lg={24}
-                xl={24}
-                xxl={24}>
-                <Row gutter={[16, 16]} justify="center">{similarServices}</Row>
-              </Col>
-            </Row>
+              <Row gutter={[16, 16]} justify="center">{similarServices}</Row>
           </div>
         </Col>
       </Row>

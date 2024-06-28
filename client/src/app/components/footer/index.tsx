@@ -3,13 +3,14 @@ import React from 'react';
 import { Row, Col } from 'antd';
 import { FacebookOutlined, TwitterOutlined} from '@ant-design/icons';
 import styles from './index.module.scss';
-import { SERVICES } from '@/constant/services';
+import { CATEGORIES } from '@/constant/category-list';
 import ZaloOutlined from '../custom-icon/zalo';
+
 
 const Footer: React.FC = () => {
     const time = new Date()
-    const services = SERVICES.map((item, index)=> {
-        return <a key={index} href={item.path}>{item.label}</a>
+    const services = CATEGORIES.map((item, index)=> {
+        return <a key={index} href={`/${item.path}`}>{item.label}</a>
     })
     return (
         <div className={styles.footerContainer}>

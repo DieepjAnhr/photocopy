@@ -1,0 +1,18 @@
+.serviceDetail {
+    background-color: white;
+    .title {
+        color: black;
+        padding-top: 40px;
+        padding-bottom: 20px;
+        text-align: center;
+    }
+    hr {
+        width: 50%;
+        margin: 0 auto;
+        height: 5px;
+        background-color: black;
+    }
+    .content {
+        padding: 100px 0px;
+    }
+}

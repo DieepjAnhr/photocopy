@@ -1,0 +1,28 @@
+.serviceContainer {
+    transition: transform 0.3s ease, border-radius 0.3s ease;
+    .imageContainer {
+        height: 180px;
+        position: relative;
+        overflow: hidden;
+        .image {
+            width: 100%;
+            height: auto;
+            display: block;
+        }  
+    }
+    .content {
+        font-family: 'Times New Roman', Times, serif;
+        overflow: hidden;
+        .title {
+            font-weight: 700;
+            font-size: 20px;
+        }
+        .description {
+            font-size: 15px;
+        }
+    }
+    &:hover {
+        transform: scale(1.1);
+        border-radius: 15px;
+    }
+}

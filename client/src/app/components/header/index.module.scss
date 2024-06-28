@@ -6,15 +6,14 @@
     padding: 0 20px;
     background: #fff;
     border-bottom: 1px solid #e8e8e8;
-    position: fixed; /* Make the header fixed */
-    top: 0; /* Position it at the top of the page */
-    z-index: 1000; /* Ensure it is above other elements */
-    width: 100%; /* Ensure it takes full width */
+    position: fixed;
+    top: 0;
+    z-index: 1000;
+    width: 100%;
     .mobileMenuButton {
         display: none;
-        
     }
-    .desktopMenu {
+    .desktopMenu {  
         flex-grow: 1;
     }
     .menuItem {

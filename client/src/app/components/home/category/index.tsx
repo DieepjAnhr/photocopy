@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './index.module.scss';
 import HomeCategoryElement from './category-element';
-import { CATEGORIES } from '@/constant/category-content';
+import { CATEGORIES } from '@/constant/category-list';
 
 const HomeCategory: React.FC = () => {
     const homeCategories = CATEGORIES.map((category, index) => {
@@ -17,5 +17,3 @@ const HomeCategory: React.FC = () => {
 };
 
 export default HomeCategory;
-
-  
