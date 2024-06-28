@@ -1,12 +1,14 @@
-import styles from "./page.module.css";
+import styles from "./index.module.scss";
 import Slider from "./components/slider";
-import Services from "./components/services";
+import HomeCategory from "./components/home/category";
+import HomeCommit from "./components/home/commit";
 
 export default function HomePage() {
   return (
     <main className={styles.main}>
-      <Slider></Slider>
-      <Services></Services>
+      <Slider />
+      <HomeCommit />
+      <HomeCategory />
     </main>
   );
 }

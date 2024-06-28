@@ -6,23 +6,31 @@
     padding: 0 20px;
     background: #fff;
     border-bottom: 1px solid #e8e8e8;
-  }
-  
-  .mobileMenuButton {
-    display: none;
-  }
-  
-  .desktopMenu {
-    flex-grow: 1;
-  }
-  
-  @media (max-width: 768px) {
+    position: fixed; /* Make the header fixed */
+    top: 0; /* Position it at the top of the page */
+    z-index: 1000; /* Ensure it is above other elements */
+    width: 100%; /* Ensure it takes full width */
     .mobileMenuButton {
-      display: block;
+        display: none;
+        
     }
-  
     .desktopMenu {
-      display: none;
+        flex-grow: 1;
     }
-  }
-  
+    .menuItem {
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 20px;
+        font-weight: 550;
+    }
+    @media (max-width: 768px) {
+        .mobileMenuButton {
+            display: block;
+            height: 50px;
+            padding: 10px 0px;
+        }
+    
+        .desktopMenu {
+            display: none;
+        }
+    }
+}

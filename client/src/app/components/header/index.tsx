@@ -6,8 +6,6 @@ import Link from 'next/link';
 import styles from './index.module.scss';
 import { SERVICES } from '@/constant/services';
 
-const { Item } = Menu;
-
 const Header: React.FC = () => {
   const [open, setOpen] = useState(false);
 
@@ -21,26 +19,30 @@ const Header: React.FC = () => {
 
   const menuDesktopItems: MenuProps['items'] = SERVICES.map((item, index) => ({
     key: index,
-    label: <Link href={item.path}>{item.label}</Link>
+    label: <Link href={item.path} className={styles.menuItem}>
+        {item.label}
+    </Link>
   }))
   const menuMobileItems: MenuProps['items'] = SERVICES.map((item, index) => ({
     key: index,
-    label: <Link href={item.path} onClick={onClose}>{item.label}</Link>
+    label: <Link href={item.path} className={styles.menuItem} onClick={onClose}>
+        {item.label}
+    </Link>
   }))
 
   return (
     <>
       <div className={styles.menuContainer}>
-        <div className={styles.mobileMenuButton}>
-          <Button type="primary" icon={<MenuOutlined/>} onClick={showDrawer}/>
-        </div>
-        <div className={styles.desktopMenu}>
-          <Menu mode="horizontal" items={menuDesktopItems}/>
-        </div>
+          <div className={styles.desktopMenu}>
+              <Menu mode="horizontal" items={menuDesktopItems}/>
+          </div>
+          <div className={styles.mobileMenuButton}>
+              <Button type="primary" icon={<MenuOutlined/>} onClick={showDrawer}/>
+          </div>
       </div>
 
       <Drawer title="Menu" placement="right" maskClosable={true} onClose={onClose} open={open}>
-        <Menu mode="vertical" items={menuMobileItems}/>
+          <Menu mode="vertical" items={menuMobileItems}/>
       </Drawer>
     </>
   );

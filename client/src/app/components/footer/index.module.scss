@@ -1,34 +1,52 @@
 // styles/Footer.module.scss
 .footerContainer {
+    font-family: 'Times New Roman', Times, serif;
+    text-align: center;
     background-color: #a06cd5;
     color: #fff;
-    padding: 40px 20px;
-    text-align: center;
-  }
+    padding: 30px 20px;
+    .footerInfomation {
+        font-family: 'Times New Roman', Times, serif;
+        p {
+            color: inherit;
+            font-size: 15px;
+            margin: 10px 0px;
+        }
+    }
+    .footerService {
+        font-family: 'Times New Roman', Times, serif;
+        a {
+            color: inherit;
+            font-size: 15px;
+            margin: 10px 0px;
+            display: block;
+            text-decoration: none;
+        }
+    }
+    .footerContact {
+        font-family: 'Times New Roman', Times, serif;
+        .socialIcons {
+            text-align: center;
+            margin-top: 20px;
+            a {
+                color: inherit;
+                margin: 0 10px;
+                font-size: 25px;
+            }
+        }
+    }
+    h3 {
+        color: #fff;
+        margin: 20px 0px;
+        font-size: 20px;
+        font-weight: 700;
+    }
+    .copyright {
+        margin-top: 50px;
+    }
+}
   
-  .footerSection {
-    margin-bottom: 20px;
-  }
+
   
-  .footerSection h3 {
-    color: #fff;
-    margin-bottom: 15px;
-  }
-  
-  .footerSection a {
-    color: #1890ff;
-    display: block;
-    margin-bottom: 10px;
-    text-decoration: none;
-  }
-  
-  .socialIcons {
-    margin-top: 20px;
-  }
-  
-  .socialIcons a {
-    color: #fff;
-    margin: 0 10px;
-    font-size: 20px;
-  }
+
   

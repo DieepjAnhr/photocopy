@@ -1,0 +1,18 @@
+.homeCommit {
+    background-image: url('https://img.freepik.com/free-vector/gradient-galaxy-background_23-2148988608.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+    color: yellow;
+    text-align: center;
+    padding: 30px 20px 20px 20px;
+    .title {
+        font-size: 35px;
+        margin: 20px 0px;
+    }
+    .content {
+        font-size: 20px;
+        margin-bottom: 30px;
+    }
+}
