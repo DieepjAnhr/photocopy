@@ -1,12 +1,14 @@
-// styles/Footer.module.scss
+@use '../../common/scss/color.module.scss' as *;
+@use '../../common/scss/font.module.scss' as *;
+
 .footerContainer {
-    font-family: 'Times New Roman', Times, serif;
+    font-family: $time;
     text-align: center;
-    background-color: #a06cd5;
-    color: #fff;
+    background-color: $purple;
+    color: $white;
     padding: 30px 20px;
     .footerInfomation {
-        font-family: 'Times New Roman', Times, serif;
+        font-family: $time;
         p {
             color: inherit;
             font-size: 15px;
@@ -14,7 +16,7 @@
         }
     }
     .footerService {
-        font-family: 'Times New Roman', Times, serif;
+        font-family: $time;
         a {
             color: inherit;
             font-size: 15px;
@@ -24,7 +26,7 @@
         }
     }
     .footerContact {
-        font-family: 'Times New Roman', Times, serif;
+        font-family: $time;
         .socialIcons {
             text-align: center;
             margin-top: 20px;

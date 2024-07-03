@@ -11,4 +11,4 @@ interface ICategory {
     path: string,
     is_leaf: boolean,
     childrens: ICategory[]
-  }
+}
