@@ -1,8 +1,16 @@
-import { Table, Column, Model, ForeignKey, BelongsTo } from 'sequelize-typescript';
+import { Table, Column, Model, ForeignKey, BelongsTo, PrimaryKey, AutoIncrement  } from 'sequelize-typescript';
 import { MUser } from './user.model';
 
-@Table({timestamps: true})
+@Table({
+  tableName: 'categories',
+  timestamps: true
+})
 export class MCategory extends Model<MCategory> {
+  @PrimaryKey
+  @AutoIncrement
+  @Column
+  declare id: number;
+
   @Column({
     allowNull: false,
     validate: {

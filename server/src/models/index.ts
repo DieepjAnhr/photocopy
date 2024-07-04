@@ -1,6 +1,7 @@
 import { ModelCtor } from "sequelize-typescript";
 import { MUser } from "./user.model";
 import { MCategory } from "./category.model";
+import sequelize from "@/configs/sequelize";
 
 export class ModelFactory {
     static USER = 'user';
@@ -18,10 +19,10 @@ export class ModelFactory {
     }
 
     private static getUserModel(tenant: string) {
-        return MUser.schema(tenant);
+        return sequelize.getRepository(MUser).schema(tenant);
     }
 
     private static getCategoryModel(tenant: string) {
-        return MCategory.schema(tenant);
+        return sequelize.getRepository(MCategory).schema(tenant);
     }
 }

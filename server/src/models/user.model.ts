@@ -1,8 +1,16 @@
-import { Table, Column, Model, HasMany } from 'sequelize-typescript';
+import { Table, Column, Model, HasMany, PrimaryKey, AutoIncrement  } from 'sequelize-typescript';
 import { MCategory } from './category.model';
 
-@Table({timestamps: true})
+@Table({
+  tableName: 'users',
+  timestamps: true
+})
 export class MUser extends Model<MUser> {
+  @PrimaryKey
+  @AutoIncrement
+  @Column
+  declare id: number;
+
   @Column
   username!: string;
 

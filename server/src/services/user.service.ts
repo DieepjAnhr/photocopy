@@ -16,4 +16,8 @@ export class SUser {
     async get(id: number) {
         return await this.rUser.findById(id)
     }
+
+    async create(data: any) {
+        return await this.rUser.create(data)
+    }
 }
