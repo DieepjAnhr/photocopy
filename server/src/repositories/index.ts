@@ -41,4 +41,8 @@ export class RepositoryFactory {
         const model = ModelFactory.getModel(this.CATEGORY, tenant);
         return new RCategory(model);
     }
+
+    static async createSchema(tenant: string) {
+        return await ModelFactory.createSchema(tenant)
+    }
 }
