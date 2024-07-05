@@ -1,17 +1,22 @@
-import { ModelCtor, Model } from "sequelize-typescript";
+import { ModelCtor } from "sequelize-typescript";
 import { MUser } from "./user.model";
 import { MCategory } from "./category.model";
 import sequelize from "@/configs/sequelize";
 
 export class ModelFactory {
-    static ROOT_MODELS = [MUser];
-    static NODE_MODELS = [MCategory];
     static USER = 'user';
     static CATEGORY = 'category';
-    static ROOT_MODEL_NAMES = [this.USER];
 
-    static ROOT_TENANT_PREFIX = 'root';
-    static NODE_TENANT_PREFIX = 'node';
+    private static readonly ROOT_TENANT_PREFIX = 'root';
+    private static readonly NODE_TENANT_PREFIX = 'node';
+    private static readonly HASH_MODEL = {
+        root: {
+            [this.USER]: MUser,
+        },
+        node: {
+            [this.CATEGORY]: MCategory,
+        }
+    }
 
     static getModel(modelName: string, tenant: string): ModelCtor<any> {
         tenant = this.getTenant(modelName, tenant);
@@ -27,10 +32,18 @@ export class ModelFactory {
     }
 
     private static getTenant(modelName: string, tenant: string): string {
-        if (this.ROOT_MODEL_NAMES.includes(modelName))
-            return `${this.ROOT_TENANT_PREFIX}_tenant`;
+        if ([this.USER].includes(modelName))
+            return this.getRootTenant();
         else
-            return `${this.NODE_TENANT_PREFIX}_${tenant}`;
+            return this.getNodeTenant(tenant);
+    }
+
+    private static getRootTenant(): string {
+        return `${this.ROOT_TENANT_PREFIX}_tenant`;
+    }
+
+    private static getNodeTenant(tenant: string): string {
+        return `${this.NODE_TENANT_PREFIX}_${tenant}`;
     }
 
     private static getUserModel(tenant: string) {
@@ -41,15 +54,16 @@ export class ModelFactory {
         return sequelize.getRepository(MCategory).schema(tenant);
     }
 
-    static async createSchema(tenant: string) {
+    static async createNodeTenant(tenant: string) {
         try {
-            sequelize.createSchema(tenant, {
+            tenant = this.getNodeTenant(tenant);
+            const { node } = this.HASH_MODEL;
+
+            await sequelize.createSchema(tenant, {
                 logging: true,
             });
 
-            for (const model of this.NODE_MODELS) {
-                await sequelize.getRepository(model).schema(tenant).sync();
-            }
+            await sequelize.getRepository(node[this.CATEGORY]).schema(tenant).sync();
             
             return true;
         } catch (error) {
