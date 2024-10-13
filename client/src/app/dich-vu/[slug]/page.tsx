@@ -10,6 +10,16 @@ export const metadata: Metadata = {
   description: ''
 };
 
+const DEFAULT_SERVICES = [
+  {
+    slug: 'dich-vu-1'
+  }
+]
+
+export function generateStaticParams() {
+  return DEFAULT_SERVICES;
+}
+
 export default function ServicePage({ params }: { params: { slug: string } }) {
   let service = null;
   for (const i in CATEGORIES) {
