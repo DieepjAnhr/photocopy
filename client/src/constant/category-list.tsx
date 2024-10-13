@@ -11,7 +11,7 @@ export const CATEGORIES: ICategory[] = [
         },
         description: 'Máy in và photocopy kỹ thuật số đen trắng - sử dụng dòng máy của hãng Ricoh từ máy ricoh MP 7500 đến máy ricoh MP 9001 và các máy pro 1107EX cho tốc độ cao, sản lượng in đen trắng - photocopy trên lý thuyết đạt tới 105.000 lượt in trên giờ.',
         path: 'dich-vu/photocopy',
-        content: CategoryContent,
+        content: CategoryContent('Nội dung đang cập nhật ....'),
         is_leaf: false,
         childrens: [
             {
@@ -24,7 +24,7 @@ export const CATEGORIES: ICategory[] = [
                 },
                 description: 'Máy in và photocopy kỹ thuật số đen trắng - sử dụng dòng máy của hãng Ricoh từ máy ricoh MP 7500 đến máy ricoh MP 9001 và các máy pro 1107EX cho tốc độ cao, sản lượng in đen trắng - photocopy trên lý thuyết đạt tới 105.000 lượt in trên giờ.',
                 path: 'dich-vu/photocopy-kho-lon',
-                content: CategoryContent,
+                content: CategoryContent('Nội dung đang cập nhật ....'),
                 is_leaf: true,
                 childrens: []
             },
@@ -38,7 +38,7 @@ export const CATEGORIES: ICategory[] = [
                 },
                 description: 'Máy in và photocopy kỹ thuật số đen trắng - sử dụng dòng máy của hãng Ricoh từ máy ricoh MP 7500 đến máy ricoh MP 9001 và các máy pro 1107EX cho tốc độ cao, sản lượng in đen trắng - photocopy trên lý thuyết đạt tới 105.000 lượt in trên giờ.',
                 path: 'dich-vu/in-mau-kho-lon',
-                content: CategoryContent,
+                content: CategoryContent('Nội dung đang cập nhật ....'),
                 is_leaf: true,
                 childrens: []
             },
@@ -52,7 +52,7 @@ export const CATEGORIES: ICategory[] = [
                 },
                 description: 'Máy in và photocopy kỹ thuật số đen trắng - sử dụng dòng máy của hãng Ricoh từ máy ricoh MP 7500 đến máy ricoh MP 9001 và các máy pro 1107EX cho tốc độ cao, sản lượng in đen trắng - photocopy trên lý thuyết đạt tới 105.000 lượt in trên giờ.',
                 path: 'dich-vu/scan-tai-lieu-anh',
-                content: CategoryContent,
+                content: CategoryContent('Nội dung đang cập nhật ....'),
                 is_leaf: true,
                 childrens: []
             },
@@ -66,7 +66,7 @@ export const CATEGORIES: ICategory[] = [
                 },
                 description: 'Máy in và photocopy kỹ thuật số đen trắng - sử dụng dòng máy của hãng Ricoh từ máy ricoh MP 7500 đến máy ricoh MP 9001 và các máy pro 1107EX cho tốc độ cao, sản lượng in đen trắng - photocopy trên lý thuyết đạt tới 105.000 lượt in trên giờ.',
                 path: 'dich-vu/in-trang-den',
-                content: CategoryContent,
+                content: CategoryContent('Nội dung đang cập nhật ....'),
                 is_leaf: true,
                 childrens: []
             }
@@ -82,7 +82,7 @@ export const CATEGORIES: ICategory[] = [
         },
         description: 'Chúng tôi sử dụng dòng máy in màu công nghiệp Konica Minolta – dòng máy in chuyên về chất lượng trung và cao cấp, độ phân giải ảnh lên đến 1200 x 1200 dpi. Cho bản in mịn màng, sắc nét, bám sát với màu nhìn thấy trên PC; đúng với những gì mà người thiết kế muốn thể hiện.',
         path: 'dich-vu/in-mau',
-        content: CategoryContent,
+        content: CategoryContent('Nội dung đang cập nhật ....'),
         is_leaf: false,
         childrens: [
             {
@@ -95,7 +95,7 @@ export const CATEGORIES: ICategory[] = [
                 },
                 description: 'Máy in và photocopy kỹ thuật số đen trắng - sử dụng dòng máy của hãng Ricoh từ máy ricoh MP 7500 đến máy ricoh MP 9001 và các máy pro 1107EX cho tốc độ cao, sản lượng in đen trắng - photocopy trên lý thuyết đạt tới 105.000 lượt in trên giờ.',
                 path: 'dich-vu/photocopy-kho-lon',
-                content: CategoryContent,
+                content: CategoryContent('Nội dung đang cập nhật ....'),
                 is_leaf: true,
                 childrens: []
             },
@@ -109,7 +109,7 @@ export const CATEGORIES: ICategory[] = [
                 },
                 description: 'Máy in và photocopy kỹ thuật số đen trắng - sử dụng dòng máy của hãng Ricoh từ máy ricoh MP 7500 đến máy ricoh MP 9001 và các máy pro 1107EX cho tốc độ cao, sản lượng in đen trắng - photocopy trên lý thuyết đạt tới 105.000 lượt in trên giờ.',
                 path: 'dich-vu/in-mau-kho-lon',
-                content: CategoryContent,
+                content: CategoryContent('Nội dung đang cập nhật ....'),
                 is_leaf: true,
                 childrens: []
             },
@@ -123,7 +123,7 @@ export const CATEGORIES: ICategory[] = [
                 },
                 description: 'Máy in và photocopy kỹ thuật số đen trắng - sử dụng dòng máy của hãng Ricoh từ máy ricoh MP 7500 đến máy ricoh MP 9001 và các máy pro 1107EX cho tốc độ cao, sản lượng in đen trắng - photocopy trên lý thuyết đạt tới 105.000 lượt in trên giờ.',
                 path: 'dich-vu/scan-tai-lieu-anh',
-                content: CategoryContent,
+                content: CategoryContent('Nội dung đang cập nhật ....'),
                 is_leaf: true,
                 childrens: []
             },
@@ -137,7 +137,7 @@ export const CATEGORIES: ICategory[] = [
                 },
                 description: 'Máy in và photocopy kỹ thuật số đen trắng - sử dụng dòng máy của hãng Ricoh từ máy ricoh MP 7500 đến máy ricoh MP 9001 và các máy pro 1107EX cho tốc độ cao, sản lượng in đen trắng - photocopy trên lý thuyết đạt tới 105.000 lượt in trên giờ.',
                 path: 'dich-vu/in-trang-den',
-                content: CategoryContent,
+                content: CategoryContent('Nội dung đang cập nhật ....'),
                 is_leaf: true,
                 childrens: []
             }
