@@ -10,31 +10,56 @@ export const metadata: Metadata = {
   description: ''
 };
 
-const DEFAULT_SERVICES = [
-  {
-    slug: 'dich-vu-1'
-  }
-]
+function getService(slug: string) {
+    for (const i in CATEGORIES) {
+        const category = CATEGORIES[i];
+        if (!category) continue;
+
+        if (category.slug === slug) {
+            return category;
+        }
+
+        if (!category.is_leaf && category.childrens.length > 0) {
+            for (const j in category.childrens) {
+                const children = category.childrens[j];
+                if (!children) continue;
+
+                if (children.slug === slug) {
+                    return children;
+                }
+            }
+        }
+    }
+    return null;
+}
 
 export function generateStaticParams() {
-  return DEFAULT_SERVICES;
+    const results = [];
+    for (const i in CATEGORIES) {
+        const category = CATEGORIES[i];
+        if (!category) continue;
+
+        results.push({
+            slug: category.slug
+        })
+
+        if (!category.is_leaf && category.childrens.length > 0) {
+            for (const j in category.childrens) {
+                const children = category.childrens[j];
+                if (!children) continue;
+
+                results.push({
+                    slug: children.slug
+                })
+            }
+        }
+    }
+
+    return results;
 }
 
 export default function ServicePage({ params }: { params: { slug: string } }) {
-  let service = null;
-  for (const i in CATEGORIES) {
-    if (CATEGORIES[i]?.slug === params.slug) {
-      service = CATEGORIES[i];
-    }
-    if (!CATEGORIES[i]?.is_leaf && CATEGORIES[i].childrens.length > 0) {
-      for (const j in CATEGORIES[i].childrens) {
-        if (CATEGORIES[i].childrens[j]?.slug === params.slug) {
-          service = CATEGORIES[i].childrens[j];
-        }
-      }
-    }
-  }
-
+  const service = getService(params.slug)
   if (!service) return notFound();
 
   metadata.title = `${service.name.toUpperCase()}`;
