@@ -1,5 +1,7 @@
 #!/bin/bash
 
+SHELL_PROFILE_FILE=~/.bashrc
+
 handle_directory() {
     cd $CUR_DIR/$1 || { echo "Error: $1 directory not found in $CUR_DIR"; }
     [ -s .nvmrc ] &&  nvm use || { echo "Warning: .nvmrc not found. Using the currently active Node.js version"; }
