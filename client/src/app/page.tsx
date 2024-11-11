@@ -1,8 +1,8 @@
 import { Metadata } from 'next';
 import styles from "./index.module.scss";
-import Slider from "./components/slider";
-import HomeCategory from "./components/home/category";
-import HomeCommit from "./components/home/commit";
+import Slider from "../components/slider";
+import HomeCategory from "../components/home/category";
+import HomeCommit from "../components/home/commit";
 
 export const metadata: Metadata = {
   title: 'Dịch vụ',

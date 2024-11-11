@@ -1,9 +1,9 @@
 import { Metadata } from 'next';
 import { CATEGORIES } from '@/constant/category-list';
 import styles from './index.module.scss';
-import ServiceList from '@/app/components/service/list';
+import ServiceList from '@/components/service/list';
 import { notFound } from 'next/navigation';
-import ServiceDetail from '@/app/components/service/detail';
+import ServiceDetail from '@/components/service/detail';
 
 export const metadata: Metadata = {
   title: 'Dịch vụ',
@@ -58,12 +58,11 @@ export function generateStaticParams() {
     return results;
 }
 
-export default function ServicePage({ params }: { params: { slug: string } }) {
+export default function ServicePage({ params, searchParams }: IPageProps) {
   const service = getService(params.slug)
   if (!service) return notFound();
 
-  metadata.title = `${service.name.toUpperCase()}`;
-  metadata.description = `Discover more about ${service.name}. Learn about our services and offerings in detail.`;
+  const { value } = searchParams
 
   return (
       <div className={styles.main}>
@@ -74,4 +73,11 @@ export default function ServicePage({ params }: { params: { slug: string } }) {
         )}
       </div>
   );
+}
+
+export async function generateMetadata(props: { params: { slug: string } }) {
+    const { slug } = props.params
+    return {
+        title: `My Page - ${slug}`,
+    }
 }
