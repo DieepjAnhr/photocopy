@@ -1,0 +1,225 @@
+// src/config/db.ts
+import { Sequelize } from 'sequelize';
+
+// A single connection that will be used for all tenants
+const sequelize = new Sequelize('postgres://user:password@localhost:5432/mydb', {
+  dialect: 'postgres',
+  logging: false, // Disable logging for cleaner output
+});
+
+export default sequelize;
+
+// src/models/role.model.ts
+import { DataTypes, Model, Optional, Sequelize } from 'sequelize';
+
+interface RoleAttributes {
+  id: number;
+  name: string;
+}
+
+interface RoleCreationAttributes extends Optional<RoleAttributes, 'id'> {}
+
+export default function defineRoleModel(sequelize: Sequelize, schema: string) {
+  class Role extends Model<RoleAttributes, RoleCreationAttributes> implements RoleAttributes {
+    public id!: number;
+    public name!: string;
+
+    public readonly createdAt!: Date;
+    public readonly updatedAt!: Date;
+  }
+
+  Role.init(
+    {
+      id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+      },
+      name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+      },
+    },
+    {
+      sequelize,
+      schema, // Dynamically set schema for Role model
+      tableName: 'roles', // Assuming the table name is 'roles'
+    }
+  );
+
+  return Role;
+}
+// src/models/user.model.ts
+import { DataTypes, Model, Optional, Sequelize } from 'sequelize';
+
+interface UserAttributes {
+  id: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  roleId: number;
+}
+
+interface UserCreationAttributes extends Optional<UserAttributes, 'id'> {}
+
+export default function defineUserModel(sequelize: Sequelize, schema: string) {
+  class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
+    public id!: number;
+    public firstName!: string;
+    public lastName!: string;
+    public email!: string;
+    public password!: string;
+    public roleId!: number;
+
+    public readonly createdAt!: Date;
+    public readonly updatedAt!: Date;
+
+    public static associate(models: any): void {
+      User.belongsTo(models.Role, {
+        foreignKey: 'roleId',
+        as: 'role',
+      });
+    }
+  }
+
+  User.init(
+    {
+      id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+      },
+      firstName: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      lastName: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      email: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+      },
+      password: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      roleId: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: 'roles', // Assuming roles are in a separate schema
+          key: 'id',
+        },
+        allowNull: false,
+      },
+    },
+    {
+      sequelize,
+      schema, // Dynamically set schema for User model
+      tableName: 'users', // Assuming the table name is 'users'
+    }
+  );
+
+  return User;
+}
+// src/factories/modelFactory.ts
+import { Sequelize } from 'sequelize';
+import sequelize from '../config/db';
+import defineUserModel from '../models/user.model';
+import defineRoleModel from '../models/role.model';
+
+export function initModels(sequelize: Sequelize, schema: string) {
+  // Dynamically define models with the correct schema
+  const User = defineUserModel(sequelize, schema);
+  const Role = defineRoleModel(sequelize, schema);
+
+  // Initialize associations (if any)
+  User.associate({ Role });
+
+  return { User, Role };
+}
+// src/middlewares/tenantMiddleware.ts
+import { Request, Response, NextFunction } from 'express';
+import { getSequelizeForTenant } from '../config/db';
+
+// Middleware to set the tenant schema
+export function tenantMiddleware(req: Request, res: Response, next: NextFunction): void {
+  const tenantName = req.headers.subdomain as string; // Extract tenant name from the subdomain
+  
+  if (!tenantName) {
+    return res.status(400).json({ error: 'Tenant subdomain is required' });
+  }
+
+  // Example: map subdomain to schema name, e.g., 'tenant1' -> 'tenant1_schema'
+  const tenantSchema = `${tenantName.toLowerCase()}_schema`;
+
+  // Attach the schema dynamically to the request object
+  (req as any).tenantSchema = tenantSchema;
+
+  next();
+}
+// src/controllers/userController.ts
+import { Request, Response } from 'express';
+import { initModels } from '../factories/modelFactory';
+
+async function createUser(req: Request, res: Response): Promise<Response> {
+  const tenantSchema = (req as any).tenantSchema; // Get tenant schema from middleware
+
+  // Initialize the models dynamically for this tenant schema
+  const { User, Role } = initModels(req.app.locals.sequelize, tenantSchema);
+
+  try {
+    const { firstName, lastName, email, password, roleId } = req.body;
+
+    // Create the user with the associated role
+    const user = await User.create({
+      firstName,
+      lastName,
+      email,
+      password, // In real apps, hash the password!
+      roleId,
+    });
+
+    return res.status(201).json(user);
+  } catch (error) {
+    return res.status(500).json({ error: 'An error occurred while creating the user' });
+  }
+}
+
+export { createUser };
+// src/routes/userRoutes.ts
+import { Router } from 'express';
+import { createUser } from '../controllers/userController';
+
+const router = Router();
+
+router.post('/users', createUser);
+
+export default router;
+// src/server.ts
+import express from 'express';
+import userRoutes from './routes/userRoutes';
+import { tenantMiddleware } from './middlewares/tenantMiddleware';
+import sequelize from './config/db';
+
+const app = express();
+
+app.use(express.json()); // Middleware to parse JSON request bodies
+
+// Initialize Sequelize connection and store it in app.locals
+app.locals.sequelize = sequelize;
+
+// Apply tenant middleware globally
+app.use(tenantMiddleware);
+
+// Use routes
+app.use('/api', userRoutes);
+
+// Start the server
+app.listen(3000, () => {
+  console.log('Server running on http://localhost:3000');
+});

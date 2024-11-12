@@ -1,5 +1,3 @@
-import { MCategory } from '@/models/category.model';
-import { MUser } from '@/models/user.model';
 import { Sequelize } from 'sequelize-typescript';
 
 const sequelize = new Sequelize({
@@ -9,8 +7,7 @@ const sequelize = new Sequelize({
   password: 'password',
   host: 'localhost',
   port: 5432,
-  logging: true,
-  models: [MUser, MCategory],
+  logging: true
 });
 
 export default sequelize;

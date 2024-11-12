@@ -1,6 +1,6 @@
-import { ModelFactory } from "@/models";
 import { RUser } from "./user.repository";
 import { RCategory } from "./category.repository";
+import { ModelFactory } from "@/common/factories/model.factory";
 
 type RepositoryList = RUser | RCategory
 

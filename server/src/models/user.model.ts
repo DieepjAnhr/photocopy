@@ -1,25 +1,86 @@
-import { Table, Column, Model, HasMany, PrimaryKey, AutoIncrement  } from 'sequelize-typescript';
-import { MCategory } from './category.model';
+import { BaseModel } from '@/common/base/model.base';
+import { DataTypes, Model, Optional, Sequelize } from 'sequelize';
 
-@Table({
-  tableName: 'users',
-  timestamps: true
-})
-export class MUser extends Model<MUser> {
-  @PrimaryKey
-  @AutoIncrement
-  @Column
-  declare id: number;
+interface UserAttributes {
+  id: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  roleId: number;
+}
 
-  @Column
-  username!: string;
+interface UserCreationAttributes extends Optional<UserAttributes, 'id'> {}
 
-  @Column
-  password!: string;
+class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
+    public id!: number;
+    public firstName!: string;
+    public lastName!: string;
+    public email!: string;
+    public password!: string;
+    public roleId!: number;
 
-  @Column
-  name!: string;
+    public readonly createdAt!: Date;
+    public readonly updatedAt!: Date;
 
-  @HasMany(() => MCategory)
-  categories!: MCategory[];
+    public static associate(models: any): void {
+      User.belongsTo(models.Role, {
+        foreignKey: 'roleId',
+        as: 'role',
+      });
+    }
+}
+
+export class UserModel implements BaseModel {
+  private sequelize: Sequelize;
+  private schema: string;
+
+  constructor(sequelize: Sequelize, schema: string) {
+    this.sequelize = sequelize;
+    this.schema = schema;
+  }
+
+  defineModel(sequelize = this.sequelize, schema = this.schema) {
+    User.init(
+        {
+          id: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true,
+          },
+          firstName: {
+            type: DataTypes.STRING,
+            allowNull: false,
+          },
+          lastName: {
+            type: DataTypes.STRING,
+            allowNull: false,
+          },
+          email: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            unique: true,
+          },
+          password: {
+            type: DataTypes.STRING,
+            allowNull: false,
+          },
+          roleId: {
+            type: DataTypes.INTEGER,
+            references: {
+              model: 'roles',
+              key: 'id',
+            },
+            allowNull: false,
+          },
+        },
+        {
+            sequelize,
+          schema,
+          tableName: 'users',
+        }
+      );
+    
+      return User;
+  }
 }

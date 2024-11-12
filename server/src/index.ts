@@ -4,7 +4,7 @@ dotenv.config();
 import 'module-alias/register';
 import { APPLICATION } from './configs/constant';
 import app from './app';
-import sequelize from './configs/sequelize';
+import sequelize from './configs/database';
 
 const main = async () => {
     try {
