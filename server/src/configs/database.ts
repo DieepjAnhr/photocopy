@@ -1,13 +1,13 @@
-import { Sequelize } from 'sequelize-typescript';
+import { Sequelize } from 'sequelize';
 
 const sequelize = new Sequelize({
-  database: 'postgres',
-  dialect: 'postgres',
-  username: 'user',
-  password: 'password',
-  host: 'localhost',
-  port: 5432,
-  logging: true
+    database: 'photocopy',
+    dialect: 'postgres',
+    username: 'admin',
+    password: 'abcd1234!@#$',
+    host: 'localhost',
+    port: 5432,
+    logging: true,
 });
 
 export default sequelize;

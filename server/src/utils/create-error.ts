@@ -1,5 +1,5 @@
-import { EResponseStatus } from "@/common/enums/response-status";
-import { IResponse } from "@/common/interfaces/response";
+import { EResponseStatus } from '@/common/enums/response-status';
+import { IResponse } from '@/common/interfaces/response';
 
 export const _createError = (error: Error) => {
     const errorMessage = error.message;

@@ -2,85 +2,77 @@ import { BaseModel } from '@/common/base/model.base';
 import { DataTypes, Model, Optional, Sequelize } from 'sequelize';
 
 interface UserAttributes {
-  id: number;
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-  roleId: number;
+    id: number;
+    first_name: string;
+    last_name: string;
+    email: string;
+    password: string;
+    role_id: number;
 }
 
 interface UserCreationAttributes extends Optional<UserAttributes, 'id'> {}
 
 class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
     public id!: number;
-    public firstName!: string;
-    public lastName!: string;
+    public first_name!: string;
+    public last_name!: string;
     public email!: string;
     public password!: string;
-    public roleId!: number;
+    public role_id!: number;
 
-    public readonly createdAt!: Date;
-    public readonly updatedAt!: Date;
+    public readonly created_at!: Date;
+    public readonly updated_at!: Date;
 
     public static associate(models: any): void {
-      User.belongsTo(models.Role, {
-        foreignKey: 'roleId',
-        as: 'role',
-      });
+        User.belongsTo(models.Role, {
+            foreignKey: 'role_id',
+            as: 'role',
+        });
     }
 }
 
-export class UserModel implements BaseModel {
-  private sequelize: Sequelize;
-  private schema: string;
+export class UserModel extends BaseModel {
+    constructor(sequelize: Sequelize, schema: string) {
+        super({ sequelize, schema, modelName: 'user' });
+    }
 
-  constructor(sequelize: Sequelize, schema: string) {
-    this.sequelize = sequelize;
-    this.schema = schema;
-  }
-
-  defineModel(sequelize = this.sequelize, schema = this.schema) {
-    User.init(
-        {
-          id: {
-            type: DataTypes.INTEGER,
-            primaryKey: true,
-            autoIncrement: true,
-          },
-          firstName: {
-            type: DataTypes.STRING,
-            allowNull: false,
-          },
-          lastName: {
-            type: DataTypes.STRING,
-            allowNull: false,
-          },
-          email: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            unique: true,
-          },
-          password: {
-            type: DataTypes.STRING,
-            allowNull: false,
-          },
-          roleId: {
-            type: DataTypes.INTEGER,
-            references: {
-              model: 'roles',
-              key: 'id',
+    initModel() {
+        User.init(
+            {
+                id: {
+                    type: DataTypes.INTEGER,
+                    primaryKey: true,
+                    autoIncrement: true,
+                },
+                first_name: {
+                    type: DataTypes.STRING,
+                    allowNull: false,
+                },
+                last_name: {
+                    type: DataTypes.STRING,
+                    allowNull: false,
+                },
+                email: {
+                    type: DataTypes.STRING,
+                    allowNull: false,
+                    unique: true,
+                },
+                password: {
+                    type: DataTypes.STRING,
+                    allowNull: false,
+                },
+                role_id: {
+                    type: DataTypes.INTEGER,
+                    references: {
+                        model: 'roles',
+                        key: 'id',
+                    },
+                    allowNull: false,
+                },
             },
-            allowNull: false,
-          },
-        },
-        {
-            sequelize,
-          schema,
-          tableName: 'users',
-        }
-      );
-    
-      return User;
-  }
+            this.sequelizeOptions
+        );
+
+        return User;
+    }
 }

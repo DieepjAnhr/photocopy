@@ -1,4 +1,4 @@
-import { EResponseStatus } from "../enums/response-status";
+import { EResponseStatus } from '../enums/response-status';
 
 export interface IResponse<T> {
     status: EResponseStatus;

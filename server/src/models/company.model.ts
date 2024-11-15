@@ -1,13 +1,13 @@
 import { BaseModel } from '@/common/base/model.base';
 import { DataTypes, Model, Optional, Sequelize } from 'sequelize';
 
-interface RoleAttributes {
+interface CompanyAttributes {
     id: number;
     name: string;
 }
 
-interface RoleCreationAttributes extends Optional<RoleAttributes, 'id'> {}
-class Role extends Model<RoleAttributes, RoleCreationAttributes> implements RoleAttributes {
+interface CompanyCreationAttributes extends Optional<CompanyAttributes, 'id'> {}
+class Company extends Model<CompanyAttributes, CompanyCreationAttributes> implements CompanyAttributes {
     public id!: number;
     public name!: string;
 
@@ -15,13 +15,13 @@ class Role extends Model<RoleAttributes, RoleCreationAttributes> implements Role
     public readonly updated_at!: Date;
 }
 
-export class RoleModel extends BaseModel {
+export class CompanyModel extends BaseModel {
     constructor(sequelize: Sequelize, schema: string) {
-        super({ sequelize, schema, modelName: 'role' });
+        super({ sequelize, schema, modelName: 'company' });
     }
 
     initModel() {
-        Role.init(
+        Company.init(
             {
                 id: {
                     type: DataTypes.INTEGER,
@@ -37,6 +37,11 @@ export class RoleModel extends BaseModel {
             this.sequelizeOptions
         );
 
-        return Role;
+        return Company;
+    }
+
+    async createSchema(schemaName: string) {
+        const { sequelize } = this.sequelizeOptions;
+        await sequelize.createSchema(schemaName, { logging: true, benchmark: true });
     }
 }

@@ -1,4 +1,5 @@
 export const APPLICATION = {
-    host: 'localhost',
-    port: 3000
-}
+    HOST: 'localhost',
+    PORT: 3000,
+    ROOT_SCHEMA: 'root',
+};

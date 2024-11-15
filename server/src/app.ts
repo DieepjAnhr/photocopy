@@ -8,7 +8,7 @@ app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
-app.use('', router);
+app.use('/v1', router);
 app.use((req: Request, res: Response, next: NextFunction) => {
     req;
     res;
@@ -22,6 +22,5 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     return res.send(response);
     next();
 });
-
 
 export default app;

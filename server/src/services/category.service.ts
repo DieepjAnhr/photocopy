@@ -1,19 +1,17 @@
-import { RCategory } from "@/repositories/category.repository"
+// import { RCategory } from '@/repositories/role.repository';
 
-interface IProps {
-    category: RCategory
-}
+// interface IProps {
+//     category: RCategory;
+// }
 
-export class SCategory {
-    private rCategory: RCategory
+// export class SCategory {
+//     private rCategory: RCategory;
 
-    setDependency ({
-        category
-    }: IProps) {
-        this.rCategory = category
-    }
+//     setDependency({ category }: IProps) {
+//         this.rCategory = category;
+//     }
 
-    async get(id: number) {
-        return await this.rCategory.findById(id)
-    }
-}
+//     async get(id: number) {
+//         return await this.rCategory.findById(id);
+//     }
+// }
