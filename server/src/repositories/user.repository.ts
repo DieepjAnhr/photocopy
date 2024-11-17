@@ -1,9 +1,16 @@
-// import { BaseRepository } from "@/common/base/base.repository";
-// import { MUser } from "@/models/user.model";
-// import { ModelCtor } from "sequelize-typescript";
+import { ModelFactory } from '@/common/factories/model.factory';
 
-// export class RUser extends BaseRepository<MUser> {
-//     constructor(model: ModelCtor<MUser>) {
-//         super(model)
-//     }
-// }
+export class RUser {
+    private schema: string;
+
+    constructor(schema: string) {
+        this.schema = schema;
+    }
+
+    async isAdmin(user_id: number) {
+        const { User, Role } = ModelFactory.initModels(this.schema);
+
+        const user = await User.findOne({ where: { id: user_id }, include: Role });
+        return !!user;
+    }
+}

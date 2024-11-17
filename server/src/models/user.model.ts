@@ -24,7 +24,7 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
     public readonly updated_at!: Date;
 
     public static associate(models: any): void {
-        User.belongsTo(models.Role, {
+        User.hasOne(models.Role, {
             foreignKey: 'role_id',
             as: 'role',
         });

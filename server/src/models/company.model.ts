@@ -4,12 +4,14 @@ import { DataTypes, Model, Optional, Sequelize } from 'sequelize';
 interface CompanyAttributes {
     id: number;
     name: string;
+    subdomain: string;
 }
 
 interface CompanyCreationAttributes extends Optional<CompanyAttributes, 'id'> {}
 class Company extends Model<CompanyAttributes, CompanyCreationAttributes> implements CompanyAttributes {
     public id!: number;
     public name!: string;
+    public subdomain!: string;
 
     public readonly created_at!: Date;
     public readonly updated_at!: Date;
@@ -29,6 +31,11 @@ export class CompanyModel extends BaseModel {
                     autoIncrement: true,
                 },
                 name: {
+                    type: DataTypes.STRING,
+                    allowNull: false,
+                    unique: true,
+                },
+                subdomain: {
                     type: DataTypes.STRING,
                     allowNull: false,
                     unique: true,

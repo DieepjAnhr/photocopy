@@ -1,16 +1,13 @@
-import { APPLICATION } from '@/configs/constant';
-import sequelize from '@/configs/database';
-import { CompanyModel } from '@/models/company.model';
+import { ModelFactory } from '@/common/factories/model.factory';
 
-const { ROOT_SCHEMA } = APPLICATION;
+export class RCompany {
+    private schema: string;
 
-export class RCompany extends CompanyModel {
-    private model: CompanyModel;
-    constructor() {
-        super(sequelize, ROOT_SCHEMA);
+    constructor(schema: string) {
+        this.schema = schema;
     }
 
-    async createSchema(schemaName: string) {
-        await this.model.createSchema(schemaName);
+    async createSchema() {
+        await ModelFactory.createSchema(this.schema);
     }
 }
