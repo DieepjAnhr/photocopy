@@ -3,7 +3,7 @@ import { CustomNextFunction, CustomRequest, CustomResponse } from '@/common/inte
 
 export class CUser extends BaseController {
     constructor(request: CustomRequest, response: CustomResponse, next: CustomNextFunction) {
-        super(request, response);
+        super(request, response, next);
     }
 
     async get() {
