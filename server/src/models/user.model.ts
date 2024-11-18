@@ -6,34 +6,32 @@ interface UserAttributes {
     first_name: string;
     last_name: string;
     email: string;
-    password: string;
     role_id: number;
 }
 
-interface UserCreationAttributes extends Optional<UserAttributes, 'id'> {}
+export interface UserCreationAttributes extends Optional<UserAttributes, 'id'> {}
 
-class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
-    public id!: number;
-    public first_name!: string;
-    public last_name!: string;
-    public email!: string;
-    public password!: string;
-    public role_id!: number;
+export class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
+    declare id: number;
+    declare first_name: string;
+    declare last_name: string;
+    declare email: string;
+    declare role_id: number;
 
-    public readonly created_at!: Date;
-    public readonly updated_at!: Date;
+    declare readonly created_at: Date;
+    declare readonly updated_at: Date;
 
-    public static associate(models: any): void {
-        User.hasOne(models.Role, {
-            foreignKey: 'role_id',
-            as: 'role',
-        });
-    }
+    // public static associate(models: any): void {
+    //     User.hasOne(models.Role, {
+    //         foreignKey: 'role_id',
+    //         as: 'role',
+    //     });
+    // }
 }
 
 export class UserModel extends BaseModel {
     constructor(sequelize: Sequelize, schema: string) {
-        super({ sequelize, schema, modelName: 'user' });
+        super({ sequelize, modelName: 'user' }, schema);
     }
 
     initModel() {
@@ -57,22 +55,18 @@ export class UserModel extends BaseModel {
                     allowNull: false,
                     unique: true,
                 },
-                password: {
-                    type: DataTypes.STRING,
-                    allowNull: false,
-                },
                 role_id: {
                     type: DataTypes.INTEGER,
-                    references: {
-                        model: 'roles',
-                        key: 'id',
-                    },
-                    allowNull: false,
+                    // references: {
+                    //     model: 'roles',
+                    //     key: 'id',
+                    // },
+                    allowNull: true,
                 },
             },
             this.sequelizeOptions
         );
 
-        return User;
+        return User.schema(this.schema);
     }
 }

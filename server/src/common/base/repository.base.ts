@@ -1,33 +1,20 @@
-// import { Model, ModelCtor } from 'sequelize-typescript';
+import { Company } from '@/models/company.model';
+import { ModelFactory } from '../factories/model.factory';
+import { Role } from '@/models/role.model';
+import { User } from '@/models/user.model';
 
-// export class BaseRepository<T extends Model> {
-//     protected model: ModelCtor<T>;
+export abstract class BaseRepository {
+    protected schema: string;
+    protected Company: typeof Company;
+    protected Role: typeof Role;
+    protected User: typeof User;
 
-//     constructor(model: ModelCtor<T>) {
-//         this.model = model;
-//     }
+    constructor(schema: string) {
+        this.schema = schema;
 
-//     async findAll(): Promise<T[]> {
-//         return await this.model.findAll();
-//     }
-
-//     async findById(id: number): Promise<T | null> {
-//         return await this.model.findOne({ where: { id } as any });
-//     }
-
-//     async create(data: Partial<T>): Promise<T> {
-//         return await this.model.create(data as any);
-//     }
-
-//     async update(id: number, data: Partial<T>): Promise<[number]> {
-//         return await this.model.update(data as any, { where: { id } as any });
-//     }
-
-//     async delete(id: number): Promise<[number]> {
-//         return await this.model.update({ is_deleted: true }, { where: { id } as any });
-//     }
-
-//     async hardDelete(id: number): Promise<number> {
-//         return await this.model.destroy({ where: { id } as any });
-//     }
-// }
+        const { Company, Role, User } = ModelFactory.initModels(schema);
+        this.Company = Company;
+        this.Role = Role;
+        this.User = User;
+    }
+}

@@ -6,18 +6,18 @@ interface RoleAttributes {
     name: string;
 }
 
-interface RoleCreationAttributes extends Optional<RoleAttributes, 'id'> {}
-class Role extends Model<RoleAttributes, RoleCreationAttributes> implements RoleAttributes {
-    public id!: number;
-    public name!: string;
+export interface RoleCreationAttributes extends Optional<RoleAttributes, 'id'> {}
+export class Role extends Model<RoleAttributes, RoleCreationAttributes> implements RoleAttributes {
+    declare id: number;
+    declare name: string;
 
-    public readonly created_at!: Date;
-    public readonly updated_at!: Date;
+    declare readonly created_at: Date;
+    declare readonly updated_at: Date;
 }
 
 export class RoleModel extends BaseModel {
     constructor(sequelize: Sequelize, schema: string) {
-        super({ sequelize, schema, modelName: 'role' });
+        super({ sequelize, modelName: 'role' }, schema);
     }
 
     initModel() {
@@ -37,6 +37,6 @@ export class RoleModel extends BaseModel {
             this.sequelizeOptions
         );
 
-        return Role;
+        return Role.schema(this.schema);
     }
 }

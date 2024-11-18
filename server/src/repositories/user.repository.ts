@@ -1,16 +1,12 @@
-import { ModelFactory } from '@/common/factories/model.factory';
+import { BaseRepository } from '@/common/base/repository.base';
+import { UserCreationAttributes } from '@/models/user.model';
 
-export class RUser {
-    private schema: string;
-
-    constructor(schema: string) {
-        this.schema = schema;
+export class RUser extends BaseRepository {
+    async create(data: UserCreationAttributes) {
+        return await this.User.create(data);
     }
 
-    async isAdmin(user_id: number) {
-        const { User, Role } = ModelFactory.initModels(this.schema);
-
-        const user = await User.findOne({ where: { id: user_id }, include: Role });
-        return !!user;
+    async findById(user_id: number) {
+        return await this.User.findOne({ where: { id: user_id } });
     }
 }

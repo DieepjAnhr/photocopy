@@ -1,7 +1,7 @@
 import express, { NextFunction, Request, Response } from 'express';
 import cors from 'cors';
 import router from './routers';
-import { _createError } from './utils/create-error';
+import { _createError } from './common/create-error';
 
 const app: express.Express = express();
 app.use(cors());

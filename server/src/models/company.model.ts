@@ -7,19 +7,19 @@ interface CompanyAttributes {
     subdomain: string;
 }
 
-interface CompanyCreationAttributes extends Optional<CompanyAttributes, 'id'> {}
-class Company extends Model<CompanyAttributes, CompanyCreationAttributes> implements CompanyAttributes {
-    public id!: number;
-    public name!: string;
-    public subdomain!: string;
+export interface CompanyCreationAttributes extends Optional<CompanyAttributes, 'id'> {}
+export class Company extends Model<CompanyAttributes, CompanyCreationAttributes> implements CompanyAttributes {
+    declare id: number;
+    declare name: string;
+    declare subdomain: string;
 
-    public readonly created_at!: Date;
-    public readonly updated_at!: Date;
+    declare readonly created_at: Date;
+    declare readonly updated_at: Date;
 }
 
 export class CompanyModel extends BaseModel {
     constructor(sequelize: Sequelize, schema: string) {
-        super({ sequelize, schema, modelName: 'company' });
+        super({ sequelize, modelName: 'company' }, schema);
     }
 
     initModel() {
@@ -44,7 +44,7 @@ export class CompanyModel extends BaseModel {
             this.sequelizeOptions
         );
 
-        return Company;
+        return Company.schema(this.schema);
     }
 
     async createSchema(schemaName: string) {

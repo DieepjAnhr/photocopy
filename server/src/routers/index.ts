@@ -3,6 +3,9 @@ import { Router } from 'express';
 
 const router = Router();
 
-router.route('/users').get(CUser.test);
+router.route('/users').get((req, res, next) => {
+    const controller = new CUser(req, res, next);
+    controller.get();
+});
 
 export default router;
