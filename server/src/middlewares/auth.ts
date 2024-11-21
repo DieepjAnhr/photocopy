@@ -1,6 +1,6 @@
 import { Request } from 'express';
 
-class Auth {
+export class Auth {
     private request: Request;
 
     constructor(request: Request) {

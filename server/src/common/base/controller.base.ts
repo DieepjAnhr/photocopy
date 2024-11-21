@@ -24,5 +24,6 @@ export abstract class BaseController {
         console.log(`Error in ${this.constructor.name} class: ${error.message}`);
 
         return this.response(_createError(error));
+        this.next(error);
     }
 }

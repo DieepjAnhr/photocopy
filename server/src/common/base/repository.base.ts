@@ -1,5 +1,5 @@
 import { Company } from '@/models/company.model';
-import { ModelFactory } from '../factories/model.factory';
+import { FactoryModel } from '../factories/model.factory';
 import { Role } from '@/models/role.model';
 import { User } from '@/models/user.model';
 
@@ -12,7 +12,7 @@ export abstract class BaseRepository {
     constructor(schema: string) {
         this.schema = schema;
 
-        const { Company, Role, User } = ModelFactory.initModels(schema);
+        const { Company, Role, User } = FactoryModel.initModels(schema);
         this.Company = Company;
         this.Role = Role;
         this.User = User;

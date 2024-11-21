@@ -1,26 +1,24 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express from 'express';
 import cors from 'cors';
-import router from './routers';
 import { _createError } from './common/create-error';
+import { FactoryRouter } from './common/factories/router.factory';
 
-const app: express.Express = express();
-app.use(cors());
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ limit: '50mb', extended: true }));
+export class Application {
+    private app: express.Express;
+    constructor() {
+        this.app = express();
+    }
 
-app.use('/v1', router);
-app.use((req: Request, res: Response, next: NextFunction) => {
-    req;
-    res;
-    const error = new Error('400 ~ Endpoint is not exist!');
-    next(error);
-});
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-    req;
-    console.log(err);
-    const response = _createError(err);
-    return res.send(response);
-    next();
-});
+    getApplication() {
+        this.app.use(cors());
+        this.app.use(express.json({ limit: '50mb' }));
+        this.app.use(express.urlencoded({ limit: '50mb', extended: true }));
+        this.app.use('/v1', this.getRouters());
 
-export default app;
+        return this.app;
+    }
+
+    private getRouters() {
+        return FactoryRouter.initRouters();
+    }
+}

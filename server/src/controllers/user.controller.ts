@@ -1,14 +1,13 @@
 import { BaseController } from '@/common/base/controller.base';
 import { CustomNextFunction, CustomRequest, CustomResponse } from '@/common/interfaces/custom-express';
 
-export class CUser extends BaseController {
+export class UserController extends BaseController {
     constructor(request: CustomRequest, response: CustomResponse, next: CustomNextFunction) {
         super(request, response, next);
     }
 
     async get() {
         try {
-            throw new Error('test test test');
             return this.response({ hello: 'hello hello' });
         } catch (error) {
             this.handleError(error);
@@ -17,6 +16,7 @@ export class CUser extends BaseController {
 
     async detail() {
         try {
+            throw new Error('test test test');
         } catch (error) {
             this.handleError(error);
         }

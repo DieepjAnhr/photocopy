@@ -1,5 +1,5 @@
 import { BaseRepository } from '@/common/base/repository.base';
-import { ModelFactory } from '@/common/factories/model.factory';
+import { FactoryModel } from '@/common/factories/model.factory';
 import { CompanyCreationAttributes } from '@/models/company.model';
 
 export class RCompany extends BaseRepository {
@@ -13,7 +13,7 @@ export class RCompany extends BaseRepository {
 
     private async createSchema() {
         try {
-            await ModelFactory.createSchema('root');
+            await FactoryModel.createSchema('root');
             await this.Company.sync({ alter: true });
             console.log('~~~create company table done');
             await this.Role.sync({ alter: true });

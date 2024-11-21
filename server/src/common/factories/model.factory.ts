@@ -11,7 +11,7 @@ interface IModels {
     User: typeof User;
 }
 
-export class ModelFactory {
+export class FactoryModel {
     private static connection = sequelize;
 
     static initModels(schema: string): IModels {

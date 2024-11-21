@@ -3,11 +3,12 @@ import 'module-alias/register';
 import dotenv from 'dotenv';
 
 import { APPLICATION } from './configs/constant';
-import app from './app';
 import sequelize from './configs/database';
+import { Application } from './app';
 
 dotenv.config();
 const { HOST, PORT } = APPLICATION;
+
 const main = async () => {
     try {
         await sequelize.authenticate().catch((error) => {
@@ -20,7 +21,8 @@ const main = async () => {
         });
         console.log('Database & tables created!');
 
-        const server = http.createServer(app);
+        const application = new Application().getApplication();
+        const server = http.createServer(application);
         server.listen(PORT, () => console.log(`Server runing at http://${HOST}:${PORT}/`));
     } catch (err) {
         console.log(err);
