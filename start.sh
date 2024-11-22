@@ -34,3 +34,11 @@ elif [ "$1" == "build" ]; then
 else
     echo "Command $1 undefined. Possible commands are: 'install' or 'build'"
 fi
+
+# npx sequelize init
+
+# npx sequelize-cli migration:generate --name migration-name
+# npx sequelize-cli db:migrate --env development
+
+# npx sequelize-cli seed:generate --name demo-user
+# npx sequelize-cli db:seed:all --env production
