@@ -1,6 +1,5 @@
 import express from 'express';
 import cors from 'cors';
-import { _createError } from './common/create-error';
 import { FactoryRouter } from './common/factories/router.factory';
 
 export class Application {

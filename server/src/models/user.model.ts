@@ -9,7 +9,7 @@ interface UserAttributes {
     role_id: number;
 }
 
-export interface UserCreationAttributes extends Optional<UserAttributes, 'id'> {}
+export interface UserCreationAttributes extends Optional<UserAttributes, 'id'> { }
 
 export class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
     declare id: number;
@@ -34,7 +34,7 @@ export class UserModel extends BaseModel {
         super({ sequelize, modelName: 'user' }, schema);
     }
 
-    initModel() {
+    public initModel() {
         User.init(
             {
                 id: {
@@ -64,9 +64,9 @@ export class UserModel extends BaseModel {
                     allowNull: true,
                 },
             },
-            this.sequelizeOptions
+            this.sequelizeOption
         );
 
-        return User.schema(this.schema);
+        return User.schema(this.tenant);
     }
 }

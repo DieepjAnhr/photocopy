@@ -1,4 +1,3 @@
-import { _createError } from '@/common/create-error';
 import { CustomNextFunction, CustomRequest, CustomResponse } from '../interfaces/custom-express';
 
 export abstract class BaseController {
@@ -23,7 +22,7 @@ export abstract class BaseController {
     handleError(error: Error) {
         console.log(`Error in ${this.constructor.name} class: ${error.message}`);
 
-        return this.response(_createError(error));
+        return this.response("application error");
         this.next(error);
     }
 }

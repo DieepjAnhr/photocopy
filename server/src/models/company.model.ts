@@ -7,7 +7,7 @@ interface CompanyAttributes {
     subdomain: string;
 }
 
-export interface CompanyCreationAttributes extends Optional<CompanyAttributes, 'id'> {}
+export interface CompanyCreationAttributes extends Optional<CompanyAttributes, 'id'> { }
 export class Company extends Model<CompanyAttributes, CompanyCreationAttributes> implements CompanyAttributes {
     declare id: number;
     declare name: string;
@@ -22,7 +22,7 @@ export class CompanyModel extends BaseModel {
         super({ sequelize, modelName: 'company' }, schema);
     }
 
-    initModel() {
+    public initModel() {
         Company.init(
             {
                 id: {
@@ -41,14 +41,9 @@ export class CompanyModel extends BaseModel {
                     unique: true,
                 },
             },
-            this.sequelizeOptions
+            this.sequelizeOption
         );
 
-        return Company.schema(this.schema);
-    }
-
-    async createSchema(schemaName: string) {
-        const { sequelize } = this.sequelizeOptions;
-        await sequelize.createSchema(schemaName, { logging: true, benchmark: true });
+        return Company.schema(this.tenant);
     }
 }

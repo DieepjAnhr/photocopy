@@ -6,7 +6,7 @@ interface RoleAttributes {
     name: string;
 }
 
-export interface RoleCreationAttributes extends Optional<RoleAttributes, 'id'> {}
+export interface RoleCreationAttributes extends Optional<RoleAttributes, 'id'> { }
 export class Role extends Model<RoleAttributes, RoleCreationAttributes> implements RoleAttributes {
     declare id: number;
     declare name: string;
@@ -20,7 +20,7 @@ export class RoleModel extends BaseModel {
         super({ sequelize, modelName: 'role' }, schema);
     }
 
-    initModel() {
+    public initModel() {
         Role.init(
             {
                 id: {
@@ -34,9 +34,9 @@ export class RoleModel extends BaseModel {
                     unique: true,
                 },
             },
-            this.sequelizeOptions
+            this.sequelizeOption
         );
 
-        return Role.schema(this.schema);
+        return Role.schema(this.tenant);
     }
 }

@@ -1,11 +1,11 @@
 import { InitOptions } from 'sequelize';
 
 export abstract class BaseModel {
-    protected sequelizeOptions: InitOptions;
-    protected schema: string;
+    private _sequelizeOptions: InitOptions;
+    private _tenant: string;
 
-    constructor({ sequelize, modelName }: InitOptions, schema: string) {
-        this.sequelizeOptions = {
+    constructor({ sequelize, modelName }: InitOptions, tenant: string) {
+        this._sequelizeOptions = {
             sequelize: sequelize,
             modelName: modelName,
             timestamps: true,
@@ -13,6 +13,14 @@ export abstract class BaseModel {
             createdAt: true,
             updatedAt: true,
         };
-        this.schema = schema;
+        this._tenant = tenant;
+    }
+
+    protected get sequelizeOption() {
+        return this._sequelizeOptions;
+    }
+
+    protected get tenant() {
+        return this._tenant;
     }
 }

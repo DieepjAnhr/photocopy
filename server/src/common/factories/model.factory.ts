@@ -5,57 +5,60 @@ import { Company, CompanyModel } from '@/models/company.model';
 import { Role, RoleModel } from '@/models/role.model';
 import { User, UserModel } from '@/models/user.model';
 
-interface IModels {
-    Company: typeof Company;
-    Role: typeof Role;
-    User: typeof User;
+export interface IModels {
+    company: typeof Company;
+    role: typeof Role;
+    user: typeof User;
 }
 
-export class FactoryModel {
-    private static connection = sequelize;
+export type ModelType = CompanyModel | RoleModel | UserModel;
 
-    static initModels(schema: string): IModels {
-        const Company = this.initCompany(this.connection);
-        const User = this.initUser(this.connection, schema);
-        const Role = this.initRole(this.connection, schema);
+export class ModelFactory {
+    private _tenant: string;
+    private _connection: Sequelize;
+    private _models: Record<string, ModelType>;
+
+    constructor(tenant: string) {
+        this._tenant = tenant
+        this._connection = sequelize;
+    }
+
+    public get initModels(): IModels {
+        const company = this.initCompany();
+        const user = this.initUser();
+        const role = this.initRole();
 
         // User.associate({ Role });
 
-        return { Company, User, Role };
+        return { company, user, role };
     }
 
-    static async createSchema(schemaName: string) {
+    async createSchema() {
         try {
-            await this.connection.createSchema(schemaName, { logging: true, benchmark: true });
+            await this._connection.createSchema(this._tenant, { logging: true, benchmark: true });
             return true;
         } catch (error) {
             return false;
         }
     }
 
-    // private static async isExistSchema(schema: string) {
-    //     const Company = new CompanyModel(this.connection, APPLICATION.ROOT_SCHEMA).initModel();
-    //     const company = await Company.findOne({ where: { subdomain: schema } });
-    //     if (!!company) return true;
+    private registerModel<T extends ModelType>(
+        name: string,
+        ModelClass: new (connection: Sequelize, tenant: string) => T
+    ) {
+        const model = new ModelClass(this._connection, this._tenant);
 
-    //     return false;
-    // }
-
-    private static initCompany(sequelize: Sequelize) {
-        console.log('init company');
-
-        return new CompanyModel(sequelize, APPLICATION.ROOT_SCHEMA).initModel();
     }
 
-    private static initUser(sequelize: Sequelize, schema: string) {
-        console.log('init user');
-
-        return new UserModel(sequelize, schema).initModel();
+    private initCompany() {
+        return new CompanyModel(this._connection, APPLICATION.ROOT_SCHEMA).initModel();
     }
 
-    private static initRole(sequelize: Sequelize, schema: string) {
-        console.log('init role');
+    private initUser() {
+        return new UserModel(this._connection, this._tenant).initModel();
+    }
 
-        return new RoleModel(sequelize, schema).initModel();
+    private initRole() {
+        return new RoleModel(this._connection, this._tenant).initModel();
     }
 }
