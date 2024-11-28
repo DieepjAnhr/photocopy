@@ -7,11 +7,11 @@ async function bootstrap() {
   const logger = new Logger(bootstrap.name);
   const app = await NestFactory.create(AppModule);
 
-  app.useGlobalFilters(new HttpExceptionFilter())
+  app.useGlobalFilters(new HttpExceptionFilter());
 
-  const PORT = process.env.PORT ?? 3000
+  const PORT = process.env.PORT ?? 3000;
   await app.listen(PORT);
-  logger.log(`Application started at port: ${PORT}`)
+  logger.log(`Application started at port: ${PORT}`);
 }
 
 bootstrap();

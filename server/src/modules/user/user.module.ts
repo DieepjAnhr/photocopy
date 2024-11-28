@@ -4,6 +4,6 @@ import { UserService } from './user.service';
 import { RoleService } from '../role/role.service';
 
 @Module({
-  providers: [UserResolver, UserService, RoleService]
+  providers: [UserResolver, UserService, RoleService],
 })
-export class UserModule { }
+export class UserModule {}
