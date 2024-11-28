@@ -34,3 +34,5 @@ elif [ "$1" == "generate" ]; then
   # if it is, we call the function with the second positional parameter as argument
   generateNestModule $2
 fi
+
+# https://github.com/Ho-s/NestJS-GraphQL-TypeORM-PostgresQL/tree/main

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { User } from './user.model';
+import { User } from './user.entity';
 
 @Injectable()
 export class UserService {
@@ -31,7 +31,7 @@ export class UserService {
   }
 
   detail(id: number): User {
-    const user = this.users.find(({ id: item_id }) => item_id === id) || null;
+    const user = this.users.find(({ id: item_id }) => item_id === id);
     if (!user) throw new Error('User not found!');
     return user;
   }

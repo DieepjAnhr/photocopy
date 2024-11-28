@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Role } from './role.model';
+import { Role } from './role.entity';
 
 @Injectable()
 export class RoleService {
@@ -13,7 +13,7 @@ export class RoleService {
   }
 
   detail(id: number): Role {
-    const role = this.roles.find(({ id: item_id }) => item_id === id) || null;
+    const role = this.roles.find(({ id: item_id }) => item_id === id);
     if (!role) throw new Error('Role not found!');
     return role;
   }
