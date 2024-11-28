@@ -1,0 +1,30 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type User {
+  id: Int!
+  role_id: Int!
+  name: String!
+  email: String
+  avatar: String
+  role: Role!
+}
+
+type Role {
+  id: Int!
+  name: String!
+  users: [User!]!
+}
+
+type Query {
+  userList: [User!]!
+  userDetail(id: Int!): User!
+  roleList: [Role!]!
+  roleDetail(id: Int!): Role!
+}
+
+type Mutation {
+  createUser(id: Int!, role_id: Int!, name: String!): User!
+  createRole(id: Int!, name: String!): Role!
+}

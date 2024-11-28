@@ -1,7 +1,0 @@
-node_modules
-/public/app/workers
-/dist
-/coverage
-/app
-/e2e-tests
-/public/assets/tinymce
