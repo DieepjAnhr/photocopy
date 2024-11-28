@@ -17,15 +17,15 @@ export class RoleResolver {
   constructor(
     private readonly roleService: RoleService,
     private readonly userService: UserService,
-  ) {}
+  ) { }
 
   @Query(() => [Role])
-  roleList(): Role[] {
+  roles(): Role[] {
     return this.roleService.list();
   }
 
   @Query(() => Role)
-  roleDetail(@Args('id', { type: () => Int }) id: number): Role {
+  role(@Args('id', { type: () => Int }) id: number): Role {
     return this.roleService.detail(id);
   }
 

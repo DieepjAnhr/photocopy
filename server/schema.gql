@@ -18,10 +18,10 @@ type Role {
 }
 
 type Query {
-  userList: [User!]!
-  userDetail(id: Int!): User!
-  roleList: [Role!]!
-  roleDetail(id: Int!): Role!
+  users: [User!]!
+  user(id: Int!): User!
+  roles: [Role!]!
+  role(id: Int!): Role!
 }
 
 type Mutation {
