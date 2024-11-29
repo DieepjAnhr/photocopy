@@ -6,11 +6,16 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { UserModule } from './modules/user/user.module';
 import { RoleModule } from './modules/role/role.module';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { User } from './modules/user/user.model';
+import { User } from './modules/user/models/user.model';
 
 
 @Module({
   imports: [
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      autoSchemaFile: 'schema.gql',
+      playground: true,
+    }),
     SequelizeModule.forRoot({
       dialect: 'postgres',
       host: 'localhost',
@@ -20,11 +25,6 @@ import { User } from './modules/user/user.model';
       password: 'abcd1234!@#$',
       autoLoadModels: true,
       synchronize: true,
-    }),
-    GraphQLModule.forRoot<ApolloDriverConfig>({
-      driver: ApolloDriver,
-      autoSchemaFile: 'schema.gql',
-      playground: true,
     }),
     UserModule,
     RoleModule,

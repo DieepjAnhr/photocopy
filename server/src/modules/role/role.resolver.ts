@@ -7,10 +7,10 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
-import { Role } from './role.model';
+import { Role } from './models/role.model';
 import { RoleService } from './role.service';
 import { UserService } from '../user/user.service';
-import { User } from '../user/user.model';
+import { User } from '../user/models/user.model';
 
 @Resolver(() => Role)
 export class RoleResolver {
