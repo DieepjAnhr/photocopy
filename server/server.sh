@@ -1,5 +1,7 @@
 #!/bin/bash
 
+CUR_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 initNestProject() {
   local name=$1
 
@@ -14,17 +16,28 @@ initNestGraphQL() {
 generateNestModule() {
   local name=$1
 
+  # nest generate resource $name modules
+
   # This will generate module with the provided name
   nest generate module $name modules
 
     # This will resolver controller with the provided name
   nest generate resolver $name modules
 
-    # This will generate controller with the provided name
+  # This will generate controller with the provided name
   # nest generate controller $name modules
 
-    # This will generate the service with the provided name
+  # This will generate the service with the provided name
   nest generate service $name modules
+
+  # touch $CUR_DIR/src/modules/$name/$name.repository.ts
+
+  mkdir $CUR_DIR/src/modules/$name/dto
+  touch $CUR_DIR/src/modules/$name/dto/create-$name.dto.ts
+  touch $CUR_DIR/src/modules/$name/dto/update-$name.dto.ts
+
+  mkdir $CUR_DIR/src/modules/$name/entity
+  touch $CUR_DIR/src/modules/$name/entity/$name.entity.ts
 }
 
 # We check if the first positional parameter is "generate"

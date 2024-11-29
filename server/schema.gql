@@ -8,23 +8,57 @@ type User {
   name: String!
   email: String
   avatar: String
-  role: Role!
+  blogs: [Blog!]!
 }
 
-type Role {
+type Blog {
   id: ID!
-  name: String!
-  users: [User!]!
+  title: String!
+  content: String!
+  creator_id: ID!
+  creator: User!
 }
 
 type Query {
   users: [User!]!
   user(id: Int!): User!
-  roles: [Role!]!
-  role(id: Int!): Role!
+  blogs: [Blog!]!
+  blog(id: Int!): Blog!
 }
 
 type Mutation {
-  createUser(id: Int!, role_id: Int!, name: String!): User!
-  createRole(id: Int!, name: String!): Role!
+  createUser(create_data: CreateUserInput!): User!
+  updateUser(update_data: UpdateUserInput!): User!
+  removeUser(id: Int!): User!
+  createBlog(create_data: CreateBlogInput!): Blog!
+  updateBlog(update_data: UpdateBlogInput!): Blog!
+  removeBlog(id: Int!): Blog!
+}
+
+input CreateUserInput {
+  role_id: ID!
+  name: String!
+  email: String!
+  avatar: String!
+}
+
+input UpdateUserInput {
+  role_id: ID
+  name: String
+  email: String
+  avatar: String
+  id: ID!
+}
+
+input CreateBlogInput {
+  title: String!
+  content: String!
+  creator_id: ID!
+}
+
+input UpdateBlogInput {
+  title: String
+  content: String
+  creator_id: ID
+  id: Int!
 }

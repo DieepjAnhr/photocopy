@@ -1,12 +1,14 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
+
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+
 import { UserModule } from './modules/user/user.module';
-import { RoleModule } from './modules/role/role.module';
-import { SequelizeModule } from '@nestjs/sequelize';
-import { User } from './modules/user/models/user.model';
+import { BlogModule } from './modules/blog/blog.module';
 
 
 @Module({
@@ -16,20 +18,23 @@ import { User } from './modules/user/models/user.model';
       autoSchemaFile: 'schema.gql',
       playground: true,
     }),
-    SequelizeModule.forRoot({
-      dialect: 'postgres',
+    TypeOrmModule.forRoot({
+      type: 'postgres',
       host: 'localhost',
       port: 5432,
-      database: 'photocopy',
       username: 'admin',
       password: 'abcd1234!@#$',
-      autoLoadModels: true,
-      synchronize: true,
+      database: 'photocopy',
+      schema: 'public',
+      entities: [__dirname + '/**/*.entity{.ts,.js}'],
+      synchronize: true
     }),
     UserModule,
-    RoleModule,
+    BlogModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {
+  constructor(private readonly dataSource: DataSource) { }
+}

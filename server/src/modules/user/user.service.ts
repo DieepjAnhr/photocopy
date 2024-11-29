@@ -1,43 +1,43 @@
 import { Injectable } from '@nestjs/common';
-import { User } from './models/user.model';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from './entities/user.entity';
+import { CreateUserInput } from './dto/create-user.input';
+import { UpdateUserInput } from './dto/update-user.input';
 
 @Injectable()
 export class UserService {
-  private readonly users: User[] = [
-    {
-      id: 1,
-      role_id: 1,
-      name: 'User 1',
-      email: 'email_1@example.com',
-      avatar: 'avatar_url_1',
-    },
-    {
-      id: 2,
-      role_id: 2,
-      name: 'User 2',
-      email: 'email_2@example.com',
-      avatar: 'avatar_url_2',
-    },
-  ];
+  constructor(
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+  ) { }
 
-  list(): User[] {
-    return this.users;
+  async findAll() {
+    return this.userRepository.find();
   }
 
-  listByRoleId(role_id: number): User[] {
-    return this.users.filter(
-      ({ role_id: item_role_id }) => (item_role_id = role_id),
-    );
+  async findOne(id: number) {
+    return this.userRepository.findOneBy({ id });
   }
 
-  detail(id: number): User {
-    const user = this.users.find(({ id: item_id }) => item_id === id);
-    if (!user) throw new Error('User not found!');
+  async create(createUserInput: CreateUserInput) {
+    return this.userRepository.save(createUserInput);
+  }
+
+  async update(id: number, updateUserInput: UpdateUserInput) {
+    await this.userRepository.update(id, updateUserInput);
+    return this.userRepository.findOneBy({ id });
+  }
+
+  async remove(id: number) {
+    const user = await this.userRepository.findOneBy({ id });
+    await this.userRepository.delete(id);
     return user;
   }
 
-  create(user: User): User {
-    this.users.push(user);
-    return user;
-  }
+  // listByRoleId(role_id: number): User[] {
+  //   return this.users.filter(
+  //     ({ role_id: item_role_id }) => (item_role_id = role_id),
+  //   );
+  // }
 }

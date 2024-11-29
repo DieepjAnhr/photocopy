@@ -7,40 +7,48 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
-import { User } from './models/user.model';
+import { User } from './entities/user.entity';
 import { UserService } from './user.service';
-import { RoleService } from '../role/role.service';
-import { Role } from '../role/models/role.model';
+import { CreateUserInput } from './dto/create-user.input';
+import { UpdateUserInput } from './dto/update-user.input';
+import { BlogService } from '../blog/blog.service';
+import { Blog } from '../blog/entities/blog.entity';
 
 @Resolver(() => User)
 export class UserResolver {
   constructor(
     private readonly userService: UserService,
-    private readonly roleServie: RoleService,
+    private readonly blogService: BlogService
   ) { }
 
   @Query(() => [User])
-  users(): User[] {
-    return this.userService.list();
+  users() {
+    return this.userService.findAll();
   }
 
   @Query(() => User)
-  user(@Args('id', { type: () => Int }) id: number): User {
-    return this.userService.detail(id);
+  user(@Args('id', { type: () => Int }) id: number) {
+    return this.userService.findOne(id);
   }
 
   @Mutation(() => User)
-  createUser(
-    @Args('id', { type: () => Int }) id: number,
-    @Args('role_id', { type: () => Int }) role_id: number,
-    @Args('name') name: string,
-  ): User {
-    return this.userService.create({ id, role_id, name });
+  createUser(@Args('create_data') createBlogInput: CreateUserInput) {
+    return this.userService.create(createBlogInput);
   }
 
-  @ResolveField()
-  role(@Parent() user: User): Role {
-    const roleId = user.role_id;
-    return this.roleServie.detail(roleId);
+  @Mutation(() => User)
+  updateUser(@Args('update_data') updateBlogInput: UpdateUserInput) {
+    return this.userService.update(updateBlogInput.id, updateBlogInput);
+  }
+
+  @Mutation(() => User)
+  removeUser(@Args('id', { type: () => Int }) id: number) {
+    return this.userService.remove(id);
+  }
+
+  @ResolveField(() => [Blog])
+  blogs(@Parent() user: User) {
+    const userId = user.id;
+    return this.blogService.findAll();
   }
 }
