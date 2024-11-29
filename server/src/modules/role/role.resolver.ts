@@ -7,17 +7,17 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
-import { Role } from './role.entity';
+import { Role } from './role.model';
 import { RoleService } from './role.service';
 import { UserService } from '../user/user.service';
-import { User } from '../user/user.entity';
+import { User } from '../user/user.model';
 
 @Resolver(() => Role)
 export class RoleResolver {
   constructor(
     private readonly roleService: RoleService,
     private readonly userService: UserService,
-  ) {}
+  ) { }
 
   @Query(() => [Role])
   roles(): Role[] {

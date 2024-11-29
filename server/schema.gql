@@ -3,8 +3,8 @@
 # ------------------------------------------------------
 
 type User {
-  id: Int!
-  role_id: Int!
+  id: ID!
+  role_id: ID!
   name: String!
   email: String
   avatar: String
@@ -12,7 +12,7 @@ type User {
 }
 
 type Role {
-  id: Int!
+  id: ID!
   name: String!
   users: [User!]!
 }

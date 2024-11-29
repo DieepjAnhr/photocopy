@@ -17,7 +17,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const request = ctx.getRequest<Request>();
     const status = exception.getStatus();
 
-    this.logger.debug('===TRIGGER GLOBAL FILTER===');
+    this.logger.debug('===TRIGGER EXCEPTION FILTER===');
     response.status(status).json({
       statusCode: status,
       message: exception.message,
