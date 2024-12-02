@@ -33,6 +33,7 @@ generateNestModule() {
   # touch $CUR_DIR/src/modules/$name/$name.repository.ts
 
   mkdir $CUR_DIR/src/modules/$name/dto
+  touch $CUR_DIR/src/modules/$name/dto/query-$name.dto.ts
   touch $CUR_DIR/src/modules/$name/dto/create-$name.dto.ts
   touch $CUR_DIR/src/modules/$name/dto/update-$name.dto.ts
 

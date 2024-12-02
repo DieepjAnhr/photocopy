@@ -18,6 +18,13 @@ import { SettingService } from './common/shared/settings/setting.service';
 import { SettingModule } from './common/shared/settings/setting.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { CacheModule } from './modules/cache/cache.module';
+import { ProductModule } from './modules/product/product.module';
+import { ProductAttributeModule } from './modules/product-attribute/product-attribute.module';
+import { ProductVariantModule } from './modules/product-variant/product-variant.module';
+import { ProductCategoryModule } from './modules/product-category/product-category.module';
+import { OrderModule } from './modules/order/order.module';
+import { OrderDetailModule } from './modules/order-detail/order-detail.module';
+import { BlogCategoryModule } from './modules/blog-category/blog-category.module';
 
 @Module({
   imports: [
@@ -38,16 +45,23 @@ import { CacheModule } from './modules/cache/cache.module';
       useFactory: (settingService: SettingService) =>
         settingService.typeOrmFactory,
     }),
+    AuthModule,
+    CacheModule,
     UserModule,
     BlogModule,
     RoleModule,
     PermissionModule,
-    AuthModule,
-    CacheModule,
+    ProductModule,
+    ProductAttributeModule,
+    ProductVariantModule,
+    ProductCategoryModule,
+    OrderModule,
+    OrderDetailModule,
+    BlogCategoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {
-  constructor(private readonly dataSource: DataSource) {}
+  constructor(private readonly dataSource: DataSource) { }
 }
