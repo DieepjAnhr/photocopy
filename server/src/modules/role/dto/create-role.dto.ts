@@ -1,14 +1,15 @@
 import { Field, ID, InputType } from '@nestjs/graphql';
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsOptional } from 'class-validator';
 
 @InputType()
 export class CreateRoleInput {
-  @Field()
+  @Field(() => String)
   @IsNotEmpty()
   name: string;
 
-  @Field()
-  description: string;
+  @Field(() => String)
+  @IsOptional()
+  description?: string;
 
   @Field(() => ID)
   @IsNotEmpty()
@@ -17,4 +18,8 @@ export class CreateRoleInput {
   @Field(() => ID)
   @IsNotEmpty()
   updater_id: number;
+
+  @Field(() => [ID])
+  @IsOptional()
+  permission_ids?: number[];
 }

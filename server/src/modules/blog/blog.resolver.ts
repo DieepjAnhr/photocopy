@@ -19,7 +19,7 @@ export class BlogResolver {
   constructor(
     private readonly blogService: BlogService,
     private readonly userService: UserService,
-  ) {}
+  ) { }
 
   @Query(() => [Blog])
   blogs() {

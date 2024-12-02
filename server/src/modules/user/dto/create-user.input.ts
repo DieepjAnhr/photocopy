@@ -27,6 +27,6 @@ export class CreateUserInput {
   @IsNotEmpty()
   email: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   avatar?: string;
 }

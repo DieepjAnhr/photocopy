@@ -27,6 +27,7 @@ input CreateRoleInput {
   creator_id: ID!
   description: String!
   name: String!
+  permission_ids: [ID!]!
   updater_id: ID!
 }
 
@@ -62,6 +63,7 @@ type Mutation {
 
 type Permission {
   id: ID!
+  roles: [Role!]!
   title: String!
   value: String!
 }
@@ -82,6 +84,7 @@ type Role {
   description: String!
   id: ID!
   name: String!
+  permissions: [Permission!]!
   updater_id: ID!
 }
 
@@ -102,6 +105,7 @@ input UpdateRoleInput {
   description: String
   id: Int!
   name: String
+  permission_ids: [ID!]
   updater_id: ID
 }
 

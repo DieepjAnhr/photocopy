@@ -10,7 +10,7 @@ export class PermissionService {
   constructor(
     @InjectRepository(Permission)
     private readonly permissionRepository: Repository<Permission>,
-  ) {}
+  ) { }
 
   async findAll() {
     return this.permissionRepository.find();
@@ -33,5 +33,12 @@ export class PermissionService {
     const user = await this.permissionRepository.findOneBy({ id });
     await this.permissionRepository.delete(id);
     return user;
+  }
+
+  async getPermissionByRoleId(roleId: number) {
+    return this.permissionRepository
+      .createQueryBuilder('permission')
+      .innerJoin('permission.roles', 'role', 'role.id = :roleId', { roleId })
+      .getMany()
   }
 }

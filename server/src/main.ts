@@ -9,7 +9,7 @@ async function bootstrap() {
 
   app.useGlobalFilters(new HttpExceptionFilter());
 
-  const PORT = process.env.PORT ?? 3000;
+  const PORT = process.env.PORT ?? 5000;
   await app.listen(PORT);
   logger.log(`Application started at port: ${PORT}`);
 }

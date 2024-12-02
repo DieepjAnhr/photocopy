@@ -11,4 +11,4 @@ import { BlogService } from '../blog/blog.service';
   providers: [UserResolver, UserService, BlogService],
   exports: [TypeOrmModule],
 })
-export class UserModule {}
+export class UserModule { }

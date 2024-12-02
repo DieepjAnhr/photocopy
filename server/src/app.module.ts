@@ -16,6 +16,8 @@ import { getEnvPath } from './common/helpers/env.helper';
 import { envValidation } from './common/helpers/env.validation';
 import { SettingService } from './common/shared/settings/setting.service';
 import { SettingModule } from './common/shared/settings/setting.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { CacheModule } from './modules/cache/cache.module';
 
 @Module({
   imports: [
@@ -40,6 +42,8 @@ import { SettingModule } from './common/shared/settings/setting.module';
     BlogModule,
     RoleModule,
     PermissionModule,
+    AuthModule,
+    CacheModule,
   ],
   controllers: [AppController],
   providers: [AppService],

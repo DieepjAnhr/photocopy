@@ -1,16 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Role } from './entity/role.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { CreateRoleInput } from './dto/create-role.dto';
 import { UpdateRoleInput } from './dto/update-role.dto';
+import { Permission } from '../permission/entity/permission.entity';
 
 @Injectable()
 export class RoleService {
   constructor(
     @InjectRepository(Role)
     private readonly roleRepository: Repository<Role>,
-  ) {}
+    @InjectRepository(Permission)
+    private readonly permissionRepository: Repository<Permission>
+  ) { }
 
   async findAll() {
     return this.roleRepository.find();
@@ -21,7 +24,9 @@ export class RoleService {
   }
 
   async create(data: CreateRoleInput) {
-    return this.roleRepository.save(data);
+    const permissions = await this.permissionRepository.find();
+    const role = this.roleRepository.create({ ...data, permissions })
+    return this.roleRepository.save(role);
   }
 
   async update(id: number, data: UpdateRoleInput) {
@@ -33,5 +38,12 @@ export class RoleService {
     const user = await this.roleRepository.findOneBy({ id });
     await this.roleRepository.delete(id);
     return user;
+  }
+
+  async getRoleByPermissionId(permissionId: number) {
+    return this.roleRepository
+      .createQueryBuilder('role')
+      .innerJoin('role.permissions', 'permission', 'permission.id = :permissionId', { permissionId })
+      .getMany()
   }
 }
