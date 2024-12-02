@@ -18,8 +18,8 @@ import { Blog } from '../blog/entities/blog.entity';
 export class UserResolver {
   constructor(
     private readonly userService: UserService,
-    private readonly blogService: BlogService
-  ) { }
+    private readonly blogService: BlogService,
+  ) {}
 
   @Query(() => [User])
   users() {

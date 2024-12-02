@@ -1,4 +1,12 @@
-import { Resolver, Query, Mutation, Args, Int, ResolveField, Parent } from '@nestjs/graphql';
+import {
+  Resolver,
+  Query,
+  Mutation,
+  Args,
+  Int,
+  ResolveField,
+  Parent,
+} from '@nestjs/graphql';
 import { BlogService } from './blog.service';
 import { Blog } from './entities/blog.entity';
 import { CreateBlogInput } from './dto/create-blog.input';
@@ -10,8 +18,8 @@ import { User } from '../user/entities/user.entity';
 export class BlogResolver {
   constructor(
     private readonly blogService: BlogService,
-    private readonly userService: UserService
-  ) { }
+    private readonly userService: UserService,
+  ) {}
 
   @Query(() => [Blog])
   blogs() {
@@ -41,6 +49,6 @@ export class BlogResolver {
   @ResolveField(() => User)
   creator(@Parent() blog: Blog) {
     const creatorId = blog.creator_id;
-    return this.userService.findOne(creatorId)
+    return this.userService.findOne(creatorId);
   }
 }

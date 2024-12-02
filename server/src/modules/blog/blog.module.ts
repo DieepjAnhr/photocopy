@@ -9,6 +9,6 @@ import { UserModule } from '../user/user.module';
 @Module({
   imports: [TypeOrmModule.forFeature([Blog]), forwardRef(() => UserModule)],
   providers: [BlogResolver, BlogService, UserService],
-  exports: [TypeOrmModule]
+  exports: [TypeOrmModule],
 })
-export class BlogModule { }
+export class BlogModule {}

@@ -10,7 +10,7 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-  ) { }
+  ) {}
 
   async findAll() {
     return this.userRepository.find();
@@ -34,10 +34,4 @@ export class UserService {
     await this.userRepository.delete(id);
     return user;
   }
-
-  // listByRoleId(role_id: number): User[] {
-  //   return this.users.filter(
-  //     ({ role_id: item_role_id }) => (item_role_id = role_id),
-  //   );
-  // }
 }

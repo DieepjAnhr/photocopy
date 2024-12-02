@@ -1,0 +1,134 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Blog {
+  content: String!
+  created_at: DateTime!
+  creator: User!
+  creator_id: ID!
+  id: ID!
+  title: String!
+  updated_at: DateTime!
+  updater_id: ID!
+}
+
+input CreateBlogInput {
+  content: String!
+  title: String!
+}
+
+input CreatePermissionInput {
+  title: String!
+  value: String!
+}
+
+input CreateRoleInput {
+  creator_id: ID!
+  description: String!
+  name: String!
+  updater_id: ID!
+}
+
+input CreateUserInput {
+  avatar: String
+  email: String!
+  first_name: String!
+  last_name: String!
+  password: String!
+  role_id: ID!
+  username: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Mutation {
+  createBlog(create_data: CreateBlogInput!): Blog!
+  createPermission(create_data: CreatePermissionInput!): Permission!
+  createRole(create_data: CreateRoleInput!): Role!
+  createUser(create_data: CreateUserInput!): User!
+  removeBlog(id: Int!): Blog!
+  removePermission(id: Int!): Permission!
+  removeRole(id: Int!): Role!
+  removeUser(id: Int!): User!
+  updateBlog(update_data: UpdateBlogInput!): Blog!
+  updatePermission(update_data: UpdatePermissionInput!): Permission!
+  updateRole(update_data: UpdateRoleInput!): Role!
+  updateUser(update_data: UpdateUserInput!): User!
+}
+
+type Permission {
+  id: ID!
+  title: String!
+  value: String!
+}
+
+type Query {
+  blog(id: Int!): Blog!
+  blogs: [Blog!]!
+  permission(id: Int!): Permission!
+  permissions: [Permission!]!
+  role(id: Int!): Role!
+  roles: [Role!]!
+  user(id: Int!): User!
+  users: [User!]!
+}
+
+type Role {
+  creator_id: ID!
+  description: String!
+  id: ID!
+  name: String!
+  updater_id: ID!
+}
+
+input UpdateBlogInput {
+  content: String
+  id: Int!
+  title: String
+}
+
+input UpdatePermissionInput {
+  id: Int!
+  title: String
+  value: String
+}
+
+input UpdateRoleInput {
+  creator_id: ID
+  description: String
+  id: Int!
+  name: String
+  updater_id: ID
+}
+
+input UpdateUserInput {
+  avatar: String
+  email: String
+  first_name: String
+  id: ID!
+  last_name: String
+  name: String
+  password: String
+  role_id: ID
+  username: String
+}
+
+type User {
+  avatar: String
+  blogs: [Blog!]!
+  created_at: DateTime!
+  creator_id: ID!
+  email: String!
+  first_name: String!
+  id: ID!
+  last_name: String!
+  password: String!
+  role_id: ID!
+  updated_at: DateTime!
+  updater_id: ID!
+  username: String!
+}
