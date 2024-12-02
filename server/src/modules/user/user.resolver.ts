@@ -9,8 +9,8 @@ import {
 } from '@nestjs/graphql';
 import { User } from './entities/user.entity';
 import { UserService } from './user.service';
-import { CreateUserInput } from './dto/create-user.input';
-import { UpdateUserInput } from './dto/update-user.input';
+import { CreateUserInput } from './dto/create-user.dto';
+import { UpdateUserInput } from './dto/update-user.dto';
 import { BlogService } from '../blog/blog.service';
 import { Blog } from '../blog/entities/blog.entity';
 
@@ -19,7 +19,7 @@ export class UserResolver {
   constructor(
     private readonly userService: UserService,
     private readonly blogService: BlogService,
-  ) {}
+  ) { }
 
   @Query(() => [User])
   users() {

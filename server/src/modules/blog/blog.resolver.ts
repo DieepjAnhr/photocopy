@@ -9,8 +9,8 @@ import {
 } from '@nestjs/graphql';
 import { BlogService } from './blog.service';
 import { Blog } from './entities/blog.entity';
-import { CreateBlogInput } from './dto/create-blog.input';
-import { UpdateBlogInput } from './dto/update-blog.input';
+import { CreateBlogInput } from './dto/create-blog.dto';
+import { UpdateBlogInput } from './dto/update-blog.dto';
 import { UserService } from '../user/user.service';
 import { User } from '../user/entities/user.entity';
 

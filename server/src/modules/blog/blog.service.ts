@@ -2,15 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Blog } from './entities/blog.entity';
-import { CreateBlogInput } from './dto/create-blog.input';
-import { UpdateBlogInput } from './dto/update-blog.input';
+import { CreateBlogInput } from './dto/create-blog.dto';
+import { UpdateBlogInput } from './dto/update-blog.dto';
 
 @Injectable()
 export class BlogService {
   constructor(
     @InjectRepository(Blog)
     private readonly blogRepository: Repository<Blog>,
-  ) {}
+  ) { }
 
   async findAll() {
     return this.blogRepository.find();
