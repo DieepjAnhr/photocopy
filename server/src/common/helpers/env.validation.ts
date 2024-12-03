@@ -52,17 +52,17 @@ export class EnvironmentVariables {
   @IsNotEmpty()
   DB_PORT: number;
 
-  // @IsString()
-  // @IsNotEmpty()
-  // JWT_PRIVATE_KEY: string;
+  @IsString()
+  @IsNotEmpty()
+  JWT_PRIVATE_KEY: string;
 
-  // @IsString()
-  // @IsNotEmpty()
-  // JWT_PUBLIC_KEY: string;
+  @IsString()
+  @IsNotEmpty()
+  JWT_PUBLIC_KEY: string;
 
-  // @IsString()
-  // @IsNotEmpty()
-  // JWT_REFRESH_TOKEN_PRIVATE_KEY: string;
+  @IsString()
+  @IsNotEmpty()
+  JWT_REFRESH_TOKEN_PRIVATE_KEY: string;
 
   // @IsString()
   // @IsOptional()

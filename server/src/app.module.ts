@@ -63,5 +63,5 @@ import { BlogCategoryModule } from './modules/blog-category/blog-category.module
   providers: [AppService],
 })
 export class AppModule {
-  constructor(private readonly dataSource: DataSource) { }
+  constructor(private readonly dataSource: DataSource) {}
 }

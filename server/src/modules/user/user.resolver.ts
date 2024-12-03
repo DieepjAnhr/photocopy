@@ -11,19 +11,16 @@ import { User } from './entities/user.entity';
 import { UserService } from './user.service';
 import { CreateUserInput } from './dto/create-user.dto';
 import { UpdateUserInput } from './dto/update-user.dto';
-import { BlogService } from '../blog/blog.service';
-import { Blog } from '../blog/entities/blog.entity';
+import { Role } from '../role/entity/role.entity';
+import { QueryUserInput, QueryUserOutput } from './dto/query-user.dto';
 
 @Resolver(() => User)
 export class UserResolver {
-  constructor(
-    private readonly userService: UserService,
-    private readonly blogService: BlogService,
-  ) { }
+  constructor(private readonly userService: UserService) { }
 
   @Query(() => [User])
-  users() {
-    return this.userService.findAll();
+  users(@Args('query') query: QueryUserInput) {
+    return this.userService.getMany();
   }
 
   @Query(() => User)
@@ -32,13 +29,13 @@ export class UserResolver {
   }
 
   @Mutation(() => User)
-  createUser(@Args('create_data') createBlogInput: CreateUserInput) {
-    return this.userService.create(createBlogInput);
+  createUser(@Args('create_data') createUserInput: CreateUserInput) {
+    return this.userService.create(createUserInput);
   }
 
   @Mutation(() => User)
-  updateUser(@Args('update_data') updateBlogInput: UpdateUserInput) {
-    return this.userService.update(updateBlogInput.id, updateBlogInput);
+  updateUser(@Args('update_data') updateUserInput: UpdateUserInput) {
+    return this.userService.update(updateUserInput.id, updateUserInput);
   }
 
   @Mutation(() => User)
@@ -46,9 +43,8 @@ export class UserResolver {
     return this.userService.remove(id);
   }
 
-  @ResolveField(() => [Blog])
-  blogs(@Parent() user: User) {
-    const userId = user.id;
-    return this.blogService.findAll();
+  @ResolveField(() => Role)
+  role(@Parent() user: User) {
+    return user.role;
   }
 }

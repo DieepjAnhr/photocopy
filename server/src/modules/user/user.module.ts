@@ -1,14 +1,12 @@
-import { forwardRef, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { UserResolver } from './user.resolver';
 import { UserService } from './user.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './entities/user.entity';
-import { BlogModule } from '../blog/blog.module';
-import { BlogService } from '../blog/blog.service';
+import { TypeOrmExModule } from 'src/common/modules/custom-typeorm.module';
+import { UserRepository } from './user.repository';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User]), forwardRef(() => BlogModule)],
-  providers: [UserResolver, UserService, BlogService],
-  exports: [TypeOrmModule],
+  imports: [TypeOrmExModule.forCustomRepository([UserRepository])],
+  providers: [UserResolver, UserService],
+  exports: [UserService],
 })
 export class UserModule { }

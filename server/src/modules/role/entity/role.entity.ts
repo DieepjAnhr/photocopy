@@ -1,6 +1,16 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { Permission } from 'src/modules/permission/entity/permission.entity';
-import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { User } from 'src/modules/user/entities/user.entity';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @ObjectType()
 @Entity({ name: 'roles' })
@@ -26,17 +36,23 @@ export class Role {
   updater_id: number;
 
   @Field(() => [Permission])
-  @ManyToMany(() => Permission, (permission) => permission.roles, { cascade: true })
+  @ManyToMany(() => Permission, (permission) => permission.roles, {
+    cascade: true,
+  })
   @JoinTable({
-    name: 'role_permissions', // Custom table name
+    name: 'role_permissions',
     joinColumn: {
-      name: 'role_id', // Column name in the join table referring to Role
-      referencedColumnName: 'id', // Column in the Role entity
+      name: 'role_id',
+      referencedColumnName: 'id',
     },
     inverseJoinColumn: {
-      name: 'permission_id', // Column name in the join table referring to Permission
-      referencedColumnName: 'id', // Column in the Permission entity
+      name: 'permission_id',
+      referencedColumnName: 'id',
     },
   })
   permissions: Permission[];
+
+  @Field(() => [User])
+  @OneToMany(() => User, (user) => user.role)
+  users: User[];
 }

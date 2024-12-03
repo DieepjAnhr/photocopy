@@ -1,18 +1,21 @@
-import { Args, Int, Mutation, Parent, Query, ResolveField } from '@nestjs/graphql';
+import {
+  Args,
+  Int,
+  Mutation,
+  Parent,
+  Query,
+  ResolveField,
+} from '@nestjs/graphql';
 import { Resolver } from '@nestjs/graphql';
 import { RoleService } from './role.service';
 import { Role } from './entity/role.entity';
 import { CreateRoleInput } from './dto/create-role.dto';
 import { UpdateRoleInput } from './dto/update-role.dto';
-import { PermissionService } from '../permission/permission.service';
 import { Permission } from '../permission/entity/permission.entity';
 
 @Resolver(() => Role)
 export class RoleResolver {
-  constructor(
-    private readonly roleService: RoleService,
-    private readonly permissionService: PermissionService
-  ) { }
+  constructor(private readonly roleService: RoleService) {}
 
   @Query(() => [Role])
   roles() {
@@ -41,6 +44,6 @@ export class RoleResolver {
 
   @ResolveField(() => [Permission])
   permissions(@Parent() role: Role) {
-    return this.permissionService.getPermissionByRoleId(role.id)
+    return this.roleService.getPermissionByRole(role.id);
   }
 }

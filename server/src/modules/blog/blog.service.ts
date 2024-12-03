@@ -10,7 +10,7 @@ export class BlogService {
   constructor(
     @InjectRepository(Blog)
     private readonly blogRepository: Repository<Blog>,
-  ) { }
+  ) {}
 
   async findAll() {
     return this.blogRepository.find();

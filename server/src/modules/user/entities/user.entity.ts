@@ -1,8 +1,15 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Blog } from 'src/modules/blog/entities/blog.entity';
+import { Role } from 'src/modules/role/entity/role.entity';
 import {
+  BeforeInsert,
+  BeforeUpdate,
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -57,4 +64,15 @@ export class User {
   @Field(() => Date)
   @UpdateDateColumn({ type: 'timestamp' })
   updated_at: Date;
+
+  @Field(() => Role)
+  @ManyToOne(() => Role, (role) => role.users, { eager: true })
+  @JoinColumn({ name: 'role_id' })
+  role: Role;
+
+  @BeforeInsert()
+  setRegisterId() {
+    if (!this.creator_id) this.creator_id = this.id;
+    if (!this.updater_id) this.updater_id = this.id;
+  }
 }

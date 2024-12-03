@@ -5,7 +5,6 @@
 type Blog {
   content: String!
   created_at: DateTime!
-  creator: User!
   creator_id: ID!
   id: ID!
   title: String!
@@ -33,11 +32,13 @@ input CreateRoleInput {
 
 input CreateUserInput {
   avatar: String
+  creator_id: ID!
   email: String!
   first_name: String!
   last_name: String!
   password: String!
   role_id: ID!
+  updater_id: ID!
   username: String!
 }
 
@@ -45,6 +46,14 @@ input CreateUserInput {
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
+
+input IPagination {
+  """Number of elements on the page"""
+  limit: Int!
+
+  """Started from 1"""
+  page: Int!
+}
 
 type Mutation {
   createBlog(create_data: CreateBlogInput!): Blog!
@@ -76,7 +85,12 @@ type Query {
   role(id: Int!): Role!
   roles: [Role!]!
   user(id: Int!): User!
-  users: [User!]!
+  users(query: QueryUserInput!): [User!]!
+}
+
+input QueryUserInput {
+  pagination: IPagination = {limit: 10, page: 1}
+  queryType: String = "all"
 }
 
 type Role {
@@ -86,6 +100,7 @@ type Role {
   name: String!
   permissions: [Permission!]!
   updater_id: ID!
+  users: [User!]!
 }
 
 input UpdateBlogInput {
@@ -111,6 +126,7 @@ input UpdateRoleInput {
 
 input UpdateUserInput {
   avatar: String
+  creator_id: ID
   email: String
   first_name: String
   id: ID!
@@ -118,12 +134,12 @@ input UpdateUserInput {
   name: String
   password: String
   role_id: ID
+  updater_id: ID
   username: String
 }
 
 type User {
   avatar: String
-  blogs: [Blog!]!
   created_at: DateTime!
   creator_id: ID!
   email: String!
@@ -131,6 +147,7 @@ type User {
   id: ID!
   last_name: String!
   password: String!
+  role: Role!
   role_id: ID!
   updated_at: DateTime!
   updater_id: ID!

@@ -3,6 +3,6 @@ import { ProductAttributeResolver } from './product-attribute.resolver';
 import { ProductAttributeService } from './product-attribute.service';
 
 @Module({
-  providers: [ProductAttributeResolver, ProductAttributeService]
+  providers: [ProductAttributeResolver, ProductAttributeService],
 })
 export class ProductAttributeModule {}

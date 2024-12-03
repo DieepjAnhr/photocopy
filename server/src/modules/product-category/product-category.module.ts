@@ -3,6 +3,6 @@ import { ProductCategoryResolver } from './product-category.resolver';
 import { ProductCategoryService } from './product-category.service';
 
 @Module({
-  providers: [ProductCategoryResolver, ProductCategoryService]
+  providers: [ProductCategoryResolver, ProductCategoryService],
 })
 export class ProductCategoryModule {}

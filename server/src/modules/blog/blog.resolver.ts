@@ -1,25 +1,12 @@
-import {
-  Resolver,
-  Query,
-  Mutation,
-  Args,
-  Int,
-  ResolveField,
-  Parent,
-} from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
 import { BlogService } from './blog.service';
 import { Blog } from './entities/blog.entity';
 import { CreateBlogInput } from './dto/create-blog.dto';
 import { UpdateBlogInput } from './dto/update-blog.dto';
-import { UserService } from '../user/user.service';
-import { User } from '../user/entities/user.entity';
 
 @Resolver(() => Blog)
 export class BlogResolver {
-  constructor(
-    private readonly blogService: BlogService,
-    private readonly userService: UserService,
-  ) { }
+  constructor(private readonly blogService: BlogService) {}
 
   @Query(() => [Blog])
   blogs() {
@@ -44,11 +31,5 @@ export class BlogResolver {
   @Mutation(() => Blog)
   removeBlog(@Args('id', { type: () => Int }) id: number) {
     return this.blogService.remove(id);
-  }
-
-  @ResolveField(() => User)
-  creator(@Parent() blog: Blog) {
-    const creatorId = blog.creator_id;
-    return this.userService.findOne(creatorId);
   }
 }

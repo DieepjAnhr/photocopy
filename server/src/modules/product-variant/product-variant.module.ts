@@ -3,6 +3,6 @@ import { ProductVariantResolver } from './product-variant.resolver';
 import { ProductVariantService } from './product-variant.service';
 
 @Module({
-  providers: [ProductVariantResolver, ProductVariantService]
+  providers: [ProductVariantResolver, ProductVariantService],
 })
 export class ProductVariantModule {}
