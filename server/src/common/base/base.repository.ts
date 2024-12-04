@@ -1,6 +1,5 @@
 import { Field, InputType, Int } from '@nestjs/graphql';
 import { IsNotEmpty, isNotEmptyObject, validate } from 'class-validator';
-import { QueryUserInput } from 'src/modules/user/dto/query-user.dto';
 import {
   FindManyOptions,
   FindOptionsOrder,
@@ -9,6 +8,7 @@ import {
   ObjectLiteral,
   Repository,
 } from 'typeorm';
+import { RepoQuery } from '../graphql/types';
 
 @InputType()
 export class IPagination {
@@ -29,45 +29,43 @@ export interface IRepositoryQuery<T> {
 }
 
 export interface IGetData<T> {
-  count?: number,
-  data?: T[],
+  count?: number;
+  data?: T[];
 }
 
 const isEmptyObject = <T extends Object>(value: T): boolean => {
   return !value || Object.keys(value).length === 0;
 };
 
-const QUERY_TYPES = ['data', 'count', 'all']
+const QUERY_TYPES = ['data', 'count', 'all'];
 
 export class BaseRepository<T extends ObjectLiteral> extends Repository<T> {
   async getOne() { }
 
-  async getMany(
-    { pagination, queryType }: QueryUserInput,
+  async getmany(
+    { pagination, where, order, relations }: RepoQuery<T>,
+    gqlQuery?: string,
+    _dataType?: 'count' | 'data' | 'all',
   ): Promise<IGetData<T>> {
-    // const { pagination, where, order, relations } = query || {};
-
-    // const condition: FindManyOptions<T> = {
-    //   ...(where && !isEmptyObject(where) && { where }),
-    //   ...(order && { order }),
-    //   ...(relations && { relations }),
-    //   ...(pagination && {
-    //     skip: (pagination.page - 1) * pagination.limit,
-    //     take: pagination.limit,
-    //   }),
-    // };
-
-    if (!queryType) queryType = 'all';
+    const dataType =
+      _dataType ??
+      (!gqlQuery
+        ? 'all'
+        : gqlQuery.includes('count') && gqlQuery.includes('data')
+          ? 'all'
+          : gqlQuery.includes('data')
+            ? 'data'
+            : 'count');
 
     const result = {
       data: async () => ({ data: await this.find() }),
       count: async () => ({ count: await this.count() }),
       all: async () => {
         const [data, count] = await this.findAndCount();
-        return { count, data };
+        return { data, count };
       },
     };
 
-    return result['all']();
+    return await result[dataType]();
   }
 }

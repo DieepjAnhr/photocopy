@@ -3,14 +3,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserInput } from './dto/create-user.dto';
 import { UpdateUserInput } from './dto/update-user.dto';
 import { UserRepository } from './user.repository';
-import { QueryUserInput } from './dto/query-user.dto';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(UserRepository)
     private readonly userRepository: UserRepository,
-  ) { }
+  ) {}
 
   async getMany() {
     const result = await this.userRepository.find();

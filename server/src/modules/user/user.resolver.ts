@@ -12,14 +12,14 @@ import { UserService } from './user.service';
 import { CreateUserInput } from './dto/create-user.dto';
 import { UpdateUserInput } from './dto/update-user.dto';
 import { Role } from '../role/entity/role.entity';
-import { QueryUserInput, QueryUserOutput } from './dto/query-user.dto';
+import { GetManyInput } from 'src/common/graphql/custom.input';
 
 @Resolver(() => User)
 export class UserResolver {
-  constructor(private readonly userService: UserService) { }
+  constructor(private readonly userService: UserService) {}
 
   @Query(() => [User])
-  users(@Args('query') query: QueryUserInput) {
+  users(@Args('query') query: GetManyInput<User>) {
     return this.userService.getMany();
   }
 
