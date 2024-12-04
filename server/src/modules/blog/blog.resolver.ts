@@ -1,15 +1,15 @@
 import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
 import { BlogService } from './blog.service';
 import { Blog } from './entities/blog.entity';
-import { CreateBlogInput } from './dto/create-blog.dto';
-import { UpdateBlogInput } from './dto/update-blog.dto';
+import { CreateBlogInput, QueryBlogInput } from './inputs/blog.input';
+import { UpdateBlogInput } from './inputs/blog.input';
 
 @Resolver(() => Blog)
 export class BlogResolver {
-  constructor(private readonly blogService: BlogService) {}
+  constructor(private readonly blogService: BlogService) { }
 
   @Query(() => [Blog])
-  blogs() {
+  blogs(@Args('query') query: QueryBlogInput) {
     return this.blogService.findAll();
   }
 

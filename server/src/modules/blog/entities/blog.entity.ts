@@ -1,22 +1,10 @@
-import { ObjectType, Field, ID } from '@nestjs/graphql';
-import { User } from 'src/modules/user/entities/user.entity';
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { ObjectType, Field } from '@nestjs/graphql';
+import { AbstractBaseEntity } from 'src/common/base/base.entity';
+import { Column, Entity } from 'typeorm';
 
 @ObjectType()
 @Entity({ name: 'blogs' })
-export class Blog {
-  @Field(() => ID)
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class Blog extends AbstractBaseEntity {
   @Field(() => String)
   @Column()
   title: string;
@@ -24,20 +12,4 @@ export class Blog {
   @Field(() => String)
   @Column()
   content: string;
-
-  @Field(() => ID)
-  @Column()
-  creator_id: number;
-
-  @Field(() => Date)
-  @CreateDateColumn({ type: 'timestamp' })
-  created_at: Date;
-
-  @Field(() => ID)
-  @Column()
-  updater_id: number;
-
-  @Field(() => Date)
-  @UpdateDateColumn({ type: 'timestamp' })
-  updated_at: Date;
 }

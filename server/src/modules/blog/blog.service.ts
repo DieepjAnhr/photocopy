@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Blog } from './entities/blog.entity';
-import { CreateBlogInput } from './dto/create-blog.dto';
-import { UpdateBlogInput } from './dto/update-blog.dto';
+import { CreateBlogInput } from './inputs/blog.input';
+import { UpdateBlogInput } from './inputs/blog.input';
 
 @Injectable()
 export class BlogService {
@@ -21,7 +21,11 @@ export class BlogService {
   }
 
   async create(createBlogInput: CreateBlogInput) {
-    return this.blogRepository.save(createBlogInput);
+    return this.blogRepository.save({
+      ...createBlogInput,
+      creator_id: 1,
+      updater_id: 1,
+    });
   }
 
   async update(id: number, updateBlogInput: UpdateBlogInput) {

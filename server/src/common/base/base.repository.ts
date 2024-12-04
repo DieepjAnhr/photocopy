@@ -8,7 +8,6 @@ import {
   ObjectLiteral,
   Repository,
 } from 'typeorm';
-import { RepoQuery } from '../graphql/types';
 
 @InputType()
 export class IPagination {
@@ -40,32 +39,33 @@ const isEmptyObject = <T extends Object>(value: T): boolean => {
 const QUERY_TYPES = ['data', 'count', 'all'];
 
 export class BaseRepository<T extends ObjectLiteral> extends Repository<T> {
-  async getOne() { }
+  async getOne() {}
+  async getMany() {}
 
-  async getmany(
-    { pagination, where, order, relations }: RepoQuery<T>,
-    gqlQuery?: string,
-    _dataType?: 'count' | 'data' | 'all',
-  ): Promise<IGetData<T>> {
-    const dataType =
-      _dataType ??
-      (!gqlQuery
-        ? 'all'
-        : gqlQuery.includes('count') && gqlQuery.includes('data')
-          ? 'all'
-          : gqlQuery.includes('data')
-            ? 'data'
-            : 'count');
+  // async getmany(
+  //   { pagination, where, order, relations }: RepoQuery<T>,
+  //   gqlQuery?: string,
+  //   _dataType?: 'count' | 'data' | 'all',
+  // ): Promise<IGetData<T>> {
+  //   const dataType =
+  //     _dataType ??
+  //     (!gqlQuery
+  //       ? 'all'
+  //       : gqlQuery.includes('count') && gqlQuery.includes('data')
+  //         ? 'all'
+  //         : gqlQuery.includes('data')
+  //           ? 'data'
+  //           : 'count');
 
-    const result = {
-      data: async () => ({ data: await this.find() }),
-      count: async () => ({ count: await this.count() }),
-      all: async () => {
-        const [data, count] = await this.findAndCount();
-        return { data, count };
-      },
-    };
+  //   const result = {
+  //     data: async () => ({ data: await this.find() }),
+  //     count: async () => ({ count: await this.count() }),
+  //     all: async () => {
+  //       const [data, count] = await this.findAndCount();
+  //       return { data, count };
+  //     },
+  //   };
 
-    return await result[dataType]();
-  }
+  //   return await result[dataType]();
+  // }
 }

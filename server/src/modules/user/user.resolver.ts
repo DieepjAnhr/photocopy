@@ -9,17 +9,16 @@ import {
 } from '@nestjs/graphql';
 import { User } from './entities/user.entity';
 import { UserService } from './user.service';
-import { CreateUserInput } from './dto/create-user.dto';
-import { UpdateUserInput } from './dto/update-user.dto';
+import { CreateUserInput } from './inputs/create-user.dto';
+import { UpdateUserInput } from './inputs/update-user.dto';
 import { Role } from '../role/entity/role.entity';
-import { GetManyInput } from 'src/common/graphql/custom.input';
 
 @Resolver(() => User)
 export class UserResolver {
   constructor(private readonly userService: UserService) {}
 
   @Query(() => [User])
-  users(@Args('query') query: GetManyInput<User>) {
+  users(@Args('query') query: CreateUserInput) {
     return this.userService.getMany();
   }
 

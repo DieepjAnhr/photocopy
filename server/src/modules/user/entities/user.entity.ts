@@ -1,15 +1,12 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
-import { Blog } from 'src/modules/blog/entities/blog.entity';
 import { Role } from 'src/modules/role/entity/role.entity';
 import {
   BeforeInsert,
-  BeforeUpdate,
   Column,
   CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -33,9 +30,9 @@ export class User {
   @Column()
   password: string;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   @Column()
-  first_name: string;
+  first_name?: string;
 
   @Field(() => String)
   @Column()
@@ -43,9 +40,13 @@ export class User {
 
   @Field(() => String)
   @Column()
+  phone: string;
+
+  @Field(() => String)
+  @Column()
   email: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   @Column()
   avatar?: string;
 
