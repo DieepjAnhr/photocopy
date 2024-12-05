@@ -25,6 +25,7 @@ import { ProductCategoryModule } from './modules/product-category/product-catego
 import { OrderModule } from './modules/order/order.module';
 import { OrderDetailModule } from './modules/order-detail/order-detail.module';
 import { BlogCategoryModule } from './modules/blog-category/blog-category.module';
+import { QueryFieldScalar } from './common/graphql/scalars/query.input';
 
 @Module({
   imports: [
@@ -60,8 +61,6 @@ import { BlogCategoryModule } from './modules/blog-category/blog-category.module
     BlogCategoryModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, QueryFieldScalar],
 })
-export class AppModule {
-  constructor(private readonly dataSource: DataSource) {}
-}
+export class AppModule {}

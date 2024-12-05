@@ -4,7 +4,7 @@ import { Role } from './entity/role.entity';
 import { CreateRoleInput } from './dto/create-role.dto';
 import { UpdateRoleInput } from './dto/update-role.dto';
 import { Permission } from '../permission/entity/permission.entity';
-import { BaseRepository } from 'src/common/base/base.repository';
+import { AbstractBaseRepository } from 'src/common/base/base.repository';
 import { RoleRepository } from './role.repository';
 
 @Injectable()
@@ -13,7 +13,7 @@ export class RoleService {
     @InjectRepository(Role)
     private readonly roleRepository: RoleRepository,
     @InjectRepository(Permission)
-    private readonly permissionRepository: BaseRepository<Permission>,
+    private readonly permissionRepository: AbstractBaseRepository<Permission>,
   ) {}
 
   async findAll() {

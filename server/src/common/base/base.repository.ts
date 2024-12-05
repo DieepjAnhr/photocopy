@@ -1,5 +1,6 @@
 import { Field, InputType, Int } from '@nestjs/graphql';
 import { IsNotEmpty, isNotEmptyObject, validate } from 'class-validator';
+import { IFilter } from 'src/modules/blog/inputs/blog.input';
 import {
   FindManyOptions,
   FindOptionsOrder,
@@ -8,6 +9,9 @@ import {
   ObjectLiteral,
   Repository,
 } from 'typeorm';
+import { IQueryFieldInput } from '../graphql/type';
+import { ISort, QueryOutputType } from './base.input';
+import { BadRequestException } from '@nestjs/common';
 
 @InputType()
 export class IPagination {
@@ -20,11 +24,11 @@ export class IPagination {
   limit: number;
 }
 
-export interface IRepositoryQuery<T> {
+export interface IGrapQLQuery<T> {
+  filter?: Record<string, T>;
   pagination?: IPagination;
-  where?: FindOptionsWhere<T>[] | FindOptionsWhere<T>;
-  order?: FindOptionsOrder<T>;
-  relations?: FindOptionsRelations<T>;
+  sort?: [ISort];
+  output_type?: QueryOutputType;
 }
 
 export interface IGetData<T> {
@@ -38,9 +42,35 @@ const isEmptyObject = <T extends Object>(value: T): boolean => {
 
 const QUERY_TYPES = ['data', 'count', 'all'];
 
-export class BaseRepository<T extends ObjectLiteral> extends Repository<T> {
+export class AbstractBaseRepository<
+  T extends ObjectLiteral,
+> extends Repository<T> {
   async getOne() {}
-  async getMany() {}
+  async getMany({
+    filter,
+    pagination,
+    sort,
+    output_type: outputType,
+  }: IGrapQLQuery<T>): Promise<IGetData<T>> {
+    const dataType = outputType ?? 'all';
+    const condition = {
+      ...(pagination && {
+        skip: (pagination.page - 1) * pagination.limit,
+        take: pagination.limit,
+      }),
+    };
+
+    const result = {
+      data: async () => ({ data: await this.find(condition) }),
+      count: async () => ({ count: await this.count(condition) }),
+      all: async () => {
+        const [data, count] = await this.findAndCount(condition);
+        return { data, count };
+      },
+    };
+
+    return await result[dataType]();
+  }
 
   // async getmany(
   //   { pagination, where, order, relations }: RepoQuery<T>,

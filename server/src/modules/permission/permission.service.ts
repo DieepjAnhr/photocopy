@@ -3,13 +3,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Permission } from './entity/permission.entity';
 import { CreatePermissionInput } from './dto/create-permission.dto';
 import { UpdatePermissionInput } from './dto/update-permission.dto';
-import { BaseRepository } from 'src/common/base/base.repository';
+import { AbstractBaseRepository } from 'src/common/base/base.repository';
 
 @Injectable()
 export class PermissionService {
   constructor(
     @InjectRepository(Permission)
-    private readonly permissionRepository: BaseRepository<Permission>,
+    private readonly permissionRepository: AbstractBaseRepository<Permission>,
   ) {}
 
   async findAll() {

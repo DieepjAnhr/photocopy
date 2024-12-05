@@ -6,7 +6,7 @@ import { UpdateBlogInput } from './inputs/blog.input';
 
 @Resolver(() => Blog)
 export class BlogResolver {
-  constructor(private readonly blogService: BlogService) { }
+  constructor(private readonly blogService: BlogService) {}
 
   @Query(() => [Blog])
   blogs(@Args('query') query: QueryBlogInput) {

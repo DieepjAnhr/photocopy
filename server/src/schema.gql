@@ -47,6 +47,27 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+input IFilter {
+  content: QueryFieldScalar
+  title: QueryFieldScalar
+}
+
+input IPagination {
+  """Number of elements on the page"""
+  limit: Int!
+
+  """Started from 1"""
+  page: Int!
+}
+
+input ISort {
+  """Sort by field"""
+  field: String!
+
+  """Started from 1"""
+  type: String!
+}
+
 type Mutation {
   createBlog(create_data: CreateBlogInput!): Blog!
   createPermission(create_data: CreatePermissionInput!): Permission!
@@ -81,9 +102,16 @@ type Query {
 }
 
 input QueryBlogInput {
-  content: String!
-  title: String!
+  filter: IFilter
+  output_type: String
+  pagination: IPagination
+  sort: [ISort!]
 }
+
+"""
+Generic scalar that accepts either a base type or an object with { in, ne, gte, lte } fields
+"""
+scalar QueryFieldScalar
 
 type Role {
   creator_id: ID!
