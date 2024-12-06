@@ -2,174 +2,98 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Blog {
-  content: String!
-  created_at: DateTime!
-  creator_id: ID!
-  id: ID!
-  title: String!
-  updated_at: DateTime!
-  updater_id: ID!
-}
-
-input CreateBlogInput {
-  content: String!
-  title: String!
-}
-
-input CreatePermissionInput {
-  title: String!
-  value: String!
-}
-
-input CreateRoleInput {
-  creator_id: ID!
-  description: String!
-  name: String!
-  permission_ids: [ID!]!
-  updater_id: ID!
-}
-
 input CreateUserInput {
   avatar: String
-  creator_id: ID!
+  birthday: Date
   email: String!
-  first_name: String!
+  first_name: String
   last_name: String!
   password: String!
-  role_id: ID!
-  updater_id: ID!
+  phone: String!
+  refresh_token: String
   username: String!
 }
 
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
+"""Date custom scalar type"""
+scalar Date
 
-input IFilter {
-  content: QueryFieldScalar
-  title: QueryFieldScalar
+type Mutation {
+  addRecipe(newRecipeData: NewRecipeInput!): Recipe!
+  createUser(data: CreateUserInput!): User!
+  removeRecipe(id: String!): Boolean!
+  removeUser(id: String!): Boolean!
+  updateUser(data: UpdateUserInput!): User!
 }
 
-input IPagination {
-  """Number of elements on the page"""
+input NewRecipeInput {
+  description: String
+  ingredients: [String!]!
+  title: String!
+}
+
+input Pagination {
+  """Number of items per page"""
   limit: Int!
 
-  """Started from 1"""
+  """Page number starting from 1"""
   page: Int!
 }
 
-input ISort {
-  """Sort by field"""
-  field: String!
-
-  """Started from 1"""
-  type: String!
-}
-
-type Mutation {
-  createBlog(create_data: CreateBlogInput!): Blog!
-  createPermission(create_data: CreatePermissionInput!): Permission!
-  createRole(create_data: CreateRoleInput!): Role!
-  createUser(create_data: CreateUserInput!): User!
-  removeBlog(id: Int!): Blog!
-  removePermission(id: Int!): Permission!
-  removeRole(id: Int!): Role!
-  removeUser(id: Int!): User!
-  updateBlog(update_data: UpdateBlogInput!): Blog!
-  updatePermission(update_data: UpdatePermissionInput!): Permission!
-  updateRole(update_data: UpdateRoleInput!): Role!
-  updateUser(update_data: UpdateUserInput!): User!
-}
-
-type Permission {
-  id: ID!
-  roles: [Role!]!
-  title: String!
-  value: String!
-}
-
 type Query {
-  blog(id: Int!): Blog!
-  blogs(query: QueryBlogInput!): [Blog!]!
-  permission(id: Int!): Permission!
-  permissions: [Permission!]!
-  role(id: Int!): Role!
-  roles: [Role!]!
-  user(id: Int!): User!
-  users(query: CreateUserInput!): [User!]!
+  recipe(id: String!): Recipe!
+  recipes(skip: Int! = 0, take: Int! = 25): [Recipe!]!
+  user(id: Float!): User!
+  users(args: UserArgs!): [User!]!
 }
 
-input QueryBlogInput {
-  filter: IFilter
-  output_type: String
-  pagination: IPagination
-  sort: [ISort!]
-}
-
-"""
-Generic scalar that accepts either a base type or an object with { in, ne, gte, lte } fields
-"""
-scalar QueryFieldScalar
-
-type Role {
-  creator_id: ID!
-  description: String!
-  id: ID!
-  name: String!
-  permissions: [Permission!]!
-  updater_id: ID!
-  users: [User!]!
-}
-
-input UpdateBlogInput {
-  content: String
-  id: ID!
-  title: String
-}
-
-input UpdatePermissionInput {
-  id: Int!
-  title: String
-  value: String
-}
-
-input UpdateRoleInput {
-  creator_id: ID
+"""recipe"""
+type Recipe {
+  creationDate: Date!
   description: String
-  id: Int!
-  name: String
-  permission_ids: [ID!]
-  updater_id: ID
+  id: ID!
+  ingredients: [String!]!
+}
+
+type Subscription {
+  recipeAdded: Recipe!
+  userCreated: User!
+  userUpdated: User!
 }
 
 input UpdateUserInput {
   avatar: String
-  creator_id: ID
+  birthday: Date
   email: String
   first_name: String
   id: ID!
   last_name: String
   password: String
-  role_id: ID
-  updater_id: ID
+  phone: String
+  refresh_token: String
   username: String
 }
 
+"""user"""
 type User {
   avatar: String
-  created_at: DateTime!
-  creator_id: ID!
+  birthday: Date
+  created_at: Date!
+  creator_id: ID
+  delete_at: Date
+  deleter_id: ID
   email: String!
   first_name: String
   id: ID!
   last_name: String!
   password: String!
   phone: String!
-  role: Role!
-  role_id: ID!
-  updated_at: DateTime!
-  updater_id: ID!
+  refresh_token: String
+  updated_at: Date!
+  updater_id: ID
   username: String!
+}
+
+input UserArgs {
+  id: ID
+  pagination: Pagination
 }

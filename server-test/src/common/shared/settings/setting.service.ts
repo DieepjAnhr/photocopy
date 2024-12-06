@@ -3,10 +3,11 @@ import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { UtilService } from '../services/util.service';
 import { join } from 'path';
 import { ApolloDriverConfig } from '@nestjs/apollo';
+import { formatError } from 'src/common/format/graphql-error.format';
 
 @Injectable()
 export class SettingService {
-  constructor(private readonly utilService: UtilService) {}
+  constructor(private readonly utilService: UtilService) { }
 
   get graphqlUseFactory():
     | Omit<ApolloDriverConfig, 'driver'>
@@ -15,9 +16,11 @@ export class SettingService {
       uploads: false,
       autoSchemaFile: join(
         process.cwd(),
-        `${this.utilService.nodeEnv === 'test' ? 'test' : 'src'}/schema.gql`,
+        `${this.utilService.nodeEnv === 'test' ? 'test' : 'src'}/graphql-schema.gql`,
       ),
       sortSchema: true,
+      cache: 'bounded',
+      formatError,
     };
   }
 

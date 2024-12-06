@@ -1,17 +1,12 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { Logger } from '@nestjs/common';
-import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
-  const logger = new Logger(bootstrap.name);
   const app = await NestFactory.create(AppModule);
 
-  app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalPipes(new ValidationPipe());
 
-  const PORT = process.env.PORT ?? 5000;
-  await app.listen(PORT);
-  logger.log(`Application started at port: ${PORT}`);
+  await app.listen(process.env.PORT ?? 5000);
 }
-
 bootstrap();
