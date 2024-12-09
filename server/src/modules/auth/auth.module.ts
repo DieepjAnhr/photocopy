@@ -9,7 +9,7 @@ import { UtilModule } from 'src/common/shared/services/util.module';
 import { AuthResolver } from './auth.resolver';
 import { AuthService } from './auth.service';
 
-import { UserModule } from '../users/user.module';
+import { UserModule } from '../user/user.module';
 import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { LocalStrategy } from './strategies/local.strategy';
@@ -44,4 +44,4 @@ import { LocalStrategy } from './strategies/local.strategy';
     JwtRefreshStrategy,
   ],
 })
-export class AuthModule {}
+export class AuthModule { }

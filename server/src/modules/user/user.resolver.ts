@@ -1,5 +1,13 @@
 import { NotFoundException } from '@nestjs/common';
-import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
+import {
+  Args,
+  Mutation,
+  Parent,
+  Query,
+  ResolveField,
+  Resolver,
+  Subscription,
+} from '@nestjs/graphql';
 import { PubSub } from 'graphql-subscriptions';
 import { User } from './entities/user.entity';
 import { UserService } from './user.service';
@@ -8,6 +16,7 @@ import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { UseAuthGuard } from 'src/common/decorators/auth-guard.decorator';
 import { CurrentUser } from 'src/common/decorators/user.decorator';
+import { Role } from '../role/entity/role.entity';
 
 const pubSub = new PubSub();
 
@@ -36,7 +45,7 @@ export class UserResolver {
     @CurrentUser() currentUser: User,
   ): Promise<User> {
     const user = await this.userService.create(data, currentUser);
-    pubSub.publish('userCreated', { userCreated: user });
+    pubSub.publish('user_created', { data: user, performer: currentUser });
     return user;
   }
 
@@ -48,23 +57,35 @@ export class UserResolver {
     @CurrentUser() currentUser: User,
   ): Promise<User> {
     const user = await this.userService.update(id, data, currentUser);
-    pubSub.publish('userUpdated', { userUpdated: user });
+    pubSub.publish('user_updated', { data: user, performer: currentUser });
     return user;
   }
 
   @Mutation(() => Boolean)
   @UseAuthGuard(['delete_user'])
   async removeUser(@Args('id') id: number, @CurrentUser() currentUser: User) {
-    return this.userService.remove(id, currentUser);
+    const remove = await this.userService.remove(id, currentUser);
+    pubSub.publish('user_updated', { data: { id }, performer: currentUser });
+    return remove;
   }
 
   @Subscription(() => User)
   userCreated() {
-    return pubSub.asyncIterableIterator('userCreated');
+    return pubSub.asyncIterableIterator('user_created');
   }
 
   @Subscription(() => User)
   userUpdated() {
-    return pubSub.asyncIterableIterator('userUpdated');
+    return pubSub.asyncIterableIterator('user_updated');
+  }
+
+  @Subscription(() => User)
+  userRemoved() {
+    return pubSub.asyncIterableIterator('user_removed');
+  }
+
+  @ResolveField(() => Role)
+  roles(@Parent() user: User) {
+    return user.roles;
   }
 }

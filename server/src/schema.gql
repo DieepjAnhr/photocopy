@@ -2,6 +2,11 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+input CreatePermissionInput {
+  label: String!
+  value: String!
+}
+
 input CreateUserInput {
   avatar: String
   birthday: DateTime
@@ -12,6 +17,7 @@ input CreateUserInput {
   phone: String!
   refresh_token: String
   role_id: ID
+  role_ids: [ID!]
   username: String!
 }
 
@@ -21,12 +27,15 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 scalar DateTime
 
 type Mutation {
+  createPermission(data: CreatePermissionInput!): Permission!
   createUser(data: CreateUserInput!): User!
   refreshAccessToken: TokenWithUser!
+  removePermission(id: Float!): Boolean!
   removeUser(id: Float!): Boolean!
   signIn(input: SignInInput!): TokenWithUser!
   signOut: Boolean!
   signUp(input: SignUpInput!): TokenWithUser!
+  updatePermission(data: UpdatePermissionInput!, id: Float!): Permission!
   updateUser(data: UpdateUserInput!, id: Float!): User!
 }
 
@@ -38,9 +47,42 @@ input Pagination {
   page: Int!
 }
 
+"""permission"""
+type Permission {
+  id: ID!
+  label: String!
+  value: String!
+}
+
+input PermissionArgs {
+  filter: PermissionFilter
+  pagination: Pagination
+}
+
+input PermissionFilter {
+  id: ID
+  label: String
+  value: String
+}
+
 type Query {
+  permission(args: PermissionArgs): Permission!
+  permissions(args: PermissionArgs): [Permission!]!
   user(args: UserArgs): User!
   users(args: UserArgs): [User!]!
+}
+
+"""role"""
+type Role {
+  created_at: DateTime!
+  creator_id: ID
+  delete_at: DateTime
+  deleter_id: ID
+  description: String
+  id: ID!
+  name: String!
+  updated_at: DateTime!
+  updater_id: ID
 }
 
 input SignInInput {
@@ -57,13 +99,22 @@ input SignUpInput {
 }
 
 type Subscription {
+  permissionCreated: Permission!
+  permissionRemoved: Permission!
+  permissionUpdated: Permission!
   userCreated: User!
+  userRemoved: User!
   userUpdated: User!
 }
 
 type TokenWithUser {
   access_token: String!
   user: User!
+}
+
+input UpdatePermissionInput {
+  label: String
+  value: String
 }
 
 input UpdateUserInput {
@@ -76,6 +127,7 @@ input UpdateUserInput {
   phone: String
   refresh_token: String
   role_id: ID
+  role_ids: [ID!]
   username: String
 }
 
@@ -94,7 +146,7 @@ type User {
   password: String!
   phone: String!
   refresh_token: String
-  role_id: ID!
+  roles: Role!
   updated_at: DateTime!
   updater_id: ID
   username: String!

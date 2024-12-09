@@ -1,7 +1,7 @@
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
-import { UserModule } from './modules/users/user.module';
+import { UserModule } from './modules/user/user.module';
 import { ConfigModule } from '@nestjs/config';
 import { getEnvPath } from './common/helpers/env.helper';
 import { envValidation } from './common/helpers/env.validation';
@@ -37,4 +37,4 @@ import { PermissionModule } from './modules/permission/permission.module';
     PermissionModule,
   ],
 })
-export class AppModule {}
+export class AppModule { }

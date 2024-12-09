@@ -1,7 +1,7 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { AbstractEntity } from 'src/common/abstracts/entity.abstract';
 import { Permission } from 'src/modules/permission/entity/permission.entity';
-import { User } from 'src/modules/users/entities/user.entity';
+import { User } from 'src/modules/user/entities/user.entity';
 import { Column, Entity, JoinTable, ManyToMany } from 'typeorm';
 
 @ObjectType({ description: 'role' })

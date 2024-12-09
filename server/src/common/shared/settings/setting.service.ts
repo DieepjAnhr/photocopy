@@ -6,7 +6,7 @@ import { ApolloDriverConfig } from '@nestjs/apollo';
 
 @Injectable()
 export class SettingService {
-  constructor(private readonly utilService: UtilService) {}
+  constructor(private readonly utilService: UtilService) { }
 
   get graphqlUseFactory():
     | Omit<ApolloDriverConfig, 'driver'>
@@ -22,6 +22,7 @@ export class SettingService {
   }
 
   get typeOrmFactory(): TypeOrmModuleOptions | Promise<TypeOrmModuleOptions> {
+    const isTestEnv = this.utilService.nodeEnv === 'test';
     return {
       type: 'postgres',
       host: this.utilService.getString('DB_HOST'),
@@ -30,13 +31,18 @@ export class SettingService {
       password: this.utilService.getString('DB_PASSWORD'),
       database: this.utilService.getString('DB_NAME'),
       schema: this.utilService.getString('DB_SCHEMA'),
-      entities:
-        this.utilService.nodeEnv === 'test'
-          ? [join(process.cwd(), 'src', '**', '*.entity.{ts,js}')]
-          : ['dist/**/*.entity.js'],
+      entities: isTestEnv
+        ? [join(process.cwd(), 'src', '**', '*.entity.{ts,js}')]
+        : ['dist/**/*.entity.js'],
+      migrations: [
+        join(
+          process.cwd(),
+          `${isTestEnv ? 'src' : 'dist'}/migrations/*.{ts,js}`,
+        ),
+      ],
       synchronize: this.utilService.nodeEnv !== 'production',
       autoLoadEntities: true,
-      dropSchema: this.utilService.nodeEnv === 'test',
+      dropSchema: isTestEnv,
       logging: true,
     };
   }

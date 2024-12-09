@@ -10,7 +10,7 @@ import { UpdatePermissionInput } from './dto/update-permission.input';
 export class PermissionService {
   constructor(
     /* 
-      Use @InjectRepository<Entity> here because Repository module does not import at UserModule
+      Use @InjectRepository<Entity> here because Repository module does not import at permissionModule
     */
     @InjectRepository(Permission)
     private readonly permissionRepository: Repository<Permission>,
@@ -18,9 +18,9 @@ export class PermissionService {
 
   async getOne(args: PermissionArgs): Promise<Permission> {
     const where = args?.filter ? { where: args.filter } : {};
-    const user = await this.permissionRepository.findOne(where);
-    if (!user) throw new NotFoundException('User not found!');
-    return user;
+    const permission = await this.permissionRepository.findOne(where);
+    if (!permission) throw new NotFoundException('Permission not found!');
+    return permission;
   }
 
   async getMany(args: PermissionArgs): Promise<Permission[]> {

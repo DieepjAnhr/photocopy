@@ -60,16 +60,3 @@ elif [ "$1" == "get-jwt-key" ]; then
 fi
 
 # https://github.com/Ho-s/NestJS-GraphQL-TypeORM-PostgresQL/tree/main
-
-# @Field(() => Role)
-# @ManyToOne(() => Role, (role) => role.users, { eager: true })
-# @JoinColumn({ name: 'role_id' })
-# role: Role;
-
-# GraphQLModule.forRootAsync<ApolloDriverConfig>({
-  # driver: ApolloDriver,
-  # imports: [SettingModule],
-  # inject: [SettingService],
-  # useFactory: (settingService: SettingService) =>
-    # settingService.graphqlUseFactory,
-# }),

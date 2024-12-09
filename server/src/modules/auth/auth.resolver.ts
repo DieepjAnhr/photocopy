@@ -5,8 +5,8 @@ import { CurrentUser } from 'src/common/decorators/user.decorator';
 
 import { AuthService } from './auth.service';
 import { TokenWithUser } from './entities/auth.entity';
-import { UserService } from '../users/user.service';
-import { User } from '../users/entities/user.entity';
+import { UserService } from '../user/user.service';
+import { User } from '../user/entities/user.entity';
 import { SignInInput, SignUpInput } from './inputs/auth.input';
 import { SignInGuard } from 'src/common/guards/graphql-signin.guard';
 import { RefreshGuard } from 'src/common/guards/graphql-refresh.guard';
@@ -16,7 +16,7 @@ export class AuthResolver {
   constructor(
     private readonly authService: AuthService,
     private readonly userService: UserService,
-  ) {}
+  ) { }
 
   @Mutation(() => TokenWithUser)
   @UseGuards(SignInGuard)

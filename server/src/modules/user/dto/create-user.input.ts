@@ -57,4 +57,8 @@ export class CreateUserInput {
   @IsOptional()
   @IsString()
   refresh_token?: string;
+
+  @Field(() => [ID], { nullable: true })
+  @IsOptional()
+  role_ids?: number[];
 }

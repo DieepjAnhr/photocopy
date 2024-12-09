@@ -2,11 +2,11 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
-import { UserService } from '../users/user.service';
+import { UserService } from '../user/user.service';
 import { ConfigService } from '@nestjs/config';
 import { EnvironmentVariables } from 'src/common/helpers/env.validation';
 import { UtilService } from 'src/common/shared/services/util.service';
-import { User } from '../users/entities/user.entity';
+import { User } from '../user/entities/user.entity';
 import { SignInInput, SignUpInput } from './inputs/auth.input';
 import { TokenWithUser } from './entities/auth.entity';
 
@@ -17,7 +17,7 @@ export class AuthService {
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
     private readonly utilService: UtilService,
-  ) {}
+  ) { }
 
   private async generateRefreshToken(userId: number) {
     const refreshToken = this.jwtService.sign(
@@ -53,7 +53,7 @@ export class AuthService {
   generateAccessToken(user: User, refreshToken: string) {
     return this.jwtService.sign(
       {
-        ...this.utilService.pick(user, ['id', 'role_id']),
+        ...this.utilService.pick(user, ['id']),
         refresh_token: refreshToken,
       },
       {

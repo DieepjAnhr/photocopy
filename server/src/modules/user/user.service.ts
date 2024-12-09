@@ -3,8 +3,9 @@ import { CreateUserInput } from './dto/create-user.input';
 import { User } from './entities/user.entity';
 import { UserArgs } from './dto/user.args';
 import { UpdateUserInput } from './dto/update-user.input';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Role } from '../role/entity/role.entity';
 
 @Injectable()
 export class UserService {
@@ -14,6 +15,8 @@ export class UserService {
     */
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(Role)
+    private readonly roleRepository: Repository<Role>,
   ) {}
 
   async getOne(args: UserArgs): Promise<User> {
@@ -29,10 +32,19 @@ export class UserService {
   }
 
   async create(data: CreateUserInput, perfomer?: User): Promise<User> {
+    const roles = await this.roleRepository.find({
+      where: { id: In(data.role_ids) },
+    });
+
+    if (roles.length !== data.role_ids.length) {
+      throw new Error('Some roles were not found');
+    }
+
     const user = this.userRepository.create({
       ...data,
       creator_id: perfomer?.id,
       updater_id: perfomer?.id,
+      roles,
     });
     return await this.userRepository.save(user);
   }
