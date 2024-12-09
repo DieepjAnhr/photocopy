@@ -2,16 +2,19 @@ import { Field, ID, InputType } from '@nestjs/graphql';
 import { AbstractArgs } from 'src/common/abstracts/args.abstract';
 
 @InputType()
-export class UserFilter {
+export class PermissionFilter {
   @Field(() => ID, { nullable: true })
   id?: number;
 
   @Field(() => String, { nullable: true })
-  username?: string;
+  label?: string;
+
+  @Field(() => String, { nullable: true })
+  value?: string;
 }
 
 @InputType()
-export class UserArgs extends AbstractArgs {
-  @Field(() => UserFilter, { nullable: true })
-  filter?: UserFilter;
+export class PermissionArgs extends AbstractArgs {
+  @Field(() => PermissionFilter, { nullable: true })
+  filter?: PermissionFilter;
 }

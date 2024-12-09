@@ -4,31 +4,30 @@
 
 input CreateUserInput {
   avatar: String
-  birthday: Date
+  birthday: DateTime
   email: String!
   first_name: String
   last_name: String!
   password: String!
   phone: String!
   refresh_token: String
+  role_id: ID
   username: String!
 }
 
-"""Date custom scalar type"""
-scalar Date
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
 
 type Mutation {
-  addRecipe(newRecipeData: NewRecipeInput!): Recipe!
   createUser(data: CreateUserInput!): User!
-  removeRecipe(id: String!): Boolean!
-  removeUser(id: String!): Boolean!
-  updateUser(data: UpdateUserInput!): User!
-}
-
-input NewRecipeInput {
-  description: String
-  ingredients: [String!]!
-  title: String!
+  refreshAccessToken: TokenWithUser!
+  removeUser(id: Float!): Boolean!
+  signIn(input: SignInInput!): TokenWithUser!
+  signOut: Boolean!
+  signUp(input: SignUpInput!): TokenWithUser!
+  updateUser(data: UpdateUserInput!, id: Float!): User!
 }
 
 input Pagination {
@@ -40,46 +39,53 @@ input Pagination {
 }
 
 type Query {
-  recipe(id: String!): Recipe!
-  recipes(skip: Int! = 0, take: Int! = 25): [Recipe!]!
-  user(id: Float!): User!
-  users(args: UserArgs!): [User!]!
+  user(args: UserArgs): User!
+  users(args: UserArgs): [User!]!
 }
 
-"""recipe"""
-type Recipe {
-  creationDate: Date!
-  description: String
-  id: ID!
-  ingredients: [String!]!
+input SignInInput {
+  password: String!
+  username: String!
+}
+
+input SignUpInput {
+  email: String!
+  last_name: String!
+  password: String!
+  phone: String!
+  username: String!
 }
 
 type Subscription {
-  recipeAdded: Recipe!
   userCreated: User!
   userUpdated: User!
 }
 
+type TokenWithUser {
+  access_token: String!
+  user: User!
+}
+
 input UpdateUserInput {
   avatar: String
-  birthday: Date
+  birthday: DateTime
   email: String
   first_name: String
-  id: ID!
   last_name: String
   password: String
   phone: String
   refresh_token: String
+  role_id: ID
   username: String
 }
 
 """user"""
 type User {
   avatar: String
-  birthday: Date
-  created_at: Date!
+  birthday: DateTime
+  created_at: DateTime!
   creator_id: ID
-  delete_at: Date
+  delete_at: DateTime
   deleter_id: ID
   email: String!
   first_name: String
@@ -88,12 +94,18 @@ type User {
   password: String!
   phone: String!
   refresh_token: String
-  updated_at: Date!
+  role_id: ID!
+  updated_at: DateTime!
   updater_id: ID
   username: String!
 }
 
 input UserArgs {
-  id: ID
+  filter: UserFilter
   pagination: Pagination
+}
+
+input UserFilter {
+  id: ID
+  username: String
 }
