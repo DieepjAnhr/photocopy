@@ -14,7 +14,7 @@ const pubSub = new PubSub();
 
 @Resolver(() => Permission)
 export class PermissionResolver {
-  constructor(private readonly permissionService: PermissionService) { }
+  constructor(private readonly permissionService: PermissionService) {}
 
   @Query(() => Permission)
   async permission(

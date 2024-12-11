@@ -18,7 +18,7 @@ export class RoleService {
     private readonly roleRepository: Repository<Role>,
     @InjectRepository(Permission)
     private readonly permissionRepository: Repository<Permission>,
-  ) { }
+  ) {}
 
   async getOne(args: RoleArgs): Promise<Role> {
     const where = args?.filter ? { where: args.filter } : {};

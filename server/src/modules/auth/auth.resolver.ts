@@ -16,7 +16,7 @@ export class AuthResolver {
   constructor(
     private readonly authService: AuthService,
     private readonly userService: UserService,
-  ) { }
+  ) {}
 
   @Mutation(() => TokenWithUser)
   @UseGuards(SignInGuard)

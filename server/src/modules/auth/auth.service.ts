@@ -17,7 +17,7 @@ export class AuthService {
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
     private readonly utilService: UtilService,
-  ) { }
+  ) {}
 
   private async generateRefreshToken(userId: number) {
     const refreshToken = this.jwtService.sign(

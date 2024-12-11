@@ -37,4 +37,4 @@ import { PermissionModule } from './modules/permission/permission.module';
     PermissionModule,
   ],
 })
-export class AppModule { }
+export class AppModule {}

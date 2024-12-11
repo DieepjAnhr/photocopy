@@ -3,15 +3,17 @@ import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { UtilService } from '../services/util.service';
 import { join } from 'path';
 import { ApolloDriverConfig } from '@nestjs/apollo';
+import { JSONResolver } from 'graphql-scalars';
 
 @Injectable()
 export class SettingService {
-  constructor(private readonly utilService: UtilService) { }
+  constructor(private readonly utilService: UtilService) {}
 
   get graphqlUseFactory():
     | Omit<ApolloDriverConfig, 'driver'>
     | (Promise<Omit<ApolloDriverConfig, 'driver'>> & { uploads: boolean }) {
     return {
+      resolvers: { JSON: JSONResolver },
       uploads: false,
       autoSchemaFile: join(
         process.cwd(),

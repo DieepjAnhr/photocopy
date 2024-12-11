@@ -2,7 +2,7 @@ import { Field, InputType, Int } from '@nestjs/graphql';
 import { IsOptional, IsInt, Min } from 'class-validator';
 
 @InputType()
-export class Pagination {
+export class IPagination {
   @Field(() => Int, { description: 'Page number starting from 1' })
   @IsInt()
   @Min(1)
@@ -16,7 +16,7 @@ export class Pagination {
 
 @InputType()
 export class AbstractArgs {
-  @Field(() => Pagination, { nullable: true })
+  @Field(() => IPagination, { nullable: true })
   @IsOptional()
-  pagination?: Pagination;
+  pagination?: IPagination;
 }

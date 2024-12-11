@@ -44,4 +44,4 @@ import { LocalStrategy } from './strategies/local.strategy';
     JwtRefreshStrategy,
   ],
 })
-export class AuthModule { }
+export class AuthModule {}
