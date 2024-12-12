@@ -26,7 +26,7 @@ const isPlainObject = (value: unknown): value is Record<string, unknown> => {
 };
 
 const merge = <T, K>(prev: T, next: K): T & K => {
-  return { ...prev, ...next };
+  return Object.assign({}, prev, next);
 };
 
 export function set<T, K>(object: T, path: string, value: K): T & K {

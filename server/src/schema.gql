@@ -158,12 +158,6 @@ type User {
 }
 
 input UserArgs {
-  filter: UserFilter
+  filter: JSON
   pagination: IPagination
-}
-
-input UserFilter {
-  id: ID
-  test: JSON
-  username: String
 }

@@ -6,6 +6,7 @@ import { UpdateUserInput } from './dto/update-user.input';
 import { In, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Role } from '../role/entity/role.entity';
+import { processWhere } from 'src/common/graphql/process-where';
 
 @Injectable()
 export class UserService {
@@ -17,7 +18,11 @@ export class UserService {
     private readonly userRepository: Repository<User>,
     @InjectRepository(Role)
     private readonly roleRepository: Repository<Role>,
-  ) {}
+  ) { }
+
+  query(filter: Record<string, any>) {
+    return { where: filter }
+  }
 
   async getOne(args: UserArgs): Promise<User> {
     const where = args?.filter ? { where: args.filter } : {};
@@ -27,8 +32,7 @@ export class UserService {
   }
 
   async getMany(args: UserArgs): Promise<User[]> {
-    const where = args?.filter ? { where: args.filter } : {};
-    return await this.userRepository.find(where);
+    return await this.userRepository.find(this.query(args.filter));
   }
 
   async create(data: CreateUserInput, perfomer?: User): Promise<User> {
