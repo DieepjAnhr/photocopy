@@ -1,4 +1,4 @@
-import { IPagination } from 'src/common/abstracts/args.abstract';
+import { IPagination } from 'src/common/graphql/inputs/get-many.input';
 import {
   FindOptionsOrder,
   FindOptionsRelations,
@@ -92,12 +92,12 @@ export type OperatorType<T> =
 
 type ExtendedFindOptionsWhere<Entity> = {
   [P in keyof Entity]?: P extends 'toString'
-    ? unknown
-    :
-        | FindOptionsWhereProperty<NonNullable<Entity[P]>>
-        | OperatorType<Entity>
-        | Entity[P]
-        | ExtendedFindOptionsWhere<Entity>;
+  ? unknown
+  :
+  | FindOptionsWhereProperty<NonNullable<Entity[P]>>
+  | OperatorType<Entity>
+  | Entity[P]
+  | ExtendedFindOptionsWhere<Entity>;
 };
 export type IWhere<T> =
   | ExtendedFindOptionsWhere<T>

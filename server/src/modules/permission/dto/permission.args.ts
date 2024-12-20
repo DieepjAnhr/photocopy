@@ -1,5 +1,5 @@
 import { Field, ID, InputType } from '@nestjs/graphql';
-import { AbstractArgs } from 'src/common/abstracts/args.abstract';
+import { AbstractArgs } from 'src/common/graphql/inputs/get-many.input';
 
 @InputType()
 export class PermissionFilter {

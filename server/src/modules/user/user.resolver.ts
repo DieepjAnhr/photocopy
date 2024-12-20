@@ -11,21 +11,21 @@ import {
 import { PubSub } from 'graphql-subscriptions';
 import { User } from './entities/user.entity';
 import { UserService } from './user.service';
-import { UserArgs } from './dto/user.args';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { UseAuthGuard } from 'src/common/decorators/auth-guard.decorator';
 import { CurrentUser } from 'src/common/decorators/user.decorator';
 import { Role } from '../role/entity/role.entity';
+import { GetManyInput, GetOneInput } from 'src/common/graphql/inputs/get-many.input';
 
 const pubSub = new PubSub();
 
 @Resolver(() => User)
 export class UserResolver {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
   @Query(() => User)
-  async user(@Args('args', { nullable: true }) args: UserArgs): Promise<User> {
+  async user(@Args('args', { nullable: true }) args: GetOneInput<User>): Promise<User> {
     const user = await this.userService.getOne(args);
     if (!user) {
       throw new NotFoundException('User not found!');
@@ -34,7 +34,7 @@ export class UserResolver {
   }
 
   @Query(() => [User])
-  users(@Args('args', { nullable: true }) args: UserArgs): Promise<User[]> {
+  users(@Args('args', { nullable: true }) args: GetManyInput<User>): Promise<User[]> {
     return this.userService.getMany(args);
   }
 
