@@ -1,4 +1,4 @@
-import { Field, ID, InputType } from '@nestjs/graphql';
+import { Field, InputType } from '@nestjs/graphql';
 import {
   IsDate,
   IsEmail,
@@ -19,10 +19,6 @@ export class CreateUserInput {
   @IsString({ message: 'Password must be a string!' })
   @MinLength(6, { message: 'Password must be at least 6 characters long!' })
   password: string;
-
-  @Field(() => ID, { nullable: true })
-  @IsOptional()
-  role_id?: number;
 
   @Field(() => String, { nullable: true })
   @IsOptional()
@@ -58,7 +54,10 @@ export class CreateUserInput {
   @IsString()
   refresh_token?: string;
 
-  @Field(() => [ID], { nullable: true })
+  @Field(() => String, {
+    nullable: true,
+    description: 'role ids split by comma (),',
+  })
   @IsOptional()
-  role_ids?: number[];
+  role_ids?: string;
 }

@@ -22,7 +22,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   async validate(payload: { id: number }, done: VerifiedCallback) {
     try {
       const userData = await this.userService.getOne({
-        filter: { id: payload.id },
+        where: { id: payload.id },
       });
 
       done(null, userData);

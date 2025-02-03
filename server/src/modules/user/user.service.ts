@@ -2,47 +2,40 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserInput } from './dto/create-user.input';
 import { User } from './entities/user.entity';
 import { UpdateUserInput } from './dto/update-user.input';
-import { In, Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Role } from '../role/entity/role.entity';
-import { GetManyQuery, GetOneQuery } from 'src/common/shared/types/orm.type';
+import { UserRepository } from './user.repository';
+import {
+  GetManyInput,
+  GetOneInput,
+} from 'src/common/graphql/inputs/query.input';
+import { RoleRepository } from '../role/role.repository';
 
 @Injectable()
 export class UserService {
   constructor(
-    /* 
-      Use @InjectRepository<Entity> here because Repository module does not import at UserModule
-    */
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
-    @InjectRepository(Role)
-    private readonly roleRepository: Repository<Role>,
-  ) { }
+    private readonly userRepository: UserRepository,
+    private readonly roleRepository: RoleRepository,
+  ) {}
 
-  async getOne(args: GetOneQuery<User>): Promise<User> {
-    const where = args.where;
-    const user = await this.userRepository.findOne({ where: { id: 1 } });
-    if (!user) throw new NotFoundException('User not found!');
+  async getOne(args: GetOneInput<User>): Promise<User> {
+    const user = await this.userRepository.getOne(args?.where);
     return user;
   }
 
-  async getMany(args: GetManyQuery<User>): Promise<User[]> {
-    return await this.userRepository.find();
+  async getMany(args: GetManyInput<User>) {
+    return await this.userRepository.getMany(args?.where);
   }
 
-  async create(data: CreateUserInput, perfomer?: User): Promise<User> {
-    const roles = await this.roleRepository.find({
-      where: { id: In(data.role_ids) },
-    });
+  async create(data: CreateUserInput, performBy?: User): Promise<User> {
+    const roleIds = data?.role_ids
+      ? data.role_ids.split(',').map((elm) => Number(elm.trim()))
+      : [];
 
-    if (roles.length !== data.role_ids.length) {
-      throw new Error('Some roles were not found');
-    }
+    const roles = await this.roleRepository.getMany({ id: { $in: roleIds } });
 
     const user = this.userRepository.create({
       ...data,
-      creator_id: perfomer?.id,
-      updater_id: perfomer?.id,
+      created_by: performBy?.id,
+      updated_by: performBy?.id,
       roles,
     });
     return await this.userRepository.save(user);
@@ -51,21 +44,26 @@ export class UserService {
   async update(
     id: number,
     data: UpdateUserInput,
-    perfomer?: User,
+    performBy?: User,
   ): Promise<User> {
-    await this.userRepository.update(
-      { id },
-      { ...data, updater_id: perfomer?.id },
-    );
-    const user = await this.userRepository.findOneBy({ id });
-    return user;
+    const roleIds = data?.role_ids
+      ? data.role_ids.split(',').map((elm) => Number(elm.trim()))
+      : [];
+
+    const roles = await this.roleRepository.getMany({ id: { $in: roleIds } });
+
+    const user = await this.userRepository.preload({
+      id,
+      ...data,
+      updated_by: performBy?.id,
+      roles,
+    });
+    if (!user) throw new NotFoundException('User not found!');
+    return await this.userRepository.save(user);
   }
 
-  async remove(id: number, perfomer?: User): Promise<boolean> {
-    const user = await this.userRepository.update(
-      { id },
-      { deleter_id: perfomer?.id },
-    );
+  async remove(id: number, performBy?: User): Promise<boolean> {
+    await this.userRepository.update({ id }, { deleted_by: performBy?.id });
     await this.userRepository.softDelete({ id });
     return true;
   }

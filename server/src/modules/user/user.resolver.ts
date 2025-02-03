@@ -15,17 +15,22 @@ import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { UseAuthGuard } from 'src/common/decorators/auth-guard.decorator';
 import { CurrentUser } from 'src/common/decorators/user.decorator';
-import { Role } from '../role/entity/role.entity';
-import { GetManyInput, GetOneInput } from 'src/common/graphql/inputs/get-many.input';
+import { Role } from '../role/entities/role.entity';
+import {
+  GetManyInput,
+  GetOneInput,
+} from 'src/common/graphql/inputs/query.input';
 
 const pubSub = new PubSub();
 
 @Resolver(() => User)
 export class UserResolver {
-  constructor(private readonly userService: UserService) { }
+  constructor(private readonly userService: UserService) {}
 
   @Query(() => User)
-  async user(@Args('args', { nullable: true }) args: GetOneInput<User>): Promise<User> {
+  async user(
+    @Args('args', { nullable: true }) args: GetOneInput<User>,
+  ): Promise<User> {
     const user = await this.userService.getOne(args);
     if (!user) {
       throw new NotFoundException('User not found!');
@@ -34,7 +39,9 @@ export class UserResolver {
   }
 
   @Query(() => [User])
-  users(@Args('args', { nullable: true }) args: GetManyInput<User>): Promise<User[]> {
+  async users(
+    @Args('args', { nullable: true }) args: GetManyInput<User>,
+  ): Promise<User[]> {
     return this.userService.getMany(args);
   }
 
@@ -45,7 +52,7 @@ export class UserResolver {
     @CurrentUser() currentUser: User,
   ): Promise<User> {
     const user = await this.userService.create(data, currentUser);
-    pubSub.publish('user_created', { data: user, performer: currentUser });
+    pubSub.publish('user_created', { data: user, performBy: currentUser });
     return user;
   }
 
@@ -57,7 +64,7 @@ export class UserResolver {
     @CurrentUser() currentUser: User,
   ): Promise<User> {
     const user = await this.userService.update(id, data, currentUser);
-    pubSub.publish('user_updated', { data: user, performer: currentUser });
+    pubSub.publish('user_updated', { data: user, performBy: currentUser });
     return user;
   }
 
@@ -65,7 +72,7 @@ export class UserResolver {
   @UseAuthGuard(['delete_user'])
   async removeUser(@Args('id') id: number, @CurrentUser() currentUser: User) {
     const remove = await this.userService.remove(id, currentUser);
-    pubSub.publish('user_updated', { data: { id }, performer: currentUser });
+    pubSub.publish('user_deleted', { data: { id }, performBy: currentUser });
     return remove;
   }
 
@@ -84,7 +91,7 @@ export class UserResolver {
     return pubSub.asyncIterableIterator('user_removed');
   }
 
-  @ResolveField(() => Role)
+  @ResolveField(() => [Role])
   roles(@Parent() user: User) {
     return user.roles;
   }

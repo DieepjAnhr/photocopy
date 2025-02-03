@@ -1,7 +1,6 @@
 import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
-import { Permission } from './entity/permission.entity';
+import { Permission } from './entities/permission.entity';
 import { PermissionService } from './permission.service';
-import { PermissionArgs } from './dto/permission.args';
 import { NotFoundException } from '@nestjs/common';
 import { UseAuthGuard } from 'src/common/decorators/auth-guard.decorator';
 import { CreatePermissionInput } from './dto/create-permission.input';
@@ -9,6 +8,10 @@ import { CurrentUser } from 'src/common/decorators/user.decorator';
 import { PubSub } from 'graphql-subscriptions';
 import { UpdatePermissionInput } from './dto/update-permission.input';
 import { User } from '../user/entities/user.entity';
+import {
+  GetManyInput,
+  GetOneInput,
+} from 'src/common/graphql/inputs/query.input';
 
 const pubSub = new PubSub();
 
@@ -18,7 +21,7 @@ export class PermissionResolver {
 
   @Query(() => Permission)
   async permission(
-    @Args('args', { nullable: true }) args: PermissionArgs,
+    @Args('args', { nullable: true }) args: GetOneInput<Permission>,
   ): Promise<Permission> {
     const permission = await this.permissionService.getOne(args);
     if (!permission) {
@@ -29,7 +32,7 @@ export class PermissionResolver {
 
   @Query(() => [Permission])
   permissions(
-    @Args('args', { nullable: true }) args: PermissionArgs,
+    @Args('args', { nullable: true }) args: GetManyInput<Permission>,
   ): Promise<Permission[]> {
     return this.permissionService.getMany(args);
   }

@@ -7,6 +7,14 @@ input CreatePermissionInput {
   value: String!
 }
 
+input CreateRoleInput {
+  description: String
+  name: String!
+
+  """permission ids split by comma (),"""
+  permission_ids: String
+}
+
 input CreateUserInput {
   avatar: String
   birthday: DateTime
@@ -16,8 +24,9 @@ input CreateUserInput {
   password: String!
   phone: String!
   refresh_token: String
-  role_id: ID
-  role_ids: [ID!]
+
+  """role ids split by comma (),"""
+  role_ids: String
   username: String!
 }
 
@@ -26,12 +35,16 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
-input IPagination {
-  """Number of items per page"""
-  limit: Int!
+input GetManyInput {
+  limit: Int = 50
+  offset: Int = 0
+  orderBy: JSON
+  page: Int = 1
+  where: JSON = "{}"
+}
 
-  """Page number starting from 1"""
-  page: Int!
+input GetOneInput {
+  where: JSON = "{}"
 }
 
 """
@@ -41,14 +54,17 @@ scalar JSON @specifiedBy(url: "http://www.ecma-international.org/publications/fi
 
 type Mutation {
   createPermission(data: CreatePermissionInput!): Permission!
+  createRole(data: CreateRoleInput!): Role!
   createUser(data: CreateUserInput!): User!
   refreshAccessToken: TokenWithUser!
   removePermission(id: Float!): Boolean!
+  removeRole(id: Float!): Boolean!
   removeUser(id: Float!): Boolean!
   signIn(input: SignInInput!): TokenWithUser!
   signOut: Boolean!
   signUp(input: SignUpInput!): TokenWithUser!
   updatePermission(data: UpdatePermissionInput!, id: Float!): Permission!
+  updateRole(data: UpdateRoleInput!, id: Float!): Role!
   updateUser(data: UpdateUserInput!, id: Float!): User!
 }
 
@@ -59,35 +75,27 @@ type Permission {
   value: String!
 }
 
-input PermissionArgs {
-  filter: PermissionFilter
-  pagination: IPagination
-}
-
-input PermissionFilter {
-  id: ID
-  label: String
-  value: String
-}
-
 type Query {
-  permission(args: PermissionArgs): Permission!
-  permissions(args: PermissionArgs): [Permission!]!
-  user(args: UserArgs): User!
-  users(args: UserArgs): [User!]!
+  permission(args: GetOneInput): Permission!
+  permissions(args: GetManyInput): [Permission!]!
+  role(args: GetOneInput): Role!
+  roles(args: GetManyInput): [Role!]!
+  user(args: GetOneInput): User!
+  users(args: GetManyInput): [User!]!
 }
 
 """role"""
 type Role {
   created_at: DateTime!
-  creator_id: ID
-  delete_at: DateTime
-  deleter_id: ID
+  created_by: ID
+  deleted_at: DateTime
+  deleted_by: ID
   description: String
   id: ID!
   name: String!
+  permissions: [Permission!]!
   updated_at: DateTime!
-  updater_id: ID
+  updated_by: ID
 }
 
 input SignInInput {
@@ -107,6 +115,9 @@ type Subscription {
   permissionCreated: Permission!
   permissionRemoved: Permission!
   permissionUpdated: Permission!
+  roleCreated: Role!
+  roleRemoved: Role!
+  roleUpdated: Role!
   userCreated: User!
   userRemoved: User!
   userUpdated: User!
@@ -122,6 +133,14 @@ input UpdatePermissionInput {
   value: String
 }
 
+input UpdateRoleInput {
+  description: String
+  name: String
+
+  """permission ids split by comma (),"""
+  permission_ids: String
+}
+
 input UpdateUserInput {
   avatar: String
   birthday: DateTime
@@ -131,8 +150,9 @@ input UpdateUserInput {
   password: String
   phone: String
   refresh_token: String
-  role_id: ID
-  role_ids: [ID!]
+
+  """role ids split by comma (),"""
+  role_ids: String
   username: String
 }
 
@@ -141,9 +161,9 @@ type User {
   avatar: String
   birthday: DateTime
   created_at: DateTime!
-  creator_id: ID
-  delete_at: DateTime
-  deleter_id: ID
+  created_by: ID
+  deleted_at: DateTime
+  deleted_by: ID
   email: String!
   first_name: String
   id: ID!
@@ -151,13 +171,8 @@ type User {
   password: String!
   phone: String!
   refresh_token: String
-  roles: Role!
+  roles: [Role!]!
   updated_at: DateTime!
-  updater_id: ID
+  updated_by: ID
   username: String!
-}
-
-input UserArgs {
-  filter: JSON
-  pagination: IPagination
 }

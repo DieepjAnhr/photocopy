@@ -1,73 +1,52 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Role } from './entity/role.entity';
-import { In, Repository } from 'typeorm';
-import { RoleArgs } from './dto/role.args';
+import { Role } from './entities/role.entity';
 import { CreateRoleInput } from './dto/create-role.input';
 import { User } from '../user/entities/user.entity';
-import { UpdateUserInput } from '../user/dto/update-user.input';
-import { Permission } from '../permission/entity/permission.entity';
+import { UpdateRoleInput } from './dto/update-role.input';
+import { RoleRepository } from './role.repository';
+import {
+  GetManyInput,
+  GetOneInput,
+} from 'src/common/graphql/inputs/query.input';
 
 @Injectable()
 export class RoleService {
-  constructor(
-    /* 
-          Use @InjectRepository<Entity> here because Repository module does not import at UserModule
-        */
-    @InjectRepository(Role)
-    private readonly roleRepository: Repository<Role>,
-    @InjectRepository(Permission)
-    private readonly permissionRepository: Repository<Permission>,
-  ) {}
+  constructor(private readonly roleRepository: RoleRepository) {}
 
-  async getOne(args: RoleArgs): Promise<Role> {
-    const where = args?.filter ? { where: args.filter } : {};
-    const role = await this.roleRepository.findOne(where);
-    if (!role) throw new NotFoundException('Role not found!');
+  async getOne(args: GetOneInput<Role>): Promise<Role> {
+    const role = await this.roleRepository.getOne(args?.where);
     return role;
   }
 
-  async getMany(args: RoleArgs): Promise<Role[]> {
-    const where = args?.filter ? { where: args.filter } : {};
-    return await this.roleRepository.find(where);
+  async getMany(args: GetManyInput<Role>): Promise<Role[]> {
+    return await this.roleRepository.getMany(args?.where);
   }
 
-  async create(data: CreateRoleInput, perfomer?: User): Promise<Role> {
-    const permissions = await this.permissionRepository.find({
-      where: { id: In(data.permission_ids) },
-    });
-
-    if (permissions.length !== data.permission_ids.length) {
-      throw new Error('Some permissions were not found');
-    }
-
+  async create(data: CreateRoleInput, performBy?: User): Promise<Role> {
     const role = this.roleRepository.create({
       ...data,
-      creator_id: perfomer?.id,
-      updater_id: perfomer?.id,
-      permissions,
+      created_by: performBy?.id,
+      updated_by: performBy?.id,
     });
     return await this.roleRepository.save(role);
   }
 
   async update(
     id: number,
-    data: UpdateUserInput,
-    perfomer?: User,
+    data: UpdateRoleInput,
+    performBy?: User,
   ): Promise<Role> {
-    await this.roleRepository.update(
-      { id },
-      { ...data, updater_id: perfomer?.id },
-    );
-    const role = await this.roleRepository.findOneBy({ id });
-    return role;
+    const role = await this.roleRepository.preload({
+      id,
+      ...data,
+      updated_by: performBy?.id,
+    });
+    if (!role) throw new NotFoundException('Role not found!');
+    return await this.roleRepository.save(role);
   }
 
-  async remove(id: number, perfomer?: User): Promise<boolean> {
-    const role = await this.roleRepository.update(
-      { id },
-      { deleter_id: perfomer?.id },
-    );
+  async remove(id: number, performBy?: User): Promise<boolean> {
+    await this.roleRepository.update({ id }, { deleted_by: performBy?.id });
     await this.roleRepository.softDelete({ id });
     return true;
   }

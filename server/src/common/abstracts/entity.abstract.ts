@@ -18,7 +18,7 @@ export abstract class AbstractEntity extends BaseEntity {
 
   @Field(() => ID, { nullable: true })
   @Column({ nullable: true })
-  creator_id?: number;
+  created_by?: number;
 
   @Field(() => Date)
   @CreateDateColumn()
@@ -26,7 +26,7 @@ export abstract class AbstractEntity extends BaseEntity {
 
   @Field(() => ID, { nullable: true })
   @Column({ nullable: true })
-  updater_id?: number;
+  updated_by?: number;
 
   @Field(() => Date)
   @UpdateDateColumn()
@@ -34,9 +34,9 @@ export abstract class AbstractEntity extends BaseEntity {
 
   @Field(() => ID, { nullable: true })
   @Column({ nullable: true })
-  deleter_id?: number;
+  deleted_by?: number;
 
   @Field(() => Date, { nullable: true })
   @DeleteDateColumn({ nullable: true })
-  delete_at: Date;
+  deleted_at: Date;
 }

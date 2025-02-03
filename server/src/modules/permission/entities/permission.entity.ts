@@ -1,5 +1,5 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
-import { Role } from 'src/modules/role/entity/role.entity';
+import { Role } from 'src/modules/role/entities/role.entity';
 import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @ObjectType({ description: 'permission' })

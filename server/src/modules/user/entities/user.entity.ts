@@ -1,7 +1,7 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
 import * as bcrypt from 'bcrypt';
 import { AbstractEntity } from 'src/common/abstracts/entity.abstract';
-import { Role } from 'src/modules/role/entity/role.entity';
+import { Role } from 'src/modules/role/entities/role.entity';
 import {
   BeforeInsert,
   BeforeUpdate,
@@ -64,14 +64,11 @@ export class User extends AbstractEntity {
   @BeforeUpdate()
   async beforeInsertOrUpdate() {
     try {
-      console.log('Before Insert/Update Hook Triggered'); // Debug log
       if (this.password && !this.password.startsWith('$2')) {
-        console.log('Hashing password:', this.password); // Debug log
         this.password = await bcrypt.hash(this.password, BCRYPT_HASH_ROUNDS);
-        console.log('Password hashed successfully:', this.password); // Debug log
       }
     } catch (error) {
-      console.error('Error in BeforeInsert/BeforeUpdate:', error);
+      console.error('Error in BeforeInsert/BeforeUpdate user:', error);
       throw error;
     }
   }

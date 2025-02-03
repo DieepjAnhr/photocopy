@@ -1,44 +1,35 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Permission } from './entity/permission.entity';
-import { Repository } from 'typeorm';
-import { PermissionArgs } from './dto/permission.args';
-import { CreatePermissionInput } from './dto/create-permission.input';
+import { Permission } from './entities/permission.entity';
+import { CreatePermissionInput } from './dto//create-permission.input';
+import { PermissionRepository } from './permission.repository';
+import {
+  GetManyInput,
+  GetOneInput,
+} from 'src/common/graphql/inputs/query.input';
 import { UpdatePermissionInput } from './dto/update-permission.input';
 
 @Injectable()
 export class PermissionService {
-  constructor(
-    /* 
-      Use @InjectRepository<Entity> here because Repository module does not import at permissionModule
-    */
-    @InjectRepository(Permission)
-    private readonly permissionRepository: Repository<Permission>,
-  ) {}
+  constructor(private readonly permissionRepository: PermissionRepository) {}
 
-  async getOne(args: PermissionArgs): Promise<Permission> {
-    const where = args?.filter ? { where: args.filter } : {};
-    const permission = await this.permissionRepository.findOne(where);
-    if (!permission) throw new NotFoundException('Permission not found!');
-    return permission;
+  async getOne(args: GetOneInput<Permission>): Promise<Permission> {
+    const role = await this.permissionRepository.getOne(args.where);
+    return role;
   }
 
-  async getMany(args: PermissionArgs): Promise<Permission[]> {
-    const where = args?.filter ? { where: args.filter } : {};
-    return await this.permissionRepository.find(where);
+  async getMany(args: GetManyInput<Permission>): Promise<Permission[]> {
+    return await this.permissionRepository.getMany(args.where);
   }
 
   async create(data: CreatePermissionInput): Promise<Permission> {
-    const permission = this.permissionRepository.create({
-      ...data,
-    });
-    return await this.permissionRepository.save(permission);
+    const role = this.permissionRepository.create({ ...data });
+    return await this.permissionRepository.save(role);
   }
 
   async update(id: number, data: UpdatePermissionInput): Promise<Permission> {
-    await this.permissionRepository.update({ id }, { ...data });
-    const permission = await this.permissionRepository.findOneBy({ id });
-    return permission;
+    const permission = await this.permissionRepository.preload({ id, ...data });
+    if (!permission) throw new NotFoundException('Permission not found!');
+    return await this.permissionRepository.save(permission);
   }
 
   async remove(id: number): Promise<boolean> {

@@ -42,7 +42,7 @@ export class AuthService {
       this.jwtService.verify(refreshToken, {
         secret: this.configService.get('JWT_REFRESH_TOKEN_PRIVATE_KEY'),
       });
-      return this.userService.getOne({ filter: { id: userId } });
+      return this.userService.getOne({ where: { id: userId } });
     } catch (err) {
       if (err.message === 'jwt expired') {
         this.userService.update(userId, { refresh_token: null });
@@ -65,7 +65,7 @@ export class AuthService {
 
   async signUp(input: SignUpInput): Promise<TokenWithUser> {
     const doesExistId = await this.userService.getOne({
-      filter: { username: input.username },
+      where: { username: input.username },
     });
 
     if (doesExistId) {
@@ -87,7 +87,7 @@ export class AuthService {
   async validateUser(input: SignInInput) {
     const { username, password } = input;
 
-    const user = await this.userService.getOne({ filter: { username } });
+    const user = await this.userService.getOne({ where: { username } });
     if (!user) {
       return null;
     }
