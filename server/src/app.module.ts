@@ -11,6 +11,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './modules/auth/auth.module';
 import { RoleModule } from './modules/role/role.module';
 import { PermissionModule } from './modules/permission/permission.module';
+import { BlogModule } from './modules/blog/blog.module';
+import { CategoryModule } from './modules/category/category.module';
 
 @Module({
   imports: [
@@ -35,6 +37,8 @@ import { PermissionModule } from './modules/permission/permission.module';
     UserModule,
     RoleModule,
     PermissionModule,
+    BlogModule,
+    CategoryModule,
   ],
 })
 export class AppModule {}

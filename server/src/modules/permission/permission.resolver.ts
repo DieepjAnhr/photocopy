@@ -1,5 +1,5 @@
 import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
-import { Permission } from './entities/permission.entity';
+import { GetPermissionType, Permission } from './entities/permission.entity';
 import { PermissionService } from './permission.service';
 import { NotFoundException } from '@nestjs/common';
 import { UseAuthGuard } from 'src/common/decorators/auth-guard.decorator';
@@ -22,7 +22,7 @@ export class PermissionResolver {
   @Query(() => Permission)
   async permission(
     @Args('args', { nullable: true }) args: GetOneInput<Permission>,
-  ): Promise<Permission> {
+  ) {
     const permission = await this.permissionService.getOne(args);
     if (!permission) {
       throw new NotFoundException('Permission not found!');
@@ -30,11 +30,11 @@ export class PermissionResolver {
     return permission;
   }
 
-  @Query(() => [Permission])
+  @Query(() => GetPermissionType)
   permissions(
     @Args('args', { nullable: true }) args: GetManyInput<Permission>,
-  ): Promise<Permission[]> {
-    return this.permissionService.getMany(args);
+  ) {
+    return this.permissionService.getByQuery(args);
   }
 
   @Mutation(() => Permission)
@@ -42,11 +42,11 @@ export class PermissionResolver {
   async createPermission(
     @Args('data') data: CreatePermissionInput,
     @CurrentUser() currentUser: Permission,
-  ): Promise<Permission> {
+  ) {
     const permission = await this.permissionService.create(data);
     pubSub.publish('permission_created', {
       data: permission,
-      perfomer: currentUser,
+      performBy: currentUser,
     });
     return permission;
   }
@@ -57,11 +57,11 @@ export class PermissionResolver {
     @Args('id') id: number,
     @Args('data') data: UpdatePermissionInput,
     @CurrentUser() currentUser: User,
-  ): Promise<Permission> {
+  ) {
     const permission = await this.permissionService.update(id, data);
     pubSub.publish('permission_updated', {
       data: permission,
-      perfomer: currentUser,
+      performBy: currentUser,
     });
     return permission;
   }
@@ -75,7 +75,7 @@ export class PermissionResolver {
     const remove = this.permissionService.remove(id);
     pubSub.publish('permission_removed', {
       data: { id },
-      perfomer: currentUser,
+      performBy: currentUser,
     });
     return remove;
   }

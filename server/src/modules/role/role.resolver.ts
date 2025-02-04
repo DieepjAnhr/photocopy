@@ -1,15 +1,7 @@
 import { NotFoundException } from '@nestjs/common';
-import {
-  Args,
-  Mutation,
-  Parent,
-  Query,
-  ResolveField,
-  Resolver,
-  Subscription,
-} from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
 import { PubSub } from 'graphql-subscriptions';
-import { Role } from './entities/role.entity';
+import { GetRoleType, Role } from './entities/role.entity';
 import { RoleService } from './role.service';
 import { CreateRoleInput } from './dto/create-role.input';
 import { UpdateRoleInput } from './dto/update-role.input';
@@ -20,7 +12,6 @@ import {
   GetOneInput,
 } from 'src/common/graphql/inputs/query.input';
 import { User } from '../user/entities/user.entity';
-import { Permission } from '../permission/entities/permission.entity';
 
 const pubSub = new PubSub();
 
@@ -30,9 +21,7 @@ export class RoleResolver {
 
   @Query(() => Role)
   @UseAuthGuard(['get_role'])
-  async role(
-    @Args('args', { nullable: true }) args: GetOneInput<Role>,
-  ): Promise<Role> {
+  async role(@Args('args', { nullable: true }) args: GetOneInput<Role>) {
     const role = await this.roleService.getOne(args);
     if (!role) {
       throw new NotFoundException('Role not found!');
@@ -40,11 +29,9 @@ export class RoleResolver {
     return role;
   }
 
-  @Query(() => [Role])
-  async roles(
-    @Args('args', { nullable: true }) args: GetManyInput<Role>,
-  ): Promise<Role[]> {
-    return this.roleService.getMany(args);
+  @Query(() => GetRoleType)
+  async roles(@Args('args', { nullable: true }) args: GetManyInput<Role>) {
+    return this.roleService.getByQuery(args);
   }
 
   @Mutation(() => Role)
@@ -52,10 +39,10 @@ export class RoleResolver {
   async createRole(
     @Args('data') data: CreateRoleInput,
     @CurrentUser() currentUser: User,
-  ): Promise<Role> {
-    const user = await this.roleService.create(data, currentUser);
-    pubSub.publish('role_created', { data: user, performBy: currentUser });
-    return user;
+  ) {
+    const role = await this.roleService.create(data, currentUser);
+    pubSub.publish('role_created', { data: role, performBy: currentUser });
+    return role;
   }
 
   @Mutation(() => Role)
@@ -64,7 +51,7 @@ export class RoleResolver {
     @Args('id') id: number,
     @Args('data') data: UpdateRoleInput,
     @CurrentUser() currentUser: User,
-  ): Promise<Role> {
+  ) {
     const user = await this.roleService.update(id, data, currentUser);
     pubSub.publish('role_updated', { data: user, performBy: currentUser });
     return user;
@@ -93,8 +80,8 @@ export class RoleResolver {
     return pubSub.asyncIterableIterator('role_removed');
   }
 
-  @ResolveField(() => [Permission])
-  permissions(@Parent() role: Role) {
-    return role.permissions;
-  }
+  // @ResolveField(() => [Permission])
+  // permissions(@Parent() role: Role) {
+  //   return role.permissions;
+  // }
 }

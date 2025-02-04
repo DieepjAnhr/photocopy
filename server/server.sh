@@ -21,7 +21,7 @@ generateNestModule() {
   # This will generate module with the provided name
   nest generate module $name modules
 
-    # This will resolver controller with the provided name
+  # This will resolver controller with the provided name
   nest generate resolver $name modules
 
   # This will generate controller with the provided name
@@ -30,15 +30,16 @@ generateNestModule() {
   # This will generate the service with the provided name
   nest generate service $name modules
 
+  touch $CUR_DIR/src/modules/$name/$name.repository.ts
+
   # touch $CUR_DIR/src/modules/$name/$name.repository.ts
 
   mkdir $CUR_DIR/src/modules/$name/dto
-  touch $CUR_DIR/src/modules/$name/dto/$name.args.ts
   touch $CUR_DIR/src/modules/$name/dto/create-$name.input.ts
   touch $CUR_DIR/src/modules/$name/dto/update-$name.input.ts
 
-  mkdir $CUR_DIR/src/modules/$name/entity
-  touch $CUR_DIR/src/modules/$name/entity/$name.entity.ts
+  mkdir $CUR_DIR/src/modules/$name/entities
+  touch $CUR_DIR/src/modules/$name/entities/$name.entity.ts
 }
 
 generateJwtPrivateKey() {

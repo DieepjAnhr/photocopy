@@ -1,7 +1,17 @@
-import { Field, InputType, Int } from '@nestjs/graphql';
+import { Field, InputType, Int, registerEnumType } from '@nestjs/graphql';
 import { Type } from 'class-transformer';
 import { IsInt, Min } from 'class-validator';
 import { GraphQLJSON } from 'graphql-scalars';
+
+export enum EQueryType {
+  ALL = 'all',
+  DATA = 'data',
+  COUNT = 'count',
+}
+registerEnumType(EQueryType, {
+  name: 'QueryTypeEnum',
+  description: 'Defines the type of query to perform: all, data, or count',
+});
 
 @InputType()
 export class IPagination {
@@ -22,18 +32,21 @@ export class GetManyInput<T> {
   @Type(() => Object)
   where?: Partial<Record<keyof T, unknown>>;
 
-  @Field(() => Int, { nullable: true, defaultValue: 1 })
-  page?: number;
-
-  @Field(() => Int, { nullable: true, defaultValue: 50 })
-  limit?: number;
+  @Field(() => IPagination, { nullable: true })
+  pagination?: IPagination;
 
   @Field(() => Int, { nullable: true, defaultValue: 0 })
   offset?: number;
 
   @Field(() => GraphQLJSON, { nullable: true })
   @Type(() => Object)
-  orderBy?: Record<string, 'ASC' | 'DESC'>;
+  order?: Record<string, 'ASC' | 'DESC'>;
+
+  @Field(() => EQueryType, {
+    nullable: true,
+    defaultValue: EQueryType.ALL,
+  })
+  query_type?: EQueryType;
 }
 
 @InputType()

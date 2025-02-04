@@ -14,14 +14,51 @@ import {
 } from 'typeorm';
 import { Filter, FilterCondition } from '../shared/types/orm.type';
 import { BadRequestException } from '@nestjs/common';
+import {
+  EQueryType,
+  GetManyInput,
+  GetOneInput,
+} from '../graphql/inputs/query.input';
 
 export abstract class AbstractRepository<T> extends Repository<T> {
-  async getOne(filters: Filter<T>) {
-    return await this.findOne({ where: this.handleFilter(filters) });
+  async getOne(args: GetOneInput<T>) {
+    return await this.findOne({ where: this.handleFilter(args?.where) });
   }
 
-  async getMany(filters: Filter<T>) {
-    return await this.find({ where: this.handleFilter(filters) });
+  async getByQuery(args: GetManyInput<T>) {
+    const { query_type: queryType } = args || {};
+
+    if (queryType === EQueryType.DATA)
+      return { data: await this.getMany(args) };
+    if (queryType === EQueryType.COUNT)
+      return { count: await this.countMany(args) };
+    const [data, count] = await this.getAndCountMany(args);
+    return { count, data };
+  }
+
+  async getMany(args: GetManyInput<T>) {
+    return await this.find(this.getCondition(args));
+  }
+
+  async countMany(args: GetManyInput<T>) {
+    return await this.count(this.getCondition(args));
+  }
+
+  async getAndCountMany(args: GetManyInput<T>) {
+    return await this.findAndCount(this.getCondition(args));
+  }
+
+  private getCondition(args: GetManyInput<T>) {
+    const { where, pagination } = args || {};
+    const { page, limit } = pagination || {};
+
+    return {
+      ...(where && { where: this.handleFilter(where) }),
+      ...(pagination && {
+        skip: (page - 1) * limit,
+        take: limit,
+      }),
+    };
   }
 
   private handleFilter(filters?: Filter<T> | string): FindOptionsWhere<T> {

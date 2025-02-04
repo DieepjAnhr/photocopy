@@ -1,15 +1,7 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import * as bcrypt from 'bcrypt';
 import { AbstractEntity } from 'src/common/abstracts/entity.abstract';
-import { Role } from 'src/modules/role/entities/role.entity';
-import {
-  BeforeInsert,
-  BeforeUpdate,
-  Column,
-  Entity,
-  JoinTable,
-  ManyToMany,
-} from 'typeorm';
+import { BeforeInsert, BeforeUpdate, Column, Entity } from 'typeorm';
 
 const BCRYPT_HASH_ROUNDS = 10;
 
@@ -52,13 +44,19 @@ export class User extends AbstractEntity {
   @Column({ nullable: true })
   refresh_token?: string;
 
-  @ManyToMany(() => Role, (role) => role.users, { eager: true })
-  @JoinTable({
-    name: 'user_roles',
-    joinColumn: { name: 'user_id', referencedColumnName: 'id' },
-    inverseJoinColumn: { name: 'role_id', referencedColumnName: 'id' },
-  })
-  roles: Role[];
+  // @ManyToMany(() => Role, (role) => role.users, { eager: true })
+  // @JoinTable({
+  //   name: 'user_roles',
+  //   joinColumn: { name: 'user_id', referencedColumnName: 'id' },
+  //   inverseJoinColumn: { name: 'role_id', referencedColumnName: 'id' },
+  // })
+  // roles: Role[];
+
+  // @OneToMany(() => Category, (category) => category.creator, { cascade: true })
+  // categories: Category[];
+
+  // @OneToMany(() => Blog, (blog) => blog.creator, { cascade: true })
+  // blogs: Blog[];
 
   @BeforeInsert()
   @BeforeUpdate()
@@ -72,4 +70,13 @@ export class User extends AbstractEntity {
       throw error;
     }
   }
+}
+
+@ObjectType()
+export class GetUserType {
+  @Field(() => Number, { nullable: true })
+  count?: number;
+
+  @Field(() => [User], { nullable: true })
+  data?: User[];
 }

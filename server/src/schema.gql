@@ -2,6 +2,42 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+"""blog"""
+type Blog {
+  content: String
+  created_at: DateTime!
+  created_by: ID
+  deleted_at: DateTime
+  deleted_by: ID
+  description: String
+  id: ID!
+  slug: String!
+  title: String!
+  updated_at: DateTime!
+  updated_by: ID
+}
+
+"""category"""
+type Category {
+  content: String
+  created_at: DateTime!
+  created_by: ID
+  deleted_at: DateTime
+  deleted_by: ID
+  description: String
+  id: ID!
+  slug: String!
+  title: String!
+  updated_at: DateTime!
+  updated_by: ID
+}
+
+input CreateCategoryInput {
+  content: String!
+  description: String
+  title: String!
+}
+
 input CreatePermissionInput {
   label: String!
   value: String!
@@ -35,16 +71,44 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type GetCategoryType {
+  count: Float
+  data: [Category!]
+}
+
 input GetManyInput {
-  limit: Int = 50
   offset: Int = 0
-  orderBy: JSON
-  page: Int = 1
+  order: JSON
+  pagination: IPagination
+  query_type: QueryTypeEnum = ALL
   where: JSON = "{}"
 }
 
 input GetOneInput {
   where: JSON = "{}"
+}
+
+type GetPermissionType {
+  count: Float
+  data: [Permission!]
+}
+
+type GetRoleType {
+  count: Float
+  data: [Role!]
+}
+
+type GetUserType {
+  count: Float
+  data: [User!]
+}
+
+input IPagination {
+  """Number of items per page"""
+  limit: Int!
+
+  """Page number starting from 1"""
+  page: Int!
 }
 
 """
@@ -53,16 +117,19 @@ The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://
 scalar JSON @specifiedBy(url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf")
 
 type Mutation {
+  createCategory(data: CreateCategoryInput!): Category!
   createPermission(data: CreatePermissionInput!): Permission!
   createRole(data: CreateRoleInput!): Role!
   createUser(data: CreateUserInput!): User!
   refreshAccessToken: TokenWithUser!
+  removeCategory(id: Float!): Boolean!
   removePermission(id: Float!): Boolean!
   removeRole(id: Float!): Boolean!
   removeUser(id: Float!): Boolean!
   signIn(input: SignInInput!): TokenWithUser!
   signOut: Boolean!
   signUp(input: SignUpInput!): TokenWithUser!
+  updateCategory(data: UpdateCategoryInput!, id: Float!): Category!
   updatePermission(data: UpdatePermissionInput!, id: Float!): Permission!
   updateRole(data: UpdateRoleInput!, id: Float!): Role!
   updateUser(data: UpdateUserInput!, id: Float!): User!
@@ -76,12 +143,21 @@ type Permission {
 }
 
 type Query {
+  categories(args: GetManyInput): GetCategoryType!
+  category(args: GetOneInput): Category!
   permission(args: GetOneInput): Permission!
-  permissions(args: GetManyInput): [Permission!]!
+  permissions(args: GetManyInput): GetPermissionType!
   role(args: GetOneInput): Role!
-  roles(args: GetManyInput): [Role!]!
+  roles(args: GetManyInput): GetRoleType!
   user(args: GetOneInput): User!
-  users(args: GetManyInput): [User!]!
+  users(args: GetManyInput): GetUserType!
+}
+
+"""Defines the type of query to perform: all, data, or count"""
+enum QueryTypeEnum {
+  ALL
+  COUNT
+  DATA
 }
 
 """role"""
@@ -93,7 +169,6 @@ type Role {
   description: String
   id: ID!
   name: String!
-  permissions: [Permission!]!
   updated_at: DateTime!
   updated_by: ID
 }
@@ -112,6 +187,9 @@ input SignUpInput {
 }
 
 type Subscription {
+  categoryCreated: Category!
+  categoryRemoved: Category!
+  categoryUpdated: Category!
   permissionCreated: Permission!
   permissionRemoved: Permission!
   permissionUpdated: Permission!
@@ -126,6 +204,12 @@ type Subscription {
 type TokenWithUser {
   access_token: String!
   user: User!
+}
+
+input UpdateCategoryInput {
+  content: String
+  description: String
+  title: String
 }
 
 input UpdatePermissionInput {
@@ -171,7 +255,6 @@ type User {
   password: String!
   phone: String!
   refresh_token: String
-  roles: [Role!]!
   updated_at: DateTime!
   updated_by: ID
   username: String!

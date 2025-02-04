@@ -16,47 +16,33 @@ export class UserService {
     private readonly roleRepository: RoleRepository,
   ) {}
 
-  async getOne(args: GetOneInput<User>): Promise<User> {
-    const user = await this.userRepository.getOne(args?.where);
+  async getOne(args: GetOneInput<User>) {
+    const user = await this.userRepository.getOne(args);
     return user;
   }
 
-  async getMany(args: GetManyInput<User>) {
-    return await this.userRepository.getMany(args?.where);
+  async getByQuery(args: GetManyInput<User>) {
+    return await this.userRepository.getByQuery(args);
   }
 
-  async create(data: CreateUserInput, performBy?: User): Promise<User> {
-    const roleIds = data?.role_ids
-      ? data.role_ids.split(',').map((elm) => Number(elm.trim()))
-      : [];
+  async getMany(args: GetManyInput<User>) {
+    return await this.userRepository.getMany(args);
+  }
 
-    const roles = await this.roleRepository.getMany({ id: { $in: roleIds } });
-
+  async create(data: CreateUserInput, performBy?: User) {
     const user = this.userRepository.create({
       ...data,
       created_by: performBy?.id,
       updated_by: performBy?.id,
-      roles,
     });
     return await this.userRepository.save(user);
   }
 
-  async update(
-    id: number,
-    data: UpdateUserInput,
-    performBy?: User,
-  ): Promise<User> {
-    const roleIds = data?.role_ids
-      ? data.role_ids.split(',').map((elm) => Number(elm.trim()))
-      : [];
-
-    const roles = await this.roleRepository.getMany({ id: { $in: roleIds } });
-
+  async update(id: number, data: UpdateUserInput, performBy?: User) {
     const user = await this.userRepository.preload({
       id,
       ...data,
       updated_by: performBy?.id,
-      roles,
     });
     if (!user) throw new NotFoundException('User not found!');
     return await this.userRepository.save(user);

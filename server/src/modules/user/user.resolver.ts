@@ -1,21 +1,12 @@
 import { NotFoundException } from '@nestjs/common';
-import {
-  Args,
-  Mutation,
-  Parent,
-  Query,
-  ResolveField,
-  Resolver,
-  Subscription,
-} from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
 import { PubSub } from 'graphql-subscriptions';
-import { User } from './entities/user.entity';
+import { GetUserType, User } from './entities/user.entity';
 import { UserService } from './user.service';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { UseAuthGuard } from 'src/common/decorators/auth-guard.decorator';
 import { CurrentUser } from 'src/common/decorators/user.decorator';
-import { Role } from '../role/entities/role.entity';
 import {
   GetManyInput,
   GetOneInput,
@@ -28,9 +19,7 @@ export class UserResolver {
   constructor(private readonly userService: UserService) {}
 
   @Query(() => User)
-  async user(
-    @Args('args', { nullable: true }) args: GetOneInput<User>,
-  ): Promise<User> {
+  async user(@Args('args', { nullable: true }) args: GetOneInput<User>) {
     const user = await this.userService.getOne(args);
     if (!user) {
       throw new NotFoundException('User not found!');
@@ -38,11 +27,9 @@ export class UserResolver {
     return user;
   }
 
-  @Query(() => [User])
-  async users(
-    @Args('args', { nullable: true }) args: GetManyInput<User>,
-  ): Promise<User[]> {
-    return this.userService.getMany(args);
+  @Query(() => GetUserType)
+  async users(@Args('args', { nullable: true }) args: GetManyInput<User>) {
+    return this.userService.getByQuery(args);
   }
 
   @Mutation(() => User)
@@ -50,7 +37,7 @@ export class UserResolver {
   async createUser(
     @Args('data') data: CreateUserInput,
     @CurrentUser() currentUser: User,
-  ): Promise<User> {
+  ) {
     const user = await this.userService.create(data, currentUser);
     pubSub.publish('user_created', { data: user, performBy: currentUser });
     return user;
@@ -62,7 +49,7 @@ export class UserResolver {
     @Args('id') id: number,
     @Args('data') data: UpdateUserInput,
     @CurrentUser() currentUser: User,
-  ): Promise<User> {
+  ) {
     const user = await this.userService.update(id, data, currentUser);
     pubSub.publish('user_updated', { data: user, performBy: currentUser });
     return user;
@@ -91,8 +78,8 @@ export class UserResolver {
     return pubSub.asyncIterableIterator('user_removed');
   }
 
-  @ResolveField(() => [Role])
-  roles(@Parent() user: User) {
-    return user.roles;
-  }
+  // @ResolveField(() => [Role])
+  // roles(@Parent() user: User) {
+  //   return user.roles;
+  // }
 }

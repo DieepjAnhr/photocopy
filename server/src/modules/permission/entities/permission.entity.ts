@@ -1,6 +1,5 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
-import { Role } from 'src/modules/role/entities/role.entity';
-import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @ObjectType({ description: 'permission' })
 @Entity({ name: 'permissions' })
@@ -17,6 +16,15 @@ export class Permission {
   @Column()
   value: string;
 
-  @ManyToMany(() => Role, (role) => role.permissions)
-  roles: Role[];
+  // @ManyToMany(() => Role, (role) => role.permissions)
+  // roles: Role[];
+}
+
+@ObjectType()
+export class GetPermissionType {
+  @Field(() => Number, { nullable: true })
+  count?: number;
+
+  @Field(() => [Permission], { nullable: true })
+  data?: Permission[];
 }
