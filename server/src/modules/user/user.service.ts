@@ -7,14 +7,10 @@ import {
   GetManyInput,
   GetOneInput,
 } from 'src/common/graphql/inputs/query.input';
-import { RoleRepository } from '../role/role.repository';
 
 @Injectable()
 export class UserService {
-  constructor(
-    private readonly userRepository: UserRepository,
-    private readonly roleRepository: RoleRepository,
-  ) {}
+  constructor(private readonly userRepository: UserRepository) {}
 
   async getOne(args: GetOneInput<User>) {
     const user = await this.userRepository.getOne(args);

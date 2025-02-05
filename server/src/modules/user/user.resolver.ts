@@ -11,6 +11,7 @@ import {
   GetManyInput,
   GetOneInput,
 } from 'src/common/graphql/inputs/query.input';
+// import { Role } from '../role/entities/role.entity';
 
 const pubSub = new PubSub();
 
@@ -77,6 +78,12 @@ export class UserResolver {
   userRemoved() {
     return pubSub.asyncIterableIterator('user_removed');
   }
+
+  // @ResolveField(() => Role)
+  // roles(@Parent() user: User, @Context() { loaders }: IGraphQLContext) {
+  //   console.log(loaders);
+  //   return loaders.roleLoader.loadMany([1, 2, 3]);
+  // }
 
   // @ResolveField(() => [Role])
   // roles(@Parent() user: User) {

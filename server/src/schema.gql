@@ -252,9 +252,9 @@ type User {
   first_name: String
   id: ID!
   last_name: String!
-  password: String!
   phone: String!
   refresh_token: String
+  role_ids: String
   updated_at: DateTime!
   updated_by: ID
   username: String!

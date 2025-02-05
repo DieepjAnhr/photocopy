@@ -1,4 +1,4 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, HideField, ObjectType } from '@nestjs/graphql';
 import * as bcrypt from 'bcrypt';
 import { AbstractEntity } from 'src/common/abstracts/entity.abstract';
 import { BeforeInsert, BeforeUpdate, Column, Entity } from 'typeorm';
@@ -12,9 +12,13 @@ export class User extends AbstractEntity {
   @Column()
   username: string;
 
-  @Field(() => String)
+  @HideField()
   @Column()
   password: string;
+
+  @Field(() => String, { nullable: true })
+  @Column({ nullable: true, default: [] })
+  role_ids?: string;
 
   @Field(() => String, { nullable: true })
   @Column({ nullable: true })
@@ -43,20 +47,6 @@ export class User extends AbstractEntity {
   @Field(() => String, { nullable: true })
   @Column({ nullable: true })
   refresh_token?: string;
-
-  // @ManyToMany(() => Role, (role) => role.users, { eager: true })
-  // @JoinTable({
-  //   name: 'user_roles',
-  //   joinColumn: { name: 'user_id', referencedColumnName: 'id' },
-  //   inverseJoinColumn: { name: 'role_id', referencedColumnName: 'id' },
-  // })
-  // roles: Role[];
-
-  // @OneToMany(() => Category, (category) => category.creator, { cascade: true })
-  // categories: Category[];
-
-  // @OneToMany(() => Blog, (blog) => blog.creator, { cascade: true })
-  // blogs: Blog[];
 
   @BeforeInsert()
   @BeforeUpdate()
