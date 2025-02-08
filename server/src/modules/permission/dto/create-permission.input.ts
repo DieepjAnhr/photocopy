@@ -7,7 +7,7 @@ export class CreatePermissionInput {
   @IsString({ message: 'Label must be a string!' })
   label: string;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   @IsString({ message: 'Value must be a string!' })
   value: string;
 }

@@ -2,53 +2,15 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-"""blog"""
-type Blog {
-  content: String
-  created_at: DateTime!
-  created_by: ID
-  deleted_at: DateTime
-  deleted_by: ID
-  description: String
-  id: ID!
-  slug: String!
-  title: String!
-  updated_at: DateTime!
-  updated_by: ID
-}
-
-"""category"""
-type Category {
-  content: String
-  created_at: DateTime!
-  created_by: ID
-  deleted_at: DateTime
-  deleted_by: ID
-  description: String
-  id: ID!
-  slug: String!
-  title: String!
-  updated_at: DateTime!
-  updated_by: ID
-}
-
-input CreateCategoryInput {
-  content: String!
-  description: String
-  title: String!
-}
-
 input CreatePermissionInput {
   label: String!
-  value: String!
+  value: String
 }
 
 input CreateRoleInput {
   description: String
   name: String!
-
-  """permission ids split by comma (),"""
-  permission_ids: String
+  permission_ids: [ID!]
 }
 
 input CreateUserInput {
@@ -59,10 +21,7 @@ input CreateUserInput {
   last_name: String!
   password: String!
   phone: String!
-  refresh_token: String
-
-  """role ids split by comma (),"""
-  role_ids: String
+  role_ids: [ID!]
   username: String!
 }
 
@@ -71,21 +30,17 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
-type GetCategoryType {
-  count: Float
-  data: [Category!]
-}
-
 input GetManyInput {
-  offset: Int = 0
+  """
+  {key: "ASC" or "DESC" or "asc" or "desc" or 1 or -1} or {key: {direction: "ASC" or "DESC" or "asc" or "desc", nulls: "first" or "last" or "FIRST" or "LAST"}}}
+  """
   order: JSON
   pagination: IPagination
-  query_type: QueryTypeEnum = ALL
-  where: JSON = "{}"
+  where: JSON
 }
 
 input GetOneInput {
-  where: JSON = "{}"
+  where: JSON!
 }
 
 type GetPermissionType {
@@ -104,11 +59,11 @@ type GetUserType {
 }
 
 input IPagination {
-  """Number of items per page"""
-  limit: Int!
-
-  """Page number starting from 1"""
+  """Started from 0"""
   page: Int!
+
+  """Size of page"""
+  size: Int!
 }
 
 """
@@ -117,22 +72,15 @@ The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://
 scalar JSON @specifiedBy(url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf")
 
 type Mutation {
-  createCategory(data: CreateCategoryInput!): Category!
   createPermission(data: CreatePermissionInput!): Permission!
   createRole(data: CreateRoleInput!): Role!
   createUser(data: CreateUserInput!): User!
-  refreshAccessToken: TokenWithUser!
-  removeCategory(id: Float!): Boolean!
-  removePermission(id: Float!): Boolean!
-  removeRole(id: Float!): Boolean!
-  removeUser(id: Float!): Boolean!
-  signIn(input: SignInInput!): TokenWithUser!
-  signOut: Boolean!
-  signUp(input: SignUpInput!): TokenWithUser!
-  updateCategory(data: UpdateCategoryInput!, id: Float!): Category!
-  updatePermission(data: UpdatePermissionInput!, id: Float!): Permission!
-  updateRole(data: UpdateRoleInput!, id: Float!): Role!
-  updateUser(data: UpdateUserInput!, id: Float!): User!
+  deletePermission(id: Float!): Boolean!
+  deleteRole(id: Float!): Boolean!
+  deleteUser(id: Float!): Boolean!
+  updatePermission(data: CreatePermissionInput!, id: Float!): Permission!
+  updateRole(data: CreateRoleInput!, id: Float!): Role!
+  updateUser(data: CreateUserInput!, id: Float!): User!
 }
 
 """permission"""
@@ -143,119 +91,50 @@ type Permission {
 }
 
 type Query {
-  categories(args: GetManyInput): GetCategoryType!
-  category(args: GetOneInput): Category!
-  permission(args: GetOneInput): Permission!
-  permissions(args: GetManyInput): GetPermissionType!
-  role(args: GetOneInput): Role!
-  roles(args: GetManyInput): GetRoleType!
-  user(args: GetOneInput): User!
-  users(args: GetManyInput): GetUserType!
-}
-
-"""Defines the type of query to perform: all, data, or count"""
-enum QueryTypeEnum {
-  ALL
-  COUNT
-  DATA
+  permission(query: GetOneInput): Permission!
+  permissions(query: GetManyInput): GetPermissionType!
+  role(query: GetOneInput): Role!
+  roles(query: GetManyInput): GetRoleType!
+  user(query: GetOneInput): User
+  users(query: GetManyInput): GetUserType!
 }
 
 """role"""
 type Role {
-  created_at: DateTime!
-  created_by: ID
-  deleted_at: DateTime
-  deleted_by: ID
+  created_at: Float
+  created_by: Float
+  creator: User
+  deleted_at: Float
+  deleted_by: Float
   description: String
   id: ID!
   name: String!
-  updated_at: DateTime!
-  updated_by: ID
-}
-
-input SignInInput {
-  password: String!
-  username: String!
-}
-
-input SignUpInput {
-  email: String!
-  last_name: String!
-  password: String!
-  phone: String!
-  username: String!
-}
-
-type Subscription {
-  categoryCreated: Category!
-  categoryRemoved: Category!
-  categoryUpdated: Category!
-  permissionCreated: Permission!
-  permissionRemoved: Permission!
-  permissionUpdated: Permission!
-  roleCreated: Role!
-  roleRemoved: Role!
-  roleUpdated: Role!
-  userCreated: User!
-  userRemoved: User!
-  userUpdated: User!
-}
-
-type TokenWithUser {
-  access_token: String!
-  user: User!
-}
-
-input UpdateCategoryInput {
-  content: String
-  description: String
-  title: String
-}
-
-input UpdatePermissionInput {
-  label: String
-  value: String
-}
-
-input UpdateRoleInput {
-  description: String
-  name: String
-
-  """permission ids split by comma (),"""
-  permission_ids: String
-}
-
-input UpdateUserInput {
-  avatar: String
-  birthday: DateTime
-  email: String
-  first_name: String
-  last_name: String
-  password: String
-  phone: String
-  refresh_token: String
-
-  """role ids split by comma (),"""
-  role_ids: String
-  username: String
+  permission_ids: [ID!]
+  permissions: [Permission!]
+  updated_at: Float
+  updated_by: Float
+  updater: User
 }
 
 """user"""
 type User {
   avatar: String
   birthday: DateTime
-  created_at: DateTime!
-  created_by: ID
-  deleted_at: DateTime
-  deleted_by: ID
+  created_at: Float
+  created_by: Float
+  creator: User
+  deleted_at: Float
+  deleted_by: Float
   email: String!
   first_name: String
   id: ID!
   last_name: String!
   phone: String!
   refresh_token: String
-  role_ids: String
-  updated_at: DateTime!
-  updated_by: ID
+  role_ids: [ID!]
+  roles: [Role!]
+  updated_at: Float
+  updated_by: Float
+  updater: User
   username: String!
 }

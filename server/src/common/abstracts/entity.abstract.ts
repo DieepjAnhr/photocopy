@@ -1,42 +1,39 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 import {
-  BaseEntity,
   Column,
   CreateDateColumn,
   DeleteDateColumn,
-  Entity,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
 @ObjectType()
-@Entity()
-export abstract class AbstractEntity extends BaseEntity {
+export abstract class AbstractEntity {
   @Field(() => ID)
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Field(() => ID, { nullable: true })
+  @Field(() => Number, { nullable: true })
   @Column({ nullable: true })
   created_by?: number;
 
-  @Field(() => Date)
+  @Field(() => Number, { nullable: true })
   @CreateDateColumn()
-  created_at: Date;
+  created_at?: number;
 
-  @Field(() => ID, { nullable: true })
+  @Field(() => Number, { nullable: true })
   @Column({ nullable: true })
   updated_by?: number;
 
-  @Field(() => Date)
+  @Field(() => Number, { nullable: true })
   @UpdateDateColumn()
-  updated_at: Date;
+  updated_at?: number;
 
-  @Field(() => ID, { nullable: true })
+  @Field(() => Number, { nullable: true })
   @Column({ nullable: true })
   deleted_by?: number;
 
-  @Field(() => Date, { nullable: true })
-  @DeleteDateColumn({ nullable: true })
-  deleted_at: Date;
+  @Field(() => Number, { nullable: true })
+  @DeleteDateColumn()
+  deleted_at?: number;
 }

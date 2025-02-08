@@ -1,11 +1,14 @@
-import { AbstractRepository } from 'src/common/abstracts/repository.abstract';
-import { User } from './entities/user.entity';
 import { Injectable } from '@nestjs/common';
-import { DataSource } from 'typeorm';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from './entity/user.entity';
+import { AbstractRepository } from 'src/common/abstracts/repository.abstract';
 
 @Injectable()
 export class UserRepository extends AbstractRepository<User> {
-  constructor(private readonly dataSource: DataSource) {
-    super(User, dataSource.createEntityManager());
+  constructor(
+    @InjectRepository(User) private readonly userRepository: Repository<User>,
+  ) {
+    super(userRepository);
   }
 }

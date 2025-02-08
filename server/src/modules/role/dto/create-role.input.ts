@@ -1,22 +1,18 @@
-import { Field, InputType } from '@nestjs/graphql';
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { Field, ID, InputType } from '@nestjs/graphql';
+import { IsOptional, IsString, MinLength } from 'class-validator';
 
 @InputType()
 export class CreateRoleInput {
   @Field(() => String)
-  @IsNotEmpty()
-  @IsString({ message: 'Name must be a string!' })
+  @IsString({ message: 'Username must be a string!' })
+  @MinLength(4, { message: 'Username must be at least 4 characters long!' })
   name: string;
+
+  @Field(() => [ID], { nullable: true })
+  permission_ids?: number[];
 
   @Field(() => String, { nullable: true })
   @IsOptional()
   @IsString({ message: 'Description must be a string!' })
   description?: string;
-
-  @Field(() => String, {
-    nullable: true,
-    description: 'permission ids split by comma (),',
-  })
-  @IsOptional()
-  permission_ids?: string;
 }

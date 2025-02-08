@@ -1,7 +1,7 @@
-import { Field, HideField, ObjectType } from '@nestjs/graphql';
-import * as bcrypt from 'bcrypt';
-import { AbstractEntity } from 'src/common/abstracts/entity.abstract';
+import { Field, HideField, ID, ObjectType } from '@nestjs/graphql';
 import { BeforeInsert, BeforeUpdate, Column, Entity } from 'typeorm';
+import bcrypt from 'bcrypt';
+import { AbstractEntity } from 'src/common/abstracts/entity.abstract';
 
 const BCRYPT_HASH_ROUNDS = 10;
 
@@ -16,9 +16,9 @@ export class User extends AbstractEntity {
   @Column()
   password: string;
 
-  @Field(() => String, { nullable: true })
-  @Column({ nullable: true, default: [] })
-  role_ids?: string;
+  @Field(() => [ID], { nullable: true })
+  @Column('int', { array: true, nullable: true })
+  role_ids?: number[];
 
   @Field(() => String, { nullable: true })
   @Column({ nullable: true })
@@ -37,7 +37,7 @@ export class User extends AbstractEntity {
   email: string;
 
   @Field(() => Date, { nullable: true })
-  @Column({ nullable: true })
+  @Column({ type: 'date', nullable: true })
   birthday?: Date;
 
   @Field(() => String, { nullable: true })

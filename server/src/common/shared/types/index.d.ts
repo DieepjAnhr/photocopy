@@ -1,4 +1,4 @@
-import { IDataloader } from '../dataloader/dataloader.interface';
+import { IDataloader } from '../interfaces/dataloader.interface';
 
 declare global {
   interface IGraphQLContext {

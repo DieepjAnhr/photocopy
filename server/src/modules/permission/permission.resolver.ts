@@ -1,19 +1,8 @@
-import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
-import { GetPermissionType, Permission } from './entities/permission.entity';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { PermissionService } from './permission.service';
-import { NotFoundException } from '@nestjs/common';
-import { UseAuthGuard } from 'src/common/decorators/auth-guard.decorator';
+import { GetPermissionType, Permission } from './entities/permission.entity';
+import { GetManyInput, GetOneInput } from 'src/common/graphql/query.input';
 import { CreatePermissionInput } from './dto/create-permission.input';
-import { CurrentUser } from 'src/common/decorators/user.decorator';
-import { PubSub } from 'graphql-subscriptions';
-import { UpdatePermissionInput } from './dto/update-permission.input';
-import { User } from '../user/entities/user.entity';
-import {
-  GetManyInput,
-  GetOneInput,
-} from 'src/common/graphql/inputs/query.input';
-
-const pubSub = new PubSub();
 
 @Resolver(() => Permission)
 export class PermissionResolver {
@@ -21,77 +10,44 @@ export class PermissionResolver {
 
   @Query(() => Permission)
   async permission(
-    @Args('args', { nullable: true }) args: GetOneInput<Permission>,
+    @Args({ name: 'query', nullable: true }) condition: GetOneInput<Permission>,
   ) {
-    const permission = await this.permissionService.getOne(args);
-    if (!permission) {
-      throw new NotFoundException('Permission not found!');
-    }
-    return permission;
+    console.log(condition);
+
+    return await this.permissionService.getOne(1);
   }
 
   @Query(() => GetPermissionType)
-  permissions(
-    @Args('args', { nullable: true }) args: GetManyInput<Permission>,
+  async permissions(
+    @Args({ name: 'query', nullable: true })
+    condition: GetManyInput<Permission>,
   ) {
-    return this.permissionService.getByQuery(args);
+    console.log(condition);
+
+    return await this.permissionService.getByBatch([]);
   }
 
   @Mutation(() => Permission)
-  @UseAuthGuard(['create_permission'])
-  async createPermission(
-    @Args('data') data: CreatePermissionInput,
-    @CurrentUser() currentUser: Permission,
-  ) {
-    const permission = await this.permissionService.create(data);
-    pubSub.publish('permission_created', {
-      data: permission,
-      performBy: currentUser,
-    });
-    return permission;
+  async createPermission(@Args('data') data: CreatePermissionInput) {
+    console.log(data);
+
+    return await this.permissionService.create(data);
   }
 
   @Mutation(() => Permission)
-  @UseAuthGuard(['update_permission'])
   async updatePermission(
     @Args('id') id: number,
-    @Args('data') data: UpdatePermissionInput,
-    @CurrentUser() currentUser: User,
+    @Args('data') data: CreatePermissionInput,
   ) {
-    const permission = await this.permissionService.update(id, data);
-    pubSub.publish('permission_updated', {
-      data: permission,
-      performBy: currentUser,
-    });
-    return permission;
+    console.log(data);
+
+    return await this.permissionService.update(id, data);
   }
 
   @Mutation(() => Boolean)
-  @UseAuthGuard(['delete_permission'])
-  async removePermission(
-    @Args('id') id: number,
-    @CurrentUser() currentUser: User,
-  ) {
-    const remove = this.permissionService.remove(id);
-    pubSub.publish('permission_removed', {
-      data: { id },
-      performBy: currentUser,
-    });
-    return remove;
-  }
+  async deletePermission(@Args('id') id: number) {
+    console.log(id);
 
-  @Subscription(() => Permission)
-  permissionCreated() {
-    return pubSub.asyncIterableIterator('permission_created');
-  }
-
-  @Subscription(() => Permission)
-  permissionUpdated() {
-    return pubSub.asyncIterableIterator('permission_updated');
-  }
-
-  @Subscription(() => Permission)
-  permissionRemoved() {
-    return pubSub.asyncIterableIterator('permission_removed');
+    return await this.permissionService.delete(id);
   }
 }

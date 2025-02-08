@@ -38,8 +38,8 @@ generateNestModule() {
   touch $CUR_DIR/src/modules/$name/dto/create-$name.input.ts
   touch $CUR_DIR/src/modules/$name/dto/update-$name.input.ts
 
-  mkdir $CUR_DIR/src/modules/$name/entities
-  touch $CUR_DIR/src/modules/$name/entities/$name.entity.ts
+  mkdir $CUR_DIR/src/modules/$name/entity
+  touch $CUR_DIR/src/modules/$name/entity/$name.entity.ts
 }
 
 generateJwtPrivateKey() {

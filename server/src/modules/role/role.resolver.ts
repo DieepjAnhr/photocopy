@@ -1,87 +1,86 @@
-import { NotFoundException } from '@nestjs/common';
-import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
-import { PubSub } from 'graphql-subscriptions';
-import { GetRoleType, Role } from './entities/role.entity';
-import { RoleService } from './role.service';
-import { CreateRoleInput } from './dto/create-role.input';
-import { UpdateRoleInput } from './dto/update-role.input';
-import { UseAuthGuard } from 'src/common/decorators/auth-guard.decorator';
-import { CurrentUser } from 'src/common/decorators/user.decorator';
 import {
-  GetManyInput,
-  GetOneInput,
-} from 'src/common/graphql/inputs/query.input';
-import { User } from '../user/entities/user.entity';
-
-const pubSub = new PubSub();
+  Args,
+  Context,
+  Mutation,
+  Parent,
+  Query,
+  ResolveField,
+  Resolver,
+} from '@nestjs/graphql';
+import { GetRoleType, Role } from './entity/role.entity';
+import { CreateRoleInput } from './dto/create-role.input';
+import { RoleService } from './role.service';
+import { GetManyInput, GetOneInput } from 'src/common/graphql/query.input';
+import { Permission } from '../permission/entities/permission.entity';
+import { User } from '../user/entity/user.entity';
 
 @Resolver(() => Role)
 export class RoleResolver {
   constructor(private readonly roleService: RoleService) {}
 
   @Query(() => Role)
-  @UseAuthGuard(['get_role'])
-  async role(@Args('args', { nullable: true }) args: GetOneInput<Role>) {
-    const role = await this.roleService.getOne(args);
-    if (!role) {
-      throw new NotFoundException('Role not found!');
-    }
-    return role;
+  async role(
+    @Args({ name: 'query', nullable: true }) condition: GetOneInput<Role>,
+  ) {
+    console.log(condition);
+
+    return await this.roleService.getOne(1);
   }
 
   @Query(() => GetRoleType)
-  async roles(@Args('args', { nullable: true }) args: GetManyInput<Role>) {
-    return this.roleService.getByQuery(args);
-  }
-
-  @Mutation(() => Role)
-  @UseAuthGuard(['create_role'])
-  async createRole(
-    @Args('data') data: CreateRoleInput,
-    @CurrentUser() currentUser: User,
+  async roles(
+    @Args({ name: 'query', nullable: true }) condition: GetManyInput<Role>,
   ) {
-    const role = await this.roleService.create(data, currentUser);
-    pubSub.publish('role_created', { data: role, performBy: currentUser });
-    return role;
+    console.log(condition);
+
+    return await this.roleService.getByBatch([]);
   }
 
   @Mutation(() => Role)
-  @UseAuthGuard(['update_role'])
+  async createRole(@Args('data') data: CreateRoleInput) {
+    console.log(data);
+
+    return await this.roleService.create(data);
+  }
+
+  @Mutation(() => Role)
   async updateRole(
     @Args('id') id: number,
-    @Args('data') data: UpdateRoleInput,
-    @CurrentUser() currentUser: User,
+    @Args('data') data: CreateRoleInput,
   ) {
-    const user = await this.roleService.update(id, data, currentUser);
-    pubSub.publish('role_updated', { data: user, performBy: currentUser });
-    return user;
+    console.log(data);
+
+    return await this.roleService.update(id, data);
   }
 
   @Mutation(() => Boolean)
-  @UseAuthGuard(['delete_role'])
-  async removeRole(@Args('id') id: number, @CurrentUser() currentUser: User) {
-    const remove = await this.roleService.remove(id, currentUser);
-    pubSub.publish('role_deleted', { data: { id }, performBy: currentUser });
-    return remove;
+  async deleteRole(@Args('id') id: number) {
+    console.log(id);
+
+    return await this.roleService.delete(id);
   }
 
-  @Subscription(() => Role)
-  roleCreated() {
-    return pubSub.asyncIterableIterator('role_created');
+  @ResolveField(() => [Permission], { nullable: true })
+  async permissions(
+    @Parent() role: Role,
+    @Context() { loaders }: IGraphQLContext,
+  ) {
+    const permissions = await loaders.permissionsLoader.load(
+      role.permission_ids || [],
+    );
+
+    return permissions;
   }
 
-  @Subscription(() => Role)
-  roleUpdated() {
-    return pubSub.asyncIterableIterator('role_updated');
+  @ResolveField(() => User, { nullable: true })
+  async creator(@Parent() user: User, @Context() { loaders }: IGraphQLContext) {
+    const users = await loaders.usersLoader.load([user.created_by]);
+    return users[0];
   }
 
-  @Subscription(() => Role)
-  roleRemoved() {
-    return pubSub.asyncIterableIterator('role_removed');
+  @ResolveField(() => User, { nullable: true })
+  async updater(@Parent() user: User, @Context() { loaders }: IGraphQLContext) {
+    const users = await loaders.usersLoader.load([user.updated_by]);
+    return users[0];
   }
-
-  // @ResolveField(() => [Permission])
-  // permissions(@Parent() role: Role) {
-  //   return role.permissions;
-  // }
 }
