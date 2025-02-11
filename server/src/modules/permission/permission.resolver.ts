@@ -2,29 +2,30 @@ import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { PermissionService } from './permission.service';
 import { GetPermissionType, Permission } from './entities/permission.entity';
 import { GetManyInput, GetOneInput } from 'src/common/graphql/query.input';
-import { CreatePermissionInput } from './dto/create-permission.input';
+import { CreatePermissionInput } from './dto/create-permission.dto';
 
 @Resolver(() => Permission)
 export class PermissionResolver {
   constructor(private readonly permissionService: PermissionService) {}
 
-  @Query(() => Permission)
+  @Query(() => Permission, { nullable: true })
   async permission(
     @Args({ name: 'query', nullable: true }) condition: GetOneInput<Permission>,
   ) {
-    console.log(condition);
+    if (typeof condition.where === 'string')
+      condition.where = JSON.parse(condition.where);
 
-    return await this.permissionService.getOne(1);
+    return await this.permissionService.getOne(condition);
   }
 
   @Query(() => GetPermissionType)
   async permissions(
     @Args({ name: 'query', nullable: true })
-    condition: GetManyInput<Permission>,
+    query: GetManyInput<Permission>,
   ) {
-    console.log(condition);
+    if (typeof query.where === 'string') query.where = JSON.parse(query.where);
 
-    return await this.permissionService.getByBatch([]);
+    return await this.permissionService.getMany(query);
   }
 
   @Mutation(() => Permission)

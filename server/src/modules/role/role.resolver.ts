@@ -8,7 +8,7 @@ import {
   Resolver,
 } from '@nestjs/graphql';
 import { GetRoleType, Role } from './entity/role.entity';
-import { CreateRoleInput } from './dto/create-role.input';
+import { CreateRoleInput } from './dto/create-role.dto';
 import { RoleService } from './role.service';
 import { GetManyInput, GetOneInput } from 'src/common/graphql/query.input';
 import { Permission } from '../permission/entities/permission.entity';
@@ -18,22 +18,23 @@ import { User } from '../user/entity/user.entity';
 export class RoleResolver {
   constructor(private readonly roleService: RoleService) {}
 
-  @Query(() => Role)
+  @Query(() => Role, { nullable: true })
   async role(
     @Args({ name: 'query', nullable: true }) condition: GetOneInput<Role>,
   ) {
-    console.log(condition);
+    if (typeof condition.where === 'string')
+      condition.where = JSON.parse(condition.where);
 
-    return await this.roleService.getOne(1);
+    return await this.roleService.getOne(condition);
   }
 
   @Query(() => GetRoleType)
   async roles(
-    @Args({ name: 'query', nullable: true }) condition: GetManyInput<Role>,
+    @Args({ name: 'query', nullable: true }) query: GetManyInput<Role>,
   ) {
-    console.log(condition);
+    if (typeof query.where === 'string') query.where = JSON.parse(query.where);
 
-    return await this.roleService.getByBatch([]);
+    return await this.roleService.getMany(query);
   }
 
   @Mutation(() => Role)

@@ -20,8 +20,8 @@ export class Permission {
 @ObjectType()
 export class GetPermissionType {
   @Field(() => Number, { nullable: true })
-  count?: number;
+  count: number;
 
   @Field(() => [Permission], { nullable: true })
-  data?: Permission[];
+  data: Permission[];
 }

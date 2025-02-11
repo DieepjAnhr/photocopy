@@ -8,7 +8,7 @@ import {
   Resolver,
 } from '@nestjs/graphql';
 import { GetUserType, User } from './entity/user.entity';
-import { CreateUserInput } from './dto/create-user.input';
+import { CreateUserInput } from './dto/create-user.dto';
 import { UserService } from './user.service';
 import { GetManyInput, GetOneInput } from 'src/common/graphql/query.input';
 import { Role } from '../role/entity/role.entity';
@@ -21,18 +21,19 @@ export class UserResolver {
   async user(
     @Args({ name: 'query', nullable: true }) condition: GetOneInput<User>,
   ) {
-    console.log(condition);
+    if (typeof condition.where === 'string')
+      condition.where = JSON.parse(condition.where);
 
-    return await this.userService.getOne(1);
+    return await this.userService.getOne(condition);
   }
 
   @Query(() => GetUserType)
   async users(
-    @Args({ name: 'query', nullable: true }) condition: GetManyInput<User>,
+    @Args({ name: 'query', nullable: true }) query: GetManyInput<User>,
   ) {
-    console.log(condition);
+    if (typeof query.where === 'string') query.where = JSON.parse(query.where);
 
-    return await this.userService.getByBatch([1, 2, 3]);
+    return await this.userService.getMany(query);
   }
 
   @Mutation(() => User)

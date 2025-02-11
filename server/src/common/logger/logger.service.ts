@@ -1,0 +1,57 @@
+import { Injectable, LoggerService } from '@nestjs/common';
+import { utilities } from 'nest-winston';
+import { createLogger, format, transports, Logger } from 'winston';
+
+// Logger level: error > warn > info > http > verbose > debug > silly
+
+@Injectable()
+export class AppLogger implements LoggerService {
+  private readonly logger: Logger;
+
+  constructor() {
+    this.logger = createLogger({
+      level: 'info',
+      format: format.combine(
+        format.timestamp(),
+        format.printf(({ timestamp, level, message, context }) => {
+          return `${timestamp} [${level.toUpperCase()}]: { context: ${context || 'N/A'}, timestamp: ${timestamp}, message: ${message} }`;
+        }),
+      ),
+      transports: [
+        new transports.Console({
+          level: 'info',
+          format: format.combine(
+            // format.timestamp(),
+            format.colorize({ all: true }),
+            utilities.format.nestLike(),
+            // format.printf(({ timestamp, level, message, context }) => {
+            //   return `${timestamp} [${level}]: { context: ${context || 'N/A'}, timestamp: ${timestamp}, message: ${message} }`;
+            // }),
+          ),
+        }),
+        new transports.File({ filename: 'logs/error.log', level: 'error' }),
+        new transports.File({ filename: 'logs/combined.log' }),
+      ],
+    });
+  }
+
+  log(message: string, context?: string) {
+    this.logger.info(message, { context });
+  }
+
+  error(message: string, context?: string, trace?: string) {
+    this.logger.error(message, { context, trace });
+  }
+
+  warn(message: string, context?: string) {
+    this.logger.warn(message, { context });
+  }
+
+  debug(message: string, context?: string) {
+    this.logger.debug(message, { context });
+  }
+
+  verbose(message: string, context?: string) {
+    this.logger.verbose(message, { context });
+  }
+}

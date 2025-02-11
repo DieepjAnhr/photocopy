@@ -10,9 +10,15 @@ import { DataloaderService } from './common/dataloader/dataloader.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PermissionModule } from './modules/permission/permission.module';
+import { getEnvPath } from './common/helpers/env.helper';
+import { envValidation } from './common/helpers/env.validation';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      envFilePath: getEnvPath(`${__dirname}/..`),
+      validate: envValidation,
+    }),
     GraphQLModule.forRootAsync<ApolloDriverConfig>({
       driver: ApolloDriver,
       imports: [DataloaderModule],

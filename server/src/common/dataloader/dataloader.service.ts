@@ -28,12 +28,16 @@ export class DataloaderService {
 
   createLoaders(): IDataloader {
     return {
-      usersLoader: this.createLoader((ids) => this.userService.getByBatch(ids)),
+      usersLoader: this.createLoader((ids) =>
+        this.userService.getDataloader(ids),
+      ),
 
-      rolesLoader: this.createLoader((ids) => this.roleService.getByBatch(ids)),
+      rolesLoader: this.createLoader((ids) =>
+        this.roleService.getDataloader(ids),
+      ),
 
       permissionsLoader: this.createLoader((ids) =>
-        this.permissionService.getByBatch(ids),
+        this.permissionService.getDataloader(ids),
       ),
     };
   }

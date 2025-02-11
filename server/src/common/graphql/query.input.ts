@@ -1,9 +1,8 @@
-import { Field, InputType, Int } from '@nestjs/graphql';
-
-import { IsNotEmpty, IsOptional } from 'class-validator';
 import { FindOptionsOrder } from 'typeorm';
-import { IWhere } from '../shared/types/where.type';
 import { GraphQLJSON } from 'graphql-scalars';
+import { Field, InputType, Int } from '@nestjs/graphql';
+import { IsNotEmpty, IsOptional } from 'class-validator';
+import { IWhere } from '../shared/types/where.type';
 
 @InputType()
 export class IPagination {
@@ -13,7 +12,7 @@ export class IPagination {
 
   @Field(() => Int, { description: 'Size of page' })
   @IsNotEmpty()
-  size: number;
+  limit: number;
 }
 
 @InputType()
@@ -35,8 +34,7 @@ export class GetManyInput<T> {
 
   @Field(() => GraphQLJSON, {
     nullable: true,
-    description:
-      '{key: "ASC" or "DESC" or "asc" or "desc" or 1 or -1} or {key: {direction: "ASC" or "DESC" or "asc" or "desc", nulls: "first" or "last" or "FIRST" or "LAST"}}}',
+    description: '{key: ASC or DESC}',
   })
   @IsOptional()
   order?: FindOptionsOrder<T>;
