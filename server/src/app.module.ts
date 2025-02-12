@@ -12,6 +12,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PermissionModule } from './modules/permission/permission.module';
 import { getEnvPath } from './common/helpers/env.helper';
 import { envValidation } from './common/helpers/env.validation';
+import { GraphQLError } from 'graphql';
+import { ERROR_CODES } from './common/exceptions/constant.exception';
+import { LoggerModule } from './common/logger/logger.module';
 
 @Module({
   imports: [
@@ -32,6 +35,14 @@ import { envValidation } from './common/helpers/env.validation';
           context: () => ({
             loaders: dataloaderService.createLoaders(),
           }),
+          formatError: (error: GraphQLError) => {
+            return {
+              status: error.extensions?.code || ERROR_CODES.UNKNOWN_ERROR,
+              message: error.message,
+              path: error.path || null,
+              details: error.extensions?.details || null,
+            };
+          },
         };
       },
     }),
@@ -53,6 +64,7 @@ import { envValidation } from './common/helpers/env.validation';
         logging: true,
       }),
     }),
+    LoggerModule,
     UserModule,
     RoleModule,
     PermissionModule,

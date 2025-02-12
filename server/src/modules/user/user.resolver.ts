@@ -12,52 +12,56 @@ import { CreateUserInput } from './dto/create-user.dto';
 import { UserService } from './user.service';
 import { GetManyInput, GetOneInput } from 'src/common/graphql/query.input';
 import { Role } from '../role/entity/role.entity';
+import { CurrentUser } from 'src/common/decorators/user.decorator';
+import { UpdateUserInput } from './dto/update-user.dto';
+import { AbstractResolver } from 'src/common/abstracts/resolver.abstract';
+import { AppLogger } from 'src/common/logger/logger.service';
 
 @Resolver(() => User)
-export class UserResolver {
-  constructor(private readonly userService: UserService) {}
+export class UserResolver extends AbstractResolver<UserService> {
+  constructor(
+    private readonly userService: UserService,
+    appLogger: AppLogger,
+  ) {
+    super(userService, appLogger);
+  }
 
   @Query(() => User, { nullable: true })
   async user(
     @Args({ name: 'query', nullable: true }) condition: GetOneInput<User>,
   ) {
-    if (typeof condition.where === 'string')
-      condition.where = JSON.parse(condition.where);
+    const user = await this.userService.getOne(condition);
 
-    return await this.userService.getOne(condition);
+    return user;
   }
 
   @Query(() => GetUserType)
   async users(
     @Args({ name: 'query', nullable: true }) query: GetManyInput<User>,
   ) {
-    if (typeof query.where === 'string') query.where = JSON.parse(query.where);
-
     return await this.userService.getMany(query);
   }
 
   @Mutation(() => User)
-  async createUser(@Args('data') data: CreateUserInput) {
-    console.log(data);
-
-    return await this.userService.create(data);
+  async createUser(
+    @Args('data') data: CreateUserInput,
+    @CurrentUser() user: User,
+  ) {
+    return await this.userService.create(data, user);
   }
 
   @Mutation(() => User)
   async updateUser(
     @Args('id') id: number,
-    @Args('data') data: CreateUserInput,
+    @Args('data') data: UpdateUserInput,
+    @CurrentUser() user: User,
   ) {
-    console.log(data);
-
-    return await this.userService.update(id, data);
+    return await this.userService.update(id, data, user);
   }
 
   @Mutation(() => Boolean)
-  async deleteUser(@Args('id') id: number) {
-    console.log(id);
-
-    return await this.userService.delete(id);
+  async deleteUser(@Args('id') id: number, @CurrentUser() user: User) {
+    return await this.userService.delete(id, user);
   }
 
   @ResolveField(() => [Role], { nullable: true })

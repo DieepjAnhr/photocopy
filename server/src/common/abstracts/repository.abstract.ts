@@ -48,6 +48,7 @@ const operatorMap = new Map<string, (val: any) => unknown>([
 
 @Injectable()
 export abstract class AbstractRepository<T> {
+  private readonly CLASS_NAME = this.constructor.name;
   constructor(private readonly repository: Repository<T>) {}
 
   async getOne(options: {
@@ -90,15 +91,20 @@ export abstract class AbstractRepository<T> {
 
   async update(id: number, data: DeepPartial<T>): Promise<T> {
     await this.repository.update(id, data as any);
+
     return await this.getOne({ where: { id } as any });
   }
 
-  async delete(id: number): Promise<boolean> {
-    const result = await this.repository.delete(id);
+  async delete(id: number, deletedById?: number): Promise<boolean> {
+    if (deletedById) {
+      await this.repository.update(id, { deleted_by: deletedById } as any);
+    }
+    const result = await this.repository.softDelete(id);
+
     return result.affected > 0;
   }
 
-  private parseQuery(query: Record<string, any>): FindOptionsWhere<T> {
+  protected parseQuery(query: Record<string, any>): FindOptionsWhere<T> {
     const parsedQuery: Record<string, any> = {};
 
     for (const key in query) {

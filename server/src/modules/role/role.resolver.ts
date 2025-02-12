@@ -13,18 +13,22 @@ import { RoleService } from './role.service';
 import { GetManyInput, GetOneInput } from 'src/common/graphql/query.input';
 import { Permission } from '../permission/entities/permission.entity';
 import { User } from '../user/entity/user.entity';
+import { AppLogger } from 'src/common/logger/logger.service';
+import { AbstractResolver } from 'src/common/abstracts/resolver.abstract';
 
 @Resolver(() => Role)
-export class RoleResolver {
-  constructor(private readonly roleService: RoleService) {}
+export class RoleResolver extends AbstractResolver<RoleService> {
+  constructor(
+    private readonly roleService: RoleService,
+    appLogger: AppLogger,
+  ) {
+    super(roleService, appLogger);
+  }
 
   @Query(() => Role, { nullable: true })
   async role(
     @Args({ name: 'query', nullable: true }) condition: GetOneInput<Role>,
   ) {
-    if (typeof condition.where === 'string')
-      condition.where = JSON.parse(condition.where);
-
     return await this.roleService.getOne(condition);
   }
 
@@ -32,15 +36,11 @@ export class RoleResolver {
   async roles(
     @Args({ name: 'query', nullable: true }) query: GetManyInput<Role>,
   ) {
-    if (typeof query.where === 'string') query.where = JSON.parse(query.where);
-
     return await this.roleService.getMany(query);
   }
 
   @Mutation(() => Role)
   async createRole(@Args('data') data: CreateRoleInput) {
-    console.log(data);
-
     return await this.roleService.create(data);
   }
 
@@ -49,15 +49,11 @@ export class RoleResolver {
     @Args('id') id: number,
     @Args('data') data: CreateRoleInput,
   ) {
-    console.log(data);
-
     return await this.roleService.update(id, data);
   }
 
   @Mutation(() => Boolean)
   async deleteRole(@Args('id') id: number) {
-    console.log(id);
-
     return await this.roleService.delete(id);
   }
 

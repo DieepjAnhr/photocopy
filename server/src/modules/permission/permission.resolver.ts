@@ -3,18 +3,22 @@ import { PermissionService } from './permission.service';
 import { GetPermissionType, Permission } from './entities/permission.entity';
 import { GetManyInput, GetOneInput } from 'src/common/graphql/query.input';
 import { CreatePermissionInput } from './dto/create-permission.dto';
+import { AbstractResolver } from 'src/common/abstracts/resolver.abstract';
+import { AppLogger } from 'src/common/logger/logger.service';
 
 @Resolver(() => Permission)
-export class PermissionResolver {
-  constructor(private readonly permissionService: PermissionService) {}
+export class PermissionResolver extends AbstractResolver<PermissionService> {
+  constructor(
+    private readonly permissionService: PermissionService,
+    appLogger: AppLogger,
+  ) {
+    super(permissionService, appLogger);
+  }
 
   @Query(() => Permission, { nullable: true })
   async permission(
     @Args({ name: 'query', nullable: true }) condition: GetOneInput<Permission>,
   ) {
-    if (typeof condition.where === 'string')
-      condition.where = JSON.parse(condition.where);
-
     return await this.permissionService.getOne(condition);
   }
 
@@ -23,15 +27,11 @@ export class PermissionResolver {
     @Args({ name: 'query', nullable: true })
     query: GetManyInput<Permission>,
   ) {
-    if (typeof query.where === 'string') query.where = JSON.parse(query.where);
-
     return await this.permissionService.getMany(query);
   }
 
   @Mutation(() => Permission)
   async createPermission(@Args('data') data: CreatePermissionInput) {
-    console.log(data);
-
     return await this.permissionService.create(data);
   }
 
@@ -40,15 +40,11 @@ export class PermissionResolver {
     @Args('id') id: number,
     @Args('data') data: CreatePermissionInput,
   ) {
-    console.log(data);
-
     return await this.permissionService.update(id, data);
   }
 
   @Mutation(() => Boolean)
   async deletePermission(@Args('id') id: number) {
-    console.log(id);
-
     return await this.permissionService.delete(id);
   }
 }

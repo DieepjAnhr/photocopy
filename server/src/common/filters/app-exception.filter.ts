@@ -1,28 +1,26 @@
-import {
-  ArgumentsHost,
-  Catch,
-  ExceptionFilter,
-  HttpException,
-} from '@nestjs/common';
-import { GqlArgumentsHost } from '@nestjs/graphql';
+import { Catch, ExceptionFilter } from '@nestjs/common';
+import { AppLogger } from '../logger/logger.service';
+import { GraphQLError } from 'graphql';
+import { ERROR_CODES } from '../exceptions/constant.exception';
+import { CustomUnknownError } from '../exceptions/unknow.exception';
 
-@Catch()
+@Catch(Error)
 export class AppExceptionFilter implements ExceptionFilter {
-  constructor() {}
+  private readonly CLASS_NAME = this.constructor.name;
 
-  catch(exception: any, host: ArgumentsHost) {
-    const gqlHost = GqlArgumentsHost.create(host);
-    const ctx = gqlHost.getContext();
-    // this.logger.log(ctx);
-    const errorMessage =
-      exception instanceof HttpException
-        ? exception.getResponse()
-        : exception.message;
-    console.log(ctx);
-    console.log(errorMessage);
+  constructor(private readonly logger: AppLogger) {}
 
-    // this.logger.error(errorMessage, 'GraphQLExceptionFilter');
+  catch(exception: any) {
+    if (exception instanceof GraphQLError) {
+      this.logger.error(
+        exception.message,
+        exception.extensions?.code as string,
+      );
 
-    return exception;
+      return exception;
+    }
+
+    this.logger.error(exception.message, ERROR_CODES.UNKNOWN_ERROR);
+    return new CustomUnknownError(exception?.message);
   }
 }

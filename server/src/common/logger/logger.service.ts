@@ -1,5 +1,4 @@
 import { Injectable, LoggerService } from '@nestjs/common';
-import { utilities } from 'nest-winston';
 import { createLogger, format, transports, Logger } from 'winston';
 
 // Logger level: error > warn > info > http > verbose > debug > silly
@@ -19,14 +18,13 @@ export class AppLogger implements LoggerService {
       ),
       transports: [
         new transports.Console({
-          level: 'info',
+          level: 'silly',
           format: format.combine(
-            // format.timestamp(),
+            format.timestamp(),
             format.colorize({ all: true }),
-            utilities.format.nestLike(),
-            // format.printf(({ timestamp, level, message, context }) => {
-            //   return `${timestamp} [${level}]: { context: ${context || 'N/A'}, timestamp: ${timestamp}, message: ${message} }`;
-            // }),
+            format.printf(({ timestamp, level, message, context }) => {
+              return `${timestamp} [${level}] [${context || 'N/A'}]: ${message}`;
+            }),
           ),
         }),
         new transports.File({ filename: 'logs/error.log', level: 'error' }),
