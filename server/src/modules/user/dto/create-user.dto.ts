@@ -11,9 +11,11 @@ import {
 @InputType()
 export class CreateUserInput {
   @Field(() => String)
-  @IsString({ message: 'Username must be a string!' })
-  @MinLength(4, { message: 'Username must be at least 4 characters long!' })
-  username: string;
+  @IsString({ message: 'Phone must be a string!' })
+  @Matches(/^\+?[1-9]\d{1,14}$|^0\d{9}$/, {
+    message: 'Phone number must be in E!164 format!',
+  })
+  phone: string;
 
   @Field(() => String)
   @IsString({ message: 'Password must be a string!' })
@@ -33,14 +35,8 @@ export class CreateUserInput {
   last_name: string;
 
   @Field(() => String)
-  @Matches(/^\+?[1-9]\d{1,14}$|^0\d{9}$/, {
-    message: 'Phone number must be in E!164 format!',
-  })
-  phone: string;
-
-  @Field(() => String)
   @IsEmail({}, { message: 'Email is not valid!' })
-  email: string;
+  email?: string;
 
   @Field(() => Date, { nullable: true })
   @IsOptional()

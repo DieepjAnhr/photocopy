@@ -1,5 +1,6 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Role } from 'src/modules/role/entity/role.entity';
+import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @ObjectType({ description: 'permission' })
 @Entity({ name: 'permissions' })
@@ -15,6 +16,9 @@ export class Permission {
   @Field(() => String)
   @Column()
   value: string;
+
+  @ManyToMany(() => Role, (role) => role.permissions)
+  roles: Role[];
 }
 
 @ObjectType()

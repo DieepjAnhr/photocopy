@@ -1,6 +1,7 @@
 import {
   Args,
   Context,
+  Int,
   Mutation,
   Parent,
   Query,
@@ -16,6 +17,8 @@ import { CurrentUser } from 'src/common/decorators/user.decorator';
 import { UpdateUserInput } from './dto/update-user.dto';
 import { AbstractResolver } from 'src/common/abstracts/resolver.abstract';
 import { AppLogger } from 'src/common/logger/logger.service';
+import { UseAuthGuard } from 'src/common/decorators/auth-guard.decorator';
+import { PERMISSIONS } from 'src/common/shared/constant/permission.constant';
 
 @Resolver(() => User)
 export class UserResolver extends AbstractResolver<UserService> {
@@ -27,6 +30,7 @@ export class UserResolver extends AbstractResolver<UserService> {
   }
 
   @Query(() => User, { nullable: true })
+  @UseAuthGuard([PERMISSIONS.VIEW_USER])
   async user(
     @Args({ name: 'query', nullable: true }) condition: GetOneInput<User>,
   ) {
@@ -36,13 +40,17 @@ export class UserResolver extends AbstractResolver<UserService> {
   }
 
   @Query(() => GetUserType)
+  @UseAuthGuard([PERMISSIONS.VIEW_USER])
   async users(
     @Args({ name: 'query', nullable: true }) query: GetManyInput<User>,
   ) {
-    return await this.userService.getMany(query);
+    const users = await this.userService.getMany(query);
+
+    return users;
   }
 
   @Mutation(() => User)
+  @UseAuthGuard([PERMISSIONS.CREATE_USER])
   async createUser(
     @Args('data') data: CreateUserInput,
     @CurrentUser() user: User,
@@ -51,8 +59,9 @@ export class UserResolver extends AbstractResolver<UserService> {
   }
 
   @Mutation(() => User)
+  @UseAuthGuard([PERMISSIONS.UPDATE_USER])
   async updateUser(
-    @Args('id') id: number,
+    @Args('id', { type: () => Int }) id: number,
     @Args('data') data: UpdateUserInput,
     @CurrentUser() user: User,
   ) {
@@ -60,7 +69,11 @@ export class UserResolver extends AbstractResolver<UserService> {
   }
 
   @Mutation(() => Boolean)
-  async deleteUser(@Args('id') id: number, @CurrentUser() user: User) {
+  @UseAuthGuard([PERMISSIONS.DELETE_USER])
+  async deleteUser(
+    @Args('id', { type: () => Int }) id: number,
+    @CurrentUser() user: User,
+  ) {
     return await this.userService.delete(id, user);
   }
 

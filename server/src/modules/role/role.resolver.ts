@@ -1,6 +1,7 @@
 import {
   Args,
   Context,
+  Int,
   Mutation,
   Parent,
   Query,
@@ -15,6 +16,9 @@ import { Permission } from '../permission/entities/permission.entity';
 import { User } from '../user/entity/user.entity';
 import { AppLogger } from 'src/common/logger/logger.service';
 import { AbstractResolver } from 'src/common/abstracts/resolver.abstract';
+import { UseAuthGuard } from 'src/common/decorators/auth-guard.decorator';
+import { PERMISSIONS } from 'src/common/shared/constant/permission.constant';
+import { CurrentUser } from 'src/common/decorators/user.decorator';
 
 @Resolver(() => Role)
 export class RoleResolver extends AbstractResolver<RoleService> {
@@ -26,13 +30,17 @@ export class RoleResolver extends AbstractResolver<RoleService> {
   }
 
   @Query(() => Role, { nullable: true })
+  @UseAuthGuard([PERMISSIONS.VIEW_ROLE])
   async role(
     @Args({ name: 'query', nullable: true }) condition: GetOneInput<Role>,
   ) {
-    return await this.roleService.getOne(condition);
+    const role = await this.roleService.getOne(condition);
+
+    return role;
   }
 
   @Query(() => GetRoleType)
+  @UseAuthGuard([PERMISSIONS.VIEW_ROLE])
   async roles(
     @Args({ name: 'query', nullable: true }) query: GetManyInput<Role>,
   ) {
@@ -40,21 +48,31 @@ export class RoleResolver extends AbstractResolver<RoleService> {
   }
 
   @Mutation(() => Role)
-  async createRole(@Args('data') data: CreateRoleInput) {
-    return await this.roleService.create(data);
+  @UseAuthGuard([PERMISSIONS.CREATE_ROLE])
+  async createRole(
+    @Args('data') data: CreateRoleInput,
+    @CurrentUser() user: User,
+  ) {
+    return await this.roleService.create(data, user);
   }
 
   @Mutation(() => Role)
+  @UseAuthGuard([PERMISSIONS.UPDATE_ROLE])
   async updateRole(
-    @Args('id') id: number,
+    @Args('id', { type: () => Int }) id: number,
     @Args('data') data: CreateRoleInput,
+    @CurrentUser() user: User,
   ) {
-    return await this.roleService.update(id, data);
+    return await this.roleService.update(id, data, user);
   }
 
   @Mutation(() => Boolean)
-  async deleteRole(@Args('id') id: number) {
-    return await this.roleService.delete(id);
+  @UseAuthGuard([PERMISSIONS.DELETE_ROLE])
+  async deleteRole(
+    @Args('id', { type: () => Int }) id: number,
+    @CurrentUser() user: User,
+  ) {
+    return await this.roleService.delete(id, user);
   }
 
   @ResolveField(() => [Permission], { nullable: true })

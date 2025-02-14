@@ -54,11 +54,13 @@ export abstract class AbstractRepository<T> {
   async getOne(options: {
     where?: IWhere<T>;
     select?: string[];
+    relations?: string[];
   }): Promise<T | null> {
-    const { where, select } = options;
+    const { where, select, relations } = options;
     return await this.repository.findOne({
       where: this.parseQuery(where || {}),
       select,
+      relations,
     } as any);
   }
 
@@ -67,14 +69,16 @@ export abstract class AbstractRepository<T> {
     pagination?: IPagination;
     order?: Record<string, 'ASC' | 'DESC'>;
     select?: string[];
+    relations?: string[];
   }) {
-    const { where, pagination, order, select } = options || {};
+    const { where, pagination, order, select, relations } = options || {};
     const { page, limit } = pagination || {};
     const [data, count] = await this.repository.findAndCount({
       where: this.parseQuery(where || {}),
       ...(pagination && { skip: (page - 1) * limit, take: limit }),
       order,
       select,
+      relations,
     } as FindManyOptions<T>);
 
     return { count, data };
@@ -93,6 +97,10 @@ export abstract class AbstractRepository<T> {
     await this.repository.update(id, data as any);
 
     return await this.getOne({ where: { id } as any });
+  }
+
+  async save(data: DeepPartial<T>) {
+    return await this.repository.save(data);
   }
 
   async delete(id: number, deletedById?: number): Promise<boolean> {

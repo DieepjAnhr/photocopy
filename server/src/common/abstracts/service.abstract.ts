@@ -1,8 +1,11 @@
 import { DeepPartial } from 'typeorm';
 import { AbstractRepository } from './repository.abstract';
-import { GetManyInput, GetOneInput } from '../graphql/query.input';
 import { User } from 'src/modules/user/entity/user.entity';
 import { AppLogger } from '../logger/logger.service';
+import {
+  IRepoQueryMany,
+  IRepoQueryOne,
+} from '../shared/interfaces/repository.input';
 
 export abstract class AbstractService<T, R extends AbstractRepository<T>> {
   private readonly CLASS_NAME = this.constructor.name;
@@ -15,14 +18,14 @@ export abstract class AbstractService<T, R extends AbstractRepository<T>> {
     this._logger = appLogger;
   }
 
-  async getOne(args?: GetOneInput<T>): Promise<T | null> {
+  async getOne(args?: IRepoQueryOne<T>): Promise<T | null> {
     this.logger.debug(`Fetching one record with arg: ${JSON.stringify(args)}`);
     const result = await this.repository.getOne(args as any);
 
     return result;
   }
 
-  async getMany(args?: GetManyInput<T>): Promise<IPaginationResponse<T>> {
+  async getMany(args?: IRepoQueryMany<T>): Promise<IPaginationResponse<T>> {
     this.logger.debug(`Fetching many record with arg: ${JSON.stringify(args)}`);
     const results = await this.repository.getPagination(args as any);
 
@@ -61,12 +64,13 @@ export abstract class AbstractService<T, R extends AbstractRepository<T>> {
       `Update record by ${updatedById} with arg: ${JSON.stringify(data)}`,
     );
 
-    const result = await this.repository.update(id, {
-      ...data,
-      updated_by: updatedById,
-    });
+    const model = await this.repository.getOne({ where: { id } as any });
 
-    return result;
+    if (!model) return null;
+
+    Object.assign(model, data, { updated_by: updatedById });
+
+    return await this.repository.save(model);
   }
 
   async delete(id: number, deletedBy?: User): Promise<boolean> {

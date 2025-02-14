@@ -15,6 +15,7 @@ import { envValidation } from './common/helpers/env.validation';
 import { GraphQLError } from 'graphql';
 import { ERROR_CODES } from './common/exceptions/constant.exception';
 import { LoggerModule } from './common/logger/logger.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -36,11 +37,15 @@ import { LoggerModule } from './common/logger/logger.module';
             loaders: dataloaderService.createLoaders(),
           }),
           formatError: (error: GraphQLError) => {
+            const extensions = error?.extensions;
+
             return {
-              status: error.extensions?.code || ERROR_CODES.UNKNOWN_ERROR,
+              status: extensions?.code || ERROR_CODES.UNKNOWN_ERROR,
               message: error.message,
               path: error.path || null,
-              details: error.extensions?.details || null,
+              extensions: {
+                code: extensions?.code,
+              },
             };
           },
         };
@@ -65,6 +70,7 @@ import { LoggerModule } from './common/logger/logger.module';
       }),
     }),
     LoggerModule,
+    AuthModule,
     UserModule,
     RoleModule,
     PermissionModule,

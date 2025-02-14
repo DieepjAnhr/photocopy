@@ -1,4 +1,4 @@
-import { Catch, ExceptionFilter } from '@nestjs/common';
+import { BadRequestException, Catch, ExceptionFilter } from '@nestjs/common';
 import { AppLogger } from '../logger/logger.service';
 import { GraphQLError } from 'graphql';
 import { ERROR_CODES } from '../exceptions/constant.exception';
@@ -11,6 +11,15 @@ export class AppExceptionFilter implements ExceptionFilter {
   constructor(private readonly logger: AppLogger) {}
 
   catch(exception: any) {
+    console.log(exception);
+
+    if (this.isValidationException(exception)) {
+      const message = exception.response.message.join(', ');
+      this.logger.error(message, ERROR_CODES.BAD_REQUEST);
+
+      return new BadRequestException(message, ERROR_CODES.BAD_REQUEST);
+    }
+
     if (exception instanceof GraphQLError) {
       this.logger.error(
         exception.message,
@@ -22,5 +31,9 @@ export class AppExceptionFilter implements ExceptionFilter {
 
     this.logger.error(exception.message, ERROR_CODES.UNKNOWN_ERROR);
     return new CustomUnknownError(exception?.message);
+  }
+
+  private isValidationException(exception: any) {
+    return Array.isArray(exception?.response?.message);
   }
 }

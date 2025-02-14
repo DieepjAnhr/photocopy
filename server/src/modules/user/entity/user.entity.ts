@@ -1,7 +1,15 @@
 import { Field, HideField, ID, ObjectType } from '@nestjs/graphql';
-import { BeforeInsert, BeforeUpdate, Column, Entity } from 'typeorm';
+import {
+  BeforeInsert,
+  BeforeUpdate,
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+} from 'typeorm';
 import bcrypt from 'bcrypt';
 import { AbstractEntity } from 'src/common/abstracts/entity.abstract';
+import { Role } from 'src/modules/role/entity/role.entity';
 
 const BCRYPT_HASH_ROUNDS = 10;
 
@@ -10,7 +18,7 @@ const BCRYPT_HASH_ROUNDS = 10;
 export class User extends AbstractEntity {
   @Field(() => String)
   @Column()
-  username: string;
+  phone: string;
 
   @HideField()
   @Column()
@@ -28,13 +36,9 @@ export class User extends AbstractEntity {
   @Column()
   last_name: string;
 
-  @Field(() => String)
-  @Column()
-  phone: string;
-
-  @Field(() => String)
-  @Column()
-  email: string;
+  @Field(() => String, { nullable: true })
+  @Column({ nullable: true })
+  email?: string;
 
   @Field(() => Date, { nullable: true })
   @Column({ type: 'date', nullable: true })
@@ -44,9 +48,23 @@ export class User extends AbstractEntity {
   @Column({ nullable: true })
   avatar?: string;
 
-  @Field(() => String, { nullable: true })
+  @HideField()
   @Column({ nullable: true })
   refresh_token?: string;
+
+  @ManyToMany(() => Role, (role) => role.users, { cascade: true })
+  @JoinTable({
+    name: 'user_roles',
+    joinColumn: {
+      name: 'user_id',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'role_id',
+      referencedColumnName: 'id',
+    },
+  })
+  roles: Role[];
 
   @BeforeInsert()
   @BeforeUpdate()
@@ -54,6 +72,14 @@ export class User extends AbstractEntity {
     try {
       if (this.password && !this.password.startsWith('$2')) {
         this.password = await bcrypt.hash(this.password, BCRYPT_HASH_ROUNDS);
+      }
+
+      if (!this.created_by) {
+        this.created_by = this.id;
+      }
+
+      if (!this.updated_by) {
+        this.updated_by = this.id;
       }
     } catch (error) {
       console.error('Error in BeforeInsert/BeforeUpdate user:', error);
