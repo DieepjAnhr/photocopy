@@ -77,12 +77,44 @@ input CreateFileUploadInput {
   url: String!
 }
 
+input CreateOrderDetailInput {
+  description: String
+  discount: Int! = 0
+  discount_detail_ids: [ID!]! = []
+  final_cost: Int! = 0
+  order_id: ID!
+  price: Int! = 0
+  product_id: ID!
+  quantity: Int! = 0
+  service_detail_ids: [ID!]! = []
+  service_fee: Int! = 0
+  tax: Int! = 0
+  tax_detail_ids: [ID!]! = []
+  total_cost: Int! = 0
+  variant_id: ID!
+}
+
+input CreateOrderInput {
+  customer_id: ID!
+  description: String
+  discount: Int! = 0
+  discount_detail_ids: [ID!]! = []
+  final_cost: Int! = 0
+  order_detail_ids: [ID!]!
+  service_detail_ids: [ID!]! = []
+  service_fee: Int! = 0
+  tax: Int! = 0
+  tax_detail_ids: [ID!]! = []
+  total_cost: Int! = 0
+}
+
 input CreatePermissionInput {
   label: String!
   value: String
 }
 
 input CreateProductInput {
+  attribute_ids: [ID!]!
   category_ids: [ID!]!
   code: String
   description: String
@@ -95,6 +127,7 @@ input CreateProductInput {
   sale_price: Int
   sku: String
   status: String!
+  variant_ids: [ID!]!
 }
 
 input CreateRoleInput {
@@ -182,6 +215,11 @@ input GetOneInput {
   where: JSON!
 }
 
+type GetOrderType {
+  count: Float
+  data: [Order!]
+}
+
 type GetPermissionType {
   count: Float
   data: [Permission!]
@@ -230,6 +268,8 @@ type Mutation {
   createBlog(data: CreateBlogInput!): Blog!
   createCategory(data: CreateCategoryInput!): Category!
   createFile(data: CreateFileUploadInput!): FileUpload!
+  createOrder(data: CreateOrderInput!): Order!
+  createOrderDetail(data: CreateOrderDetailInput!): OrderDetail!
   createPermission(data: CreatePermissionInput!): Permission!
   createProduct(data: CreateProductInput!): Product!
   createRole(data: CreateRoleInput!): Role!
@@ -239,6 +279,8 @@ type Mutation {
   deleteBlog(id: Int!): Boolean!
   deleteCategory(id: Int!): Boolean!
   deleteFile(id: Int!): Boolean!
+  deleteOrder(id: Int!): Boolean!
+  deleteOrderDetail(id: Int!): Boolean!
   deletePermission(id: Int!): Boolean!
   deleteProduct(id: Int!): Boolean!
   deleteRole(id: Int!): Boolean!
@@ -251,12 +293,68 @@ type Mutation {
   updateAttribute(data: UpdateAttributeInput!, id: Int!): Attribute!
   updateBlog(data: UpdateBlogInput!, id: Int!): Blog!
   updateCategory(data: UpdateCategoryInput!, id: Int!): Category!
-  updateFile(data: CreateFileUploadInput!, id: Int!): FileUpload!
+  updateFile(data: UpdateFileUploadInput!, id: Int!): FileUpload!
+  updateOrder(data: UpdateOrderInput!, id: Int!): Order!
+  updateOrderDetail(data: UpdateOrderDetailInput!, id: Int!): OrderDetail!
   updatePermission(data: CreatePermissionInput!, id: Int!): Permission!
-  updateProduct(data: CreateProductInput!, id: Int!): Product!
-  updateRole(data: CreateRoleInput!, id: Int!): Role!
+  updateProduct(data: UpdateProductInput!, id: Int!): Product!
+  updateRole(data: UpdateRoleInput!, id: Int!): Role!
   updateUser(data: UpdateUserInput!, id: Int!): User!
   updateVariant(data: UpdateVariantInput!, id: Int!): Variant!
+}
+
+"""order"""
+type Order {
+  created_at: Float
+  created_by: ID
+  creator: User
+  customer_id: ID!
+  deleted_at: Float
+  deleted_by: ID
+  description: String
+  discount: Int!
+  discount_detail_ids: [ID!]!
+  final_cost: Int!
+  id: ID!
+  order_detail_ids: [ID!]!
+  payment_status: String!
+  service_detail_ids: [ID!]!
+  service_fee: Int!
+  shipping_status: String!
+  status: String!
+  tax: Int!
+  tax_detail_ids: [ID!]!
+  total_cost: Int!
+  updated_at: Float
+  updated_by: ID
+  updater: User
+}
+
+"""order_detail"""
+type OrderDetail {
+  created_at: Float
+  created_by: ID
+  creator: User
+  deleted_at: Float
+  deleted_by: ID
+  description: String
+  discount: Int!
+  discount_detail_ids: [ID!]!
+  final_cost: Int!
+  id: ID!
+  order_id: ID!
+  price: Int!
+  product_id: ID!
+  quantity: Int!
+  service_detail_ids: [ID!]!
+  service_fee: Int!
+  tax: Int!
+  tax_detail_ids: [ID!]!
+  total_cost: Int!
+  updated_at: Float
+  updated_by: ID
+  updater: User
+  variant_id: ID!
 }
 
 """permission"""
@@ -268,6 +366,8 @@ type Permission {
 
 """product"""
 type Product {
+  attribute_ids: [ID!]!
+  attributes: [Attribute!]
   category_ids: [ID!]!
   code: String
   created_at: Float
@@ -290,6 +390,8 @@ type Product {
   updated_at: Float
   updated_by: ID
   updater: User
+  variant_ids: [ID!]!
+  variants: [Variant!]
 }
 
 type Query {
@@ -301,6 +403,10 @@ type Query {
   category(query: GetOneInput): Category
   file(query: GetOneInput): FileUpload
   files(query: GetManyInput): GetFileUploadType!
+  order(query: GetOneInput): Order
+  orderDetail(query: GetOneInput): OrderDetail
+  orderDetails(query: GetManyInput): GetOrderType!
+  orders(query: GetManyInput): GetOrderType!
   permission(query: GetOneInput): Permission
   permissions(query: GetManyInput): GetPermissionType!
   product(query: GetOneInput): Product
@@ -359,6 +465,65 @@ input UpdateCategoryInput {
   parent_id: ID
 }
 
+input UpdateFileUploadInput {
+  name: String
+  url: String
+}
+
+input UpdateOrderDetailInput {
+  description: String
+  discount: Int = 0
+  discount_detail_ids: [ID!] = []
+  final_cost: Int = 0
+  order_id: ID
+  price: Int = 0
+  product_id: ID
+  quantity: Int = 0
+  service_detail_ids: [ID!] = []
+  service_fee: Int = 0
+  tax: Int = 0
+  tax_detail_ids: [ID!] = []
+  total_cost: Int = 0
+  variant_id: ID
+}
+
+input UpdateOrderInput {
+  customer_id: ID
+  description: String
+  discount: Int = 0
+  discount_detail_ids: [ID!] = []
+  final_cost: Int = 0
+  order_detail_ids: [ID!]
+  service_detail_ids: [ID!] = []
+  service_fee: Int = 0
+  tax: Int = 0
+  tax_detail_ids: [ID!] = []
+  total_cost: Int = 0
+}
+
+input UpdateProductInput {
+  attribute_ids: [ID!]
+  category_ids: [ID!]
+  code: String
+  description: String
+  images: [ID!]
+  like: Int = 0
+  name: String
+  price: Int
+  rate: Int = 0
+  regular_price: Int
+  sale_price: Int
+  sku: String
+  status: String
+  variant_ids: [ID!]
+}
+
+input UpdateRoleInput {
+  description: String
+  name: String
+  permission_ids: [ID!]
+}
+
 input UpdateUserInput {
   avatar: String
   birthday: DateTime
@@ -415,11 +580,12 @@ type Variant {
   id: ID!
   images: [ID!]
   price: Int!
+  product_id: ID!
   regular_price: Int!
   sale_price: Int!
   sku: String
-  slug: String!
-  status: String!
+  slug: String
+  status: String
   title: String!
   updated_at: Float
   updated_by: ID

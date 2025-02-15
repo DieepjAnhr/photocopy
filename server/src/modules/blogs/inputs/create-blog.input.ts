@@ -8,11 +8,11 @@ export class CreateBlogInput {
   @IsString({ message: 'Tiêu đề bài viết cần là chuỗi ký tự!' })
   title: string;
 
-  @Field(() => ID, { nullable: true })
-  @IsArray()
-  category_ids: number[];
-
   @Field(() => String)
   @IsString({ message: 'Nội dung bài viết cần là chuỗi ký tự' })
   content: string;
+
+  @Field(() => ID, { nullable: true })
+  @IsArray()
+  category_ids: number[];
 }

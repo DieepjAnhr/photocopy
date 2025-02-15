@@ -22,10 +22,6 @@ export class Blog extends AbstractEntity {
   @Column()
   slug: string;
 
-  @Field(() => [ID])
-  @Column('int', { array: true })
-  category_ids: number[];
-
   @Field(() => String)
   @Column()
   content: string;
@@ -33,6 +29,10 @@ export class Blog extends AbstractEntity {
   @Field(() => String, { nullable: true })
   @Column({ nullable: true })
   short_description?: string;
+
+  @Field(() => [ID])
+  @Column('int', { array: true })
+  category_ids: number[];
 
   @ManyToMany(() => Category, (category) => category.blogs, { cascade: true })
   @JoinTable({

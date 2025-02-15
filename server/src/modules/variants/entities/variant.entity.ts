@@ -4,20 +4,27 @@ import {
   BeforeUpdate,
   Column,
   Entity,
-  ManyToMany,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
 } from 'typeorm';
 import { AbstractEntity } from 'src/common/abstracts/entity.abstract';
 import slugify from 'slugify';
 import { Product } from 'src/modules/products/entities/product.entity';
+import { OrderDetail } from 'src/modules/order-details/entities/order-detail.entity';
 
 @ObjectType({ description: 'variant' })
 @Entity({ name: 'variants' })
 export class Variant extends AbstractEntity {
+  @Field(() => ID)
+  @Column()
+  product_id: number;
+
   @Field(() => String)
   @Column()
   title: string;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   @Column()
   slug: string;
 
@@ -33,7 +40,7 @@ export class Variant extends AbstractEntity {
   @Column('int', { array: true, nullable: true })
   images: number[];
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   @Column()
   status: string;
 
@@ -53,8 +60,14 @@ export class Variant extends AbstractEntity {
   @Column({ nullable: true })
   description?: string;
 
-  @ManyToMany(() => Product, (product) => product.variants)
-  products: Product[];
+  @ManyToOne(() => Product, (product) => product.variants, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'product_id' })
+  product: Product;
+
+  @OneToMany(() => OrderDetail, (orderDetail) => orderDetail.variant)
+  order_details: OrderDetail[];
 
   @BeforeInsert()
   @BeforeUpdate()

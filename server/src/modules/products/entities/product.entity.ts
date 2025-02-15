@@ -6,12 +6,14 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
+  OneToMany,
 } from 'typeorm';
 import { AbstractEntity } from 'src/common/abstracts/entity.abstract';
 import slugify from 'slugify';
 import { Category } from 'src/modules/categories/entities/category.entity';
 import { Attribute } from 'src/modules/attributes/entities/attribute.entity';
 import { Variant } from 'src/modules/variants/entities/variant.entity';
+import { OrderDetail } from 'src/modules/order-details/entities/order-detail.entity';
 
 @ObjectType({ description: 'product' })
 @Entity({ name: 'products' })
@@ -31,10 +33,6 @@ export class Product extends AbstractEntity {
   @Field(() => String, { nullable: true })
   @Column({ nullable: true })
   code?: string;
-
-  @Field(() => [ID])
-  @Column('int', { array: true })
-  category_ids: number[];
 
   @Field(() => [ID], { nullable: true })
   @Column('int', { array: true, nullable: true })
@@ -68,6 +66,18 @@ export class Product extends AbstractEntity {
   @Column({ nullable: true })
   description?: string;
 
+  @Field(() => [ID])
+  @Column('int', { array: true })
+  category_ids: number[];
+
+  @Field(() => [ID])
+  @Column('int', { array: true })
+  attribute_ids: number[];
+
+  @Field(() => [ID])
+  @Column('int', { array: true })
+  variant_ids: number[];
+
   @ManyToMany(() => Category, (category) => category.products, {
     cascade: true,
   })
@@ -100,21 +110,11 @@ export class Product extends AbstractEntity {
   })
   attributes: Attribute[];
 
-  @ManyToMany(() => Variant, (variant) => variant.products, {
-    cascade: true,
-  })
-  @JoinTable({
-    name: 'product_variants',
-    joinColumn: {
-      name: 'product_id',
-      referencedColumnName: 'id',
-    },
-    inverseJoinColumn: {
-      name: 'variant_id',
-      referencedColumnName: 'id',
-    },
-  })
+  @OneToMany(() => Variant, (variant) => variant.product, { cascade: true })
   variants: Variant[];
+
+  @OneToMany(() => OrderDetail, (orderDetail) => orderDetail.product)
+  order_details: OrderDetail[];
 
   @BeforeInsert()
   @BeforeUpdate()

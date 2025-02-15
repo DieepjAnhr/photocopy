@@ -25,10 +25,6 @@ export class CreateProductInput {
   @IsString()
   code?: string;
 
-  @Field(() => [ID])
-  @IsArray()
-  category_ids: number[];
-
   @Field(() => [ID], { nullable: true })
   @IsOptional()
   @IsArray()
@@ -66,4 +62,16 @@ export class CreateProductInput {
   @Field(() => String, { nullable: true })
   @IsString()
   description?: string;
+
+  @Field(() => [ID])
+  @IsArray()
+  category_ids: number[];
+
+  @Field(() => [ID])
+  @IsArray()
+  attribute_ids: number[];
+
+  @Field(() => [ID])
+  @IsArray()
+  variant_ids: number[];
 }

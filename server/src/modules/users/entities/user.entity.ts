@@ -24,10 +24,6 @@ export class User extends AbstractEntity {
   @Column()
   password: string;
 
-  @Field(() => [ID], { nullable: true })
-  @Column('int', { array: true, nullable: true })
-  role_ids?: number[];
-
   @Field(() => String, { nullable: true })
   @Column({ nullable: true })
   first_name?: string;
@@ -51,6 +47,10 @@ export class User extends AbstractEntity {
   @HideField()
   @Column({ nullable: true })
   refresh_token?: string;
+
+  @Field(() => [ID], { nullable: true })
+  @Column('int', { array: true, nullable: true })
+  role_ids?: number[];
 
   @ManyToMany(() => Role, (role) => role.users, { cascade: true })
   @JoinTable({

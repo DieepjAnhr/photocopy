@@ -19,6 +19,7 @@ import { AbstractResolver } from 'src/common/abstracts/resolver.abstract';
 import { UseAuthGuard } from 'src/common/decorators/auth-guard.decorator';
 import { PERMISSIONS } from 'src/common/shared/constant/permission.constant';
 import { CurrentUser } from 'src/common/decorators/user.decorator';
+import { UpdateRoleInput } from './inputs/update-role.input';
 
 @Resolver(() => Role)
 export class RoleResolver extends AbstractResolver<RoleService> {
@@ -60,7 +61,7 @@ export class RoleResolver extends AbstractResolver<RoleService> {
   @UseAuthGuard([PERMISSIONS.UPDATE_ROLE])
   async updateRole(
     @Args('id', { type: () => Int }) id: number,
-    @Args('data') data: CreateRoleInput,
+    @Args('data') data: UpdateRoleInput,
     @CurrentUser() user: User,
   ) {
     return await this.roleService.update(id, data, user);

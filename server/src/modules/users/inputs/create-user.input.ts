@@ -1,5 +1,6 @@
 import { Field, ID, InputType } from '@nestjs/graphql';
 import {
+  IsArray,
   IsDate,
   IsEmail,
   IsOptional,
@@ -21,9 +22,6 @@ export class CreateUserInput {
   @IsString({ message: 'Password must be a string!' })
   @MinLength(4, { message: 'Password must be at least 4 characters long!' })
   password: string;
-
-  @Field(() => [ID], { nullable: true })
-  role_ids?: number[];
 
   @Field(() => String, { nullable: true })
   @IsOptional()
@@ -47,4 +45,9 @@ export class CreateUserInput {
   @IsOptional()
   @IsString({ message: 'Avatar must be a url!' })
   avatar?: string;
+
+  @Field(() => [ID], { nullable: true })
+  @IsOptional()
+  @IsArray()
+  role_ids?: number[];
 }

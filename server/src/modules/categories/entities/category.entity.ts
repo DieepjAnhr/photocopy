@@ -22,10 +22,6 @@ export class Category extends AbstractEntity {
   @Column()
   slug: string;
 
-  @Field(() => [ID], { nullable: true })
-  @Column('int', { array: true, nullable: true })
-  children_ids?: number[];
-
   @Field(() => ID, { nullable: true })
   @Column({ nullable: true })
   parent_id?: number;
@@ -33,6 +29,10 @@ export class Category extends AbstractEntity {
   @Field(() => String, { nullable: true })
   @Column({ nullable: true })
   description?: string;
+
+  @Field(() => [ID], { nullable: true })
+  @Column('int', { array: true, nullable: true })
+  children_ids?: number[];
 
   @ManyToMany(() => Blog, (blog) => blog.categories)
   blogs: Blog[];

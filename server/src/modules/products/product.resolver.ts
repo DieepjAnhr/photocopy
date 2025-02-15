@@ -19,6 +19,9 @@ import { PERMISSIONS } from 'src/common/shared/constant/permission.constant';
 import { GetProductType, Product } from './entities/product.entity';
 import { ProductService } from './product.service';
 import { CreateProductInput } from './inputs/create-product.input';
+import { Attribute } from '../attributes/entities/attribute.entity';
+import { Variant } from '../variants/entities/variant.entity';
+import { UpdateProductInput } from './inputs/update-product.input';
 
 @Resolver(() => Product)
 export class ProductResolver extends AbstractResolver<ProductService> {
@@ -59,7 +62,7 @@ export class ProductResolver extends AbstractResolver<ProductService> {
   @UseAuthGuard([PERMISSIONS.UPDATE_FILE])
   async updateProduct(
     @Args('id', { type: () => Int }) id: number,
-    @Args('data') data: CreateProductInput,
+    @Args('data') data: UpdateProductInput,
     @CurrentUser() user: User,
   ) {
     return await this.productService.update(id, data, user);
@@ -72,6 +75,28 @@ export class ProductResolver extends AbstractResolver<ProductService> {
     @CurrentUser() user: User,
   ) {
     return await this.productService.delete(id, user);
+  }
+
+  @ResolveField(() => [Attribute], { nullable: true })
+  async attributes(
+    @Parent() product: Product,
+    @Context() { loaders }: IGraphQLContext,
+  ) {
+    const attributes = await loaders.attributesLoader.load(
+      product.attribute_ids || [],
+    );
+    return attributes;
+  }
+
+  @ResolveField(() => [Variant], { nullable: true })
+  async variants(
+    @Parent() product: Product,
+    @Context() { loaders }: IGraphQLContext,
+  ) {
+    const attributes = await loaders.variantsLoader.load(
+      product.variant_ids || [],
+    );
+    return attributes;
   }
 
   @ResolveField(() => User, { nullable: true })

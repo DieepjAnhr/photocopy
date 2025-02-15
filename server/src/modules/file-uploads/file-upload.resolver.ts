@@ -18,6 +18,7 @@ import { GetManyInput, GetOneInput } from 'src/common/graphql/query.input';
 import { CreateFileUploadInput } from './inputs/create-file-upload.input';
 import { CurrentUser } from 'src/common/decorators/user.decorator';
 import { PERMISSIONS } from 'src/common/shared/constant/permission.constant';
+import { UpdateFileUploadInput } from './inputs/update-file-upload.input';
 
 @Resolver(() => FileUpload)
 export class FileUploadResolver extends AbstractResolver<FileUploadService> {
@@ -58,7 +59,7 @@ export class FileUploadResolver extends AbstractResolver<FileUploadService> {
   @UseAuthGuard([PERMISSIONS.UPDATE_FILE])
   async updateFile(
     @Args('id', { type: () => Int }) id: number,
-    @Args('data') data: CreateFileUploadInput,
+    @Args('data') data: UpdateFileUploadInput,
     @CurrentUser() user: User,
   ) {
     return await this.fileUploadService.update(id, data, user);

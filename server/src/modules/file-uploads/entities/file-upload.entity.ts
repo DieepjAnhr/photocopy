@@ -14,10 +14,6 @@ export class FileUpload extends AbstractEntity {
   @Column()
   slug: string;
 
-  @Field(() => ID)
-  @Column()
-  owner_by: number;
-
   @Field()
   @Column()
   type: string;
@@ -29,6 +25,10 @@ export class FileUpload extends AbstractEntity {
   @Field(() => String)
   @Column()
   status: string;
+
+  @Field(() => ID)
+  @Column()
+  owner_by: number;
 
   @BeforeInsert()
   @BeforeUpdate()

@@ -11,13 +11,13 @@ export class Role extends AbstractEntity {
   @Column()
   name: string;
 
-  @Field(() => [ID], { nullable: true })
-  @Column('int', { array: true, nullable: true })
-  permission_ids?: number[];
-
   @Field(() => String, { nullable: true })
   @Column({ nullable: true })
   description?: string;
+
+  @Field(() => [ID], { nullable: true })
+  @Column('int', { array: true, nullable: true })
+  permission_ids?: number[];
 
   @ManyToMany(() => User, (user) => user.roles)
   users: User[];

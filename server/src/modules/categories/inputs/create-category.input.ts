@@ -11,11 +11,11 @@ export class CreateCategoryInput {
   @IsNumber()
   parent_id?: number;
 
-  @Field(() => ID, { nullable: true })
-  @IsArray()
-  children_ids?: number[];
-
   @Field(() => String, { nullable: true })
   @IsString({ message: 'Mô tả cần là chuỗi ký tự' })
   description?: string;
+
+  @Field(() => ID, { nullable: true })
+  @IsArray()
+  children_ids?: number[];
 }
