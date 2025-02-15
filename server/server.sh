@@ -34,12 +34,12 @@ generateNestModule() {
 
   # touch $CUR_DIR/src/modules/$name/$name.repository.ts
 
-  mkdir $CUR_DIR/src/modules/$name/dto
-  touch $CUR_DIR/src/modules/$name/dto/create-$name.input.ts
-  touch $CUR_DIR/src/modules/$name/dto/update-$name.input.ts
+  mkdir $CUR_DIR/src/modules/$name/inputs
+  touch $CUR_DIR/src/modules/$name/inputs/create-$name.input.ts
+  touch $CUR_DIR/src/modules/$name/inputs/update-$name.input.ts
 
-  mkdir $CUR_DIR/src/modules/$name/entity
-  touch $CUR_DIR/src/modules/$name/entity/$name.entity.ts
+  mkdir $CUR_DIR/src/modules/$name/entities
+  touch $CUR_DIR/src/modules/$name/entities/$name.entity.ts
 }
 
 generateJwtPrivateKey() {

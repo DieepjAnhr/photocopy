@@ -3,7 +3,8 @@ import { Reflector } from '@nestjs/core';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { AuthGuard } from '@nestjs/passport';
 import { GUARD_ROLE } from '../decorators/auth-guard.decorator';
-import { User } from 'src/modules/user/entity/user.entity';
+import { User } from 'src/modules/users/entities/user.entity';
+import { ALL_USER_PERMISSIONS } from '../shared/constant/permission.constant';
 
 @Injectable()
 export class GraphqlPassportAuthGuard extends AuthGuard('jwt') {
@@ -21,22 +22,22 @@ export class GraphqlPassportAuthGuard extends AuthGuard('jwt') {
     const req = ctx.getContext().req;
     const user: User = req.user;
 
-    const permissions = [];
+    const permissions = new Set([...ALL_USER_PERMISSIONS]);
     if (Array.isArray(user?.roles)) {
       user.roles.forEach((role) => {
         if (Array.isArray(role?.permissions)) {
           role.permissions.map((permission) => {
-            permissions.push(permission.value);
+            permissions.add(permission.value);
           });
         }
       });
     }
 
-    if (permissions.includes('FULL_ACCESS')) {
+    if (permissions.has('FULL_ACCESS')) {
       return true;
     }
 
-    return this.hasAccess(permissions, requiredPermissions);
+    return this.hasAccess([...permissions], requiredPermissions);
   }
 
   getRequest(context: ExecutionContext) {

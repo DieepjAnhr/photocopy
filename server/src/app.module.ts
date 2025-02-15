@@ -3,19 +3,27 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { JSONResolver } from 'graphql-scalars';
 import { join } from 'path';
-import { UserModule } from './modules/user/user.module';
-import { RoleModule } from './modules/role/role.module';
+import { UserModule } from './modules/users/user.module';
+import { RoleModule } from './modules/roles/role.module';
 import { DataloaderModule } from './common/dataloader/dataloader.module';
 import { DataloaderService } from './common/dataloader/dataloader.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { PermissionModule } from './modules/permission/permission.module';
+import { PermissionModule } from './modules/permissions/permission.module';
 import { getEnvPath } from './common/helpers/env.helper';
 import { envValidation } from './common/helpers/env.validation';
 import { GraphQLError } from 'graphql';
 import { ERROR_CODES } from './common/exceptions/constant.exception';
 import { LoggerModule } from './common/logger/logger.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { BlogModule } from './modules/blogs/blog.module';
+import { CategoryModule } from './modules/categories/category.module';
+import { ProductModule } from './modules/products/product.module';
+import { OrderModule } from './modules/orders/order.module';
+import { FileUploadModule } from './modules/file-uploads/file-upload.module';
+import { OrderDetailModule } from './modules/order-details/order-detail.module';
+import { AttributeModule } from './modules/attributes/attribute.module';
+import { VariantModule } from './modules/variants/variant.module';
 
 @Module({
   imports: [
@@ -71,9 +79,17 @@ import { AuthModule } from './modules/auth/auth.module';
     }),
     LoggerModule,
     AuthModule,
-    UserModule,
-    RoleModule,
+    BlogModule,
+    CategoryModule,
     PermissionModule,
+    RoleModule,
+    UserModule,
+    ProductModule,
+    AttributeModule,
+    VariantModule,
+    OrderModule,
+    FileUploadModule,
+    OrderDetailModule,
   ],
 })
 export class AppModule {}

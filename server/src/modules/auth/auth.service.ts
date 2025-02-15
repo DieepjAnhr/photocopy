@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import bcrypt from 'bcrypt';
-import { UserService } from '../user/user.service';
-import { User } from '../user/entity/user.entity';
+import { UserService } from '../users/user.service';
+import { User } from '../users/entities/user.entity';
 import { AppLogger } from 'src/common/logger/logger.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { EnvironmentVariables } from 'src/common/helpers/env.validation';
 import { UtilService } from 'src/common/shared/utils/util.service';
-import { SignInInput, SignUpInput } from './dto/auth.dto';
-import { JwtWithUser } from './entity/auth._entity';
+import { SignInInput, SignUpInput } from './inputs/auth.input';
+import { JwtWithUser } from './entities/auth._entity';
 import { CustomBadRequestError } from 'src/common/exceptions/bad-request.exception';
 
 @Injectable()

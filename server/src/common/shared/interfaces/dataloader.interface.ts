@@ -1,10 +1,22 @@
 import DataLoader from 'dataloader';
-import { Permission } from 'src/modules/permission/entities/permission.entity';
-import { Role } from 'src/modules/role/entity/role.entity';
-import { User } from 'src/modules/user/entity/user.entity';
+import { Attribute } from 'src/modules/attributes/entities/attribute.entity';
+import { Blog } from 'src/modules/blogs/entities/blog.entity';
+import { Category } from 'src/modules/categories/entities/category.entity';
+import { FileUpload } from 'src/modules/file-uploads/entities/file-upload.entity';
+import { Permission } from 'src/modules/permissions/entities/permission.entity';
+import { Product } from 'src/modules/products/entities/product.entity';
+import { Role } from 'src/modules/roles/entities/role.entity';
+import { User } from 'src/modules/users/entities/user.entity';
+import { Variant } from 'src/modules/variants/entities/variant.entity';
 
 export interface IDataloader {
-  usersLoader: DataLoader<number[], User[]>;
-  rolesLoader: DataLoader<number[], Role[]>;
+  attributesLoader: DataLoader<number[], Attribute[]>;
+  blogsLoader: DataLoader<number[], Blog[]>;
+  categoriesLoader: DataLoader<number[], Category[]>;
+  fileUploadLoader: DataLoader<number[], FileUpload[]>;
   permissionsLoader: DataLoader<number[], Permission[]>;
+  productLoader: DataLoader<number[], Product[]>;
+  rolesLoader: DataLoader<number[], Role[]>;
+  usersLoader: DataLoader<number[], User[]>;
+  variantsLoader: DataLoader<number[], Variant[]>;
 }

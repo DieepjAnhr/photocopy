@@ -4,7 +4,7 @@ import { PassportStrategy } from '@nestjs/passport';
 
 import { ExtractJwt, Strategy, VerifiedCallback } from 'passport-jwt';
 
-import { UserService } from '../../user/user.service';
+import { UserService } from '../../users/user.service';
 import { EnvironmentVariables } from 'src/common/helpers/env.validation';
 import { CustomUnauthorizedError } from 'src/common/exceptions/unauthorize.exception';
 

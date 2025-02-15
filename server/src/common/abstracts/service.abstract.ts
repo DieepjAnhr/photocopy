@@ -1,6 +1,6 @@
 import { DeepPartial } from 'typeorm';
 import { AbstractRepository } from './repository.abstract';
-import { User } from 'src/modules/user/entity/user.entity';
+import { User } from 'src/modules/users/entities/user.entity';
 import { AppLogger } from '../logger/logger.service';
 import {
   IRepoQueryMany,

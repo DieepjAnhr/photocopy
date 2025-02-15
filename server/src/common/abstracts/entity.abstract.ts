@@ -13,7 +13,7 @@ export abstract class AbstractEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Field(() => Number, { nullable: true })
+  @Field(() => ID, { nullable: true })
   @Column({ nullable: true })
   created_by?: number;
 
@@ -21,7 +21,7 @@ export abstract class AbstractEntity {
   @CreateDateColumn()
   created_at?: number;
 
-  @Field(() => Number, { nullable: true })
+  @Field(() => ID, { nullable: true })
   @Column({ nullable: true })
   updated_by?: number;
 
@@ -29,7 +29,7 @@ export abstract class AbstractEntity {
   @UpdateDateColumn()
   updated_at?: number;
 
-  @Field(() => Number, { nullable: true })
+  @Field(() => ID, { nullable: true })
   @Column({ nullable: true })
   deleted_by?: number;
 

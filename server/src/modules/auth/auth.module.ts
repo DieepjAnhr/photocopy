@@ -7,7 +7,7 @@ import { AuthResolver } from './auth.resolver';
 import { AuthService } from './auth.service';
 import { JwtRefreshTokenStrategy } from './strategies/jwt-refresh.strategy';
 import { EnvironmentVariables } from 'src/common/helpers/env.validation';
-import { UserModule } from '../user/user.module';
+import { UserModule } from '../users/user.module';
 import { JwtAccessTokenStrategy } from './strategies/jwt-access.strategy';
 import { LocalStrategy } from './strategies/local.strategy';
 import { UtilModule } from 'src/common/shared/utils/util.module';

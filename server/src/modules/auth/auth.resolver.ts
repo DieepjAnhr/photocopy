@@ -3,10 +3,10 @@ import { Args, Mutation, Resolver } from '@nestjs/graphql';
 
 import { CurrentUser } from 'src/common/decorators/user.decorator';
 import { AuthService } from './auth.service';
-import { JwtWithUser } from './entity/auth._entity';
-import { SignInInput, SignUpInput } from './dto/auth.dto';
-import { User } from '../user/entity/user.entity';
-import { UserService } from '../user/user.service';
+import { JwtWithUser } from './entities/auth._entity';
+import { SignInInput, SignUpInput } from './inputs/auth.input';
+import { User } from '../users/entities/user.entity';
+import { UserService } from '../users/user.service';
 import { SignInGuard } from 'src/common/guards/signin.guard';
 import { RefreshGuard } from 'src/common/guards/refresh.guard';
 
