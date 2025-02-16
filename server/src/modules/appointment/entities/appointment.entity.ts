@@ -28,8 +28,8 @@ export class Appointment extends AbstractEntity {
   date: number;
 
   @Field(() => [ID], { nullable: true })
-  @Column('string', { array: true, nullable: true })
-  attachment_ids: number[];
+  @Column('int', { array: true, nullable: true })
+  attachment_ids?: number[];
 
   @Field(() => EAppointmentStatus)
   @Column({ type: 'enum', enum: EAppointmentStatus })

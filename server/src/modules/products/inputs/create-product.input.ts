@@ -76,7 +76,7 @@ export class CreateProductInput {
   @Field(() => [Int], { nullable: true })
   @IsOptional()
   @IsArray()
-  image_ids?: string[];
+  image_ids?: number[];
 
   @Field(() => [Int], { nullable: true })
   @IsNotEmpty()

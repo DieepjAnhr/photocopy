@@ -14,7 +14,6 @@ type Appointment {
   deleted_by: ID
   id: ID!
   name: String!
-  roles: [FileUpload!]
   status: EAppointmentStatus!
   updated_at: Float
   updated_by: ID
@@ -120,34 +119,34 @@ input CreateFileUploadInput {
 input CreateOrderDetailInput {
   description: String
   discount: Int! = 0
-  discount_detail_ids: [ID!]! = []
+  discount_detail_ids: [Int!]! = []
   final_cost: Int! = 0
-  order_id: ID!
+  order_id: Int!
   price: Int! = 0
-  product_id: ID!
+  product_id: Int!
   quantity: Int! = 0
-  service_detail_ids: [ID!]! = []
+  service_detail_ids: [Int!]! = []
   service_fee: Int! = 0
   tax: Int! = 0
-  tax_detail_ids: [ID!]! = []
+  tax_detail_ids: [Int!]! = []
   total_cost: Int! = 0
-  variant_id: ID!
+  variant_id: Int!
 }
 
 input CreateOrderInput {
-  customer_id: ID!
+  customer_id: Int!
   description: String
   discount: Int! = 0
-  discount_detail_ids: [ID!]! = []
+  discount_detail_ids: [Int!]! = []
   final_cost: Int! = 0
-  order_detail_ids: [ID!]!
+  order_detail_ids: [Int!]!
   payment_status: EPaymentStatus!
-  service_detail_ids: [ID!]! = []
+  service_detail_ids: [Int!]! = []
   service_fee: Int! = 0
   shipping_status: EShippingStatus!
   status: EOrderStatus!
   tax: Int! = 0
-  tax_detail_ids: [ID!]! = []
+  tax_detail_ids: [Int!]! = []
   total_cost: Int! = 0
 }
 
@@ -157,44 +156,45 @@ input CreatePermissionInput {
 }
 
 input CreateProductInput {
-  attribute_ids: [ID!]!
-  category_ids: [ID!]!
+  attachment_ids: [Int!]
+  attribute_ids: [Int!]!
+  category_ids: [Int!]!
   code: String
   description: String
-  images: [ID!]
+  image_ids: [Int!]
   like: Int! = 0
   name: String!
   price: Int!
-  rate: Int! = 0
+  rate: Float! = 0
   regular_price: Int!
   sale_price: Int
   sku: String
   status: EProductStatus!
-  variant_ids: [ID!]!
+  variant_ids: [Int!]!
 }
 
 input CreateRoleInput {
   description: String
   name: String!
-  permission_ids: [ID!]
+  permission_ids: [Int!]
 }
 
 input CreateUserInput {
-  avatar: String
+  avatar_id: Int
   birthday: DateTime
   email: String!
   first_name: String
   last_name: String!
   password: String!
   phone: String!
-  role_ids: [ID!]
+  role_ids: [Int!]
 }
 
 input CreateVariantInput {
-  attribute_ids: [ID!]!
+  attribute_ids: [Int!]!
   code: String
   description: String
-  images: [ID!]
+  images: [Int!]
   price: Int!
   regular_price: Int!
   sale_price: Int
@@ -485,6 +485,7 @@ type Permission {
 
 """product"""
 type Product {
+  attachment_ids: [ID!]
   attribute_ids: [ID!]!
   attributes: [Attribute!]
   category_ids: [ID!]!
@@ -496,7 +497,7 @@ type Product {
   deleted_by: ID
   description: String
   id: ID!
-  images: [ID!]
+  image_ids: [ID!]
   like: Int!
   name: String!
   price: Int!
@@ -612,34 +613,34 @@ input UpdateFileUploadInput {
 input UpdateOrderDetailInput {
   description: String
   discount: Int = 0
-  discount_detail_ids: [ID!] = []
+  discount_detail_ids: [Int!] = []
   final_cost: Int = 0
-  order_id: ID
+  order_id: Int
   price: Int = 0
-  product_id: ID
+  product_id: Int
   quantity: Int = 0
-  service_detail_ids: [ID!] = []
+  service_detail_ids: [Int!] = []
   service_fee: Int = 0
   tax: Int = 0
-  tax_detail_ids: [ID!] = []
+  tax_detail_ids: [Int!] = []
   total_cost: Int = 0
-  variant_id: ID
+  variant_id: Int
 }
 
 input UpdateOrderInput {
-  customer_id: ID
+  customer_id: Int
   description: String
   discount: Int = 0
-  discount_detail_ids: [ID!] = []
+  discount_detail_ids: [Int!] = []
   final_cost: Int = 0
-  order_detail_ids: [ID!]
+  order_detail_ids: [Int!]
   payment_status: EPaymentStatus
-  service_detail_ids: [ID!] = []
+  service_detail_ids: [Int!] = []
   service_fee: Int = 0
   shipping_status: EShippingStatus
   status: EOrderStatus
   tax: Int = 0
-  tax_detail_ids: [ID!] = []
+  tax_detail_ids: [Int!] = []
   total_cost: Int = 0
 }
 
@@ -649,44 +650,45 @@ input UpdatePermissionInput {
 }
 
 input UpdateProductInput {
-  attribute_ids: [ID!]
-  category_ids: [ID!]
+  attachment_ids: [Int!]
+  attribute_ids: [Int!]
+  category_ids: [Int!]
   code: String
   description: String
-  images: [ID!]
+  image_ids: [Int!]
   like: Int = 0
   name: String
   price: Int
-  rate: Int = 0
+  rate: Float = 0
   regular_price: Int
   sale_price: Int
   sku: String
   status: EProductStatus
-  variant_ids: [ID!]
+  variant_ids: [Int!]
 }
 
 input UpdateRoleInput {
   description: String
   name: String
-  permission_ids: [ID!]
+  permission_ids: [Int!]
 }
 
 input UpdateUserInput {
-  avatar: String
+  avatar_id: Int
   birthday: DateTime
   email: String
   first_name: String
   last_name: String
   password: String
   phone: String
-  role_ids: [ID!]
+  role_ids: [Int!]
 }
 
 input UpdateVariantInput {
-  attribute_ids: [ID!]
+  attribute_ids: [Int!]
   code: String
   description: String
-  images: [ID!]
+  images: [Int!]
   price: Int
   regular_price: Int
   sale_price: Int
@@ -697,7 +699,7 @@ input UpdateVariantInput {
 
 """user"""
 type User {
-  avatar: String
+  avatar_id: ID
   birthday: DateTime
   created_at: Float
   created_by: ID
@@ -727,7 +729,7 @@ type Variant {
   deleted_by: ID
   description: String
   id: ID!
-  images: [ID!]
+  image_ids: [ID!]
   price: Int!
   product_id: ID!
   regular_price: Int!
