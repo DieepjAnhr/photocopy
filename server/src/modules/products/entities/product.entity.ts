@@ -40,10 +40,6 @@ export class Product extends AbstractEntity {
   @Column({ nullable: true })
   code?: string;
 
-  @Field(() => [ID], { nullable: true })
-  @Column('int', { array: true, nullable: true })
-  images: string[];
-
   @Field(() => Int)
   @Column()
   regular_price: number;
@@ -71,6 +67,14 @@ export class Product extends AbstractEntity {
   @Field(() => String, { nullable: true })
   @Column({ nullable: true })
   description?: string;
+
+  @Field(() => [ID], { nullable: true })
+  @Column('int', { array: true, nullable: true })
+  image_ids: number[];
+
+  @Field(() => [ID], { nullable: true })
+  @Column('int', { array: true, nullable: true })
+  attachment_ids: number[];
 
   @Field(() => [ID])
   @Column('int', { array: true })

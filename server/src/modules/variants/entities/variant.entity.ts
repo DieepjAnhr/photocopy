@@ -41,7 +41,7 @@ export class Variant extends AbstractEntity {
 
   @Field(() => [ID], { nullable: true })
   @Column('int', { array: true, nullable: true })
-  images: number[];
+  image_ids: number[];
 
   @Field(() => String, { nullable: true })
   @Column()

@@ -44,6 +44,10 @@ export class FileUpload extends AbstractEntity {
   @Column()
   owner_by: number;
 
+  @Field(() => ID, { nullable: true })
+  @Column({ nullable: true })
+  appointment_id?: number;
+
   @BeforeInsert()
   @BeforeUpdate()
   async beforeInsertOrUpdate() {

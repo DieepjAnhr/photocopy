@@ -40,9 +40,9 @@ export class User extends AbstractEntity {
   @Column({ type: 'date', nullable: true })
   birthday?: Date;
 
-  @Field(() => String, { nullable: true })
+  @Field(() => ID, { nullable: true })
   @Column({ nullable: true })
-  avatar?: string;
+  avatar_id?: number;
 
   @HideField()
   @Column({ nullable: true })

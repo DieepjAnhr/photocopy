@@ -12,10 +12,12 @@ import { AttributeService } from 'src/modules/attributes/attribute.service';
 import { VariantService } from 'src/modules/variants/variant.service';
 import { OrderDetailService } from 'src/modules/order-details/order-detail.service';
 import { OrderService } from 'src/modules/orders/order.service';
+import { AppointmentService } from 'src/modules/appointment/appointment.service';
 
 @Injectable()
 export class DataloaderService {
   constructor(
+    private readonly appointmentsService: AppointmentService,
     private readonly attributeService: AttributeService,
     private readonly blogService: BlogService,
     private readonly categoryService: CategoryService,
@@ -44,6 +46,10 @@ export class DataloaderService {
 
   createLoaders(): IDataloader {
     return {
+      appointmentsLoader: this.createLoader((ids) =>
+        this.appointmentsService.getByIds(ids),
+      ),
+
       attributesLoader: this.createLoader((ids) =>
         this.attributeService.getByIds(ids),
       ),
@@ -54,7 +60,7 @@ export class DataloaderService {
         this.categoryService.getByIds(ids),
       ),
 
-      fileUploadLoader: this.createLoader((ids) =>
+      fileUploadsLoader: this.createLoader((ids) =>
         this.fileUploadService.getByIds(ids),
       ),
 
@@ -68,7 +74,7 @@ export class DataloaderService {
         this.permissionService.getByIds(ids),
       ),
 
-      productLoader: this.createLoader((ids) =>
+      productsLoader: this.createLoader((ids) =>
         this.productService.getByIds(ids),
       ),
 

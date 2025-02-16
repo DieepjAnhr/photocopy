@@ -24,6 +24,7 @@ import { FileUploadModule } from './modules/file-uploads/file-upload.module';
 import { OrderDetailModule } from './modules/order-details/order-detail.module';
 import { AttributeModule } from './modules/attributes/attribute.module';
 import { VariantModule } from './modules/variants/variant.module';
+import { AppointmentModule } from './modules/appointment/appointment.module';
 
 @Module({
   imports: [
@@ -90,6 +91,7 @@ import { VariantModule } from './modules/variants/variant.module';
     OrderModule,
     FileUploadModule,
     OrderDetailModule,
+    AppointmentModule,
   ],
 })
 export class AppModule {}

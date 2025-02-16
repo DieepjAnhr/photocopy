@@ -11,9 +11,11 @@ import { ProductModule } from 'src/modules/products/product.module';
 import { VariantModule } from 'src/modules/variants/variant.module';
 import { OrderDetailModule } from 'src/modules/order-details/order-detail.module';
 import { OrderModule } from 'src/modules/orders/order.module';
+import { AppointmentModule } from 'src/modules/appointment/appointment.module';
 
 @Module({
   imports: [
+    AppointmentModule,
     AttributeModule,
     BlogModule,
     CategoryModule,

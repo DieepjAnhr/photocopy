@@ -9,6 +9,7 @@ import { UseAuthGuard } from 'src/common/decorators/auth-guard.decorator';
 import { PERMISSIONS } from 'src/common/shared/constant/permission.constant';
 import { CurrentUser } from 'src/common/decorators/user.decorator';
 import { User } from '../users/entities/user.entity';
+import { UpdatePermissionInput } from './inputs/update-permission.input';
 
 @Resolver(() => Permission)
 export class PermissionResolver extends AbstractResolver<PermissionService> {
@@ -20,7 +21,7 @@ export class PermissionResolver extends AbstractResolver<PermissionService> {
   }
 
   @Query(() => Permission, { nullable: true })
-  @UseAuthGuard([PERMISSIONS.VIEW_ROLE])
+  @UseAuthGuard([PERMISSIONS.VIEW_PERMISSION])
   async permission(
     @Args({ name: 'query', nullable: true }) condition: GetOneInput<Permission>,
   ) {
@@ -28,7 +29,7 @@ export class PermissionResolver extends AbstractResolver<PermissionService> {
   }
 
   @Query(() => GetPermissionType)
-  @UseAuthGuard([PERMISSIONS.VIEW_ROLE])
+  @UseAuthGuard([PERMISSIONS.VIEW_PERMISSION])
   async permissions(
     @Args({ name: 'query', nullable: true })
     query: GetManyInput<Permission>,
@@ -49,7 +50,7 @@ export class PermissionResolver extends AbstractResolver<PermissionService> {
   @UseAuthGuard([PERMISSIONS.FULL_ACCESS])
   async updatePermission(
     @Args('id', { type: () => Int }) id: number,
-    @Args('data') data: CreatePermissionInput,
+    @Args('data') data: UpdatePermissionInput,
     @CurrentUser() user: User,
   ) {
     return await this.permissionService.update(id, data, user);

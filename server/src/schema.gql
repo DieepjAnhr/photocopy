@@ -2,6 +2,24 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+"""appointment"""
+type Appointment {
+  attachment_ids: [ID!]
+  content: String!
+  created_at: Float
+  created_by: ID
+  customer_id: ID!
+  date: Float
+  deleted_at: Float
+  deleted_by: ID
+  id: ID!
+  name: String!
+  roles: [FileUpload!]
+  status: EAppointmentStatus!
+  updated_at: Float
+  updated_by: ID
+}
+
 """attribute"""
 type Attribute {
   created_at: Float
@@ -58,6 +76,15 @@ type Category {
   updater: User
 }
 
+input CreateAppointmentInput {
+  attachment_ids: [Int!]
+  content: String!
+  customer_id: Int!
+  date: Float!
+  name: String!
+  status: EAppointmentStatus!
+}
+
 input CreateAttributeInput {
   type: String
   value: String!
@@ -82,8 +109,9 @@ input CreateCategoryInput {
 }
 
 input CreateFileUploadInput {
+  appointment_id: Int
   name: String!
-  owner_by: ID!
+  owner_by: Int!
   status: EFileStatus!
   type: EFileType!
   url: String!
@@ -180,6 +208,13 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+"""Enum for appointment status"""
+enum EAppointmentStatus {
+  CANCEL
+  COMPLETE
+  WAITING
+}
+
 """Enum for category types"""
 enum ECategoryType {
   BLOG
@@ -237,6 +272,7 @@ enum EShippingStatus {
 
 """file_upload"""
 type FileUpload {
+  appointment_id: ID
   created_at: Float
   created_by: ID
   creator: User
@@ -253,6 +289,11 @@ type FileUpload {
   updated_by: ID
   updater: User
   url: String!
+}
+
+type GetAppointmentType {
+  count: Float
+  data: [Appointment!]
 }
 
 type GetAttributeType {
@@ -335,6 +376,7 @@ type JwtWithUser {
 }
 
 type Mutation {
+  createAppointment(data: CreateAppointmentInput!): Appointment!
   createAttribute(data: CreateAttributeInput!): Attribute!
   createBlog(data: CreateBlogInput!): Blog!
   createCategory(data: CreateCategoryInput!): Category!
@@ -346,6 +388,7 @@ type Mutation {
   createRole(data: CreateRoleInput!): Role!
   createUser(data: CreateUserInput!): User!
   createVariant(data: CreateVariantInput!): Variant!
+  deleteAppointments(id: Int!): Boolean!
   deleteAttribute(id: Int!): Boolean!
   deleteBlog(id: Int!): Boolean!
   deleteCategory(id: Int!): Boolean!
@@ -361,13 +404,14 @@ type Mutation {
   signIn(input: SignInInput!): JwtWithUser!
   signOut: Boolean!
   signUp(input: SignUpInput!): JwtWithUser!
+  updateAppointments(data: UpdateAppointmentInput!, id: Int!): Appointment!
   updateAttribute(data: UpdateAttributeInput!, id: Int!): Attribute!
   updateBlog(data: UpdateBlogInput!, id: Int!): Blog!
   updateCategory(data: UpdateCategoryInput!, id: Int!): Category!
   updateFile(data: UpdateFileUploadInput!, id: Int!): FileUpload!
   updateOrder(data: UpdateOrderInput!, id: Int!): Order!
   updateOrderDetail(data: UpdateOrderDetailInput!, id: Int!): OrderDetail!
-  updatePermission(data: CreatePermissionInput!, id: Int!): Permission!
+  updatePermission(data: UpdatePermissionInput!, id: Int!): Permission!
   updateProduct(data: UpdateProductInput!, id: Int!): Product!
   updateRole(data: UpdateRoleInput!, id: Int!): Role!
   updateUser(data: UpdateUserInput!, id: Int!): User!
@@ -470,6 +514,8 @@ type Product {
 }
 
 type Query {
+  appointment(query: GetOneInput): Appointment
+  appointments(query: GetManyInput): GetAppointmentType!
   attribute(query: GetOneInput): Attribute
   attributes(query: GetManyInput): GetAttributeType!
   blog(query: GetOneInput): Blog
@@ -522,6 +568,15 @@ input SignUpInput {
   phone: String!
 }
 
+input UpdateAppointmentInput {
+  attachment_ids: [Int!]
+  content: String
+  customer_id: Int
+  date: Float
+  name: String
+  status: EAppointmentStatus
+}
+
 input UpdateAttributeInput {
   type: String
   value: String
@@ -546,8 +601,9 @@ input UpdateCategoryInput {
 }
 
 input UpdateFileUploadInput {
+  appointment_id: Int
   name: String
-  owner_by: ID
+  owner_by: Int
   status: EFileStatus
   type: EFileType
   url: String
@@ -585,6 +641,11 @@ input UpdateOrderInput {
   tax: Int = 0
   tax_detail_ids: [ID!] = []
   total_cost: Int = 0
+}
+
+input UpdatePermissionInput {
+  label: String
+  value: String
 }
 
 input UpdateProductInput {

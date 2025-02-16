@@ -1,4 +1,10 @@
-import { Field, InputType, ID, Int, registerEnumType } from '@nestjs/graphql';
+import {
+  Field,
+  InputType,
+  Int,
+  registerEnumType,
+  Float,
+} from '@nestjs/graphql';
 import {
   IsArray,
   IsEnum,
@@ -32,11 +38,6 @@ export class CreateProductInput {
   @IsString()
   code?: string;
 
-  @Field(() => [ID], { nullable: true })
-  @IsOptional()
-  @IsArray()
-  images?: string[];
-
   @Field(() => Int)
   @IsNotEmpty()
   @IsNumber()
@@ -57,7 +58,7 @@ export class CreateProductInput {
   @IsNumber()
   like: number;
 
-  @Field(() => Int, { defaultValue: 0 })
+  @Field(() => Float, { defaultValue: 0 })
   @IsNumber()
   rate: number;
 
@@ -72,15 +73,25 @@ export class CreateProductInput {
   @IsString()
   description?: string;
 
-  @Field(() => [ID])
+  @Field(() => [Int], { nullable: true })
+  @IsOptional()
+  @IsArray()
+  image_ids?: string[];
+
+  @Field(() => [Int], { nullable: true })
+  @IsNotEmpty()
+  @IsArray()
+  attachment_ids: number[];
+
+  @Field(() => [Int])
   @IsArray()
   category_ids: number[];
 
-  @Field(() => [ID])
+  @Field(() => [Int])
   @IsArray()
   attribute_ids: number[];
 
-  @Field(() => [ID])
+  @Field(() => [Int])
   @IsArray()
   variant_ids: number[];
 }

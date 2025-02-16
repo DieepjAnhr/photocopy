@@ -1,4 +1,4 @@
-import { Field, InputType, ID, Int } from '@nestjs/graphql';
+import { Field, InputType, Int } from '@nestjs/graphql';
 import {
   IsArray,
   IsNotEmpty,
@@ -25,7 +25,7 @@ export class CreateVariantInput {
   @IsString()
   code?: string;
 
-  @Field(() => [ID], { nullable: true })
+  @Field(() => [Int], { nullable: true })
   @IsOptional()
   @IsArray()
   images?: number[];
@@ -57,7 +57,7 @@ export class CreateVariantInput {
   @IsString()
   description?: string;
 
-  @Field(() => [ID])
+  @Field(() => [Int])
   @IsArray()
   attribute_ids: number[];
 }

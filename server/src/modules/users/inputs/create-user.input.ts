@@ -1,9 +1,10 @@
-import { Field, ID, InputType } from '@nestjs/graphql';
+import { Field, Int, InputType } from '@nestjs/graphql';
 import {
   IsArray,
   IsDate,
   IsEmail,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
   IsString,
   Matches,
@@ -46,12 +47,12 @@ export class CreateUserInput {
   @IsDate({ message: 'Birthday must be a date!' })
   birthday?: Date;
 
-  @Field(() => String, { nullable: true })
+  @Field(() => Int, { nullable: true })
   @IsOptional()
-  @IsString({ message: 'Avatar must be a url!' })
-  avatar?: string;
+  @IsNumber()
+  avatar_id?: number;
 
-  @Field(() => [ID], { nullable: true })
+  @Field(() => [Int], { nullable: true })
   @IsOptional()
   @IsArray()
   role_ids?: number[];

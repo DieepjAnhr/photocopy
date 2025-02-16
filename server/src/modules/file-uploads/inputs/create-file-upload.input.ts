@@ -1,4 +1,4 @@
-import { Field, ID, InputType, registerEnumType } from '@nestjs/graphql';
+import { Field, InputType, Int, registerEnumType } from '@nestjs/graphql';
 import {
   IsEnum,
   IsNotEmpty,
@@ -47,8 +47,13 @@ export class CreateFileUploadInput {
   })
   status: string;
 
-  @Field(() => ID)
+  @Field(() => Int)
   @IsNotEmpty()
   @IsNumber()
   owner_by: number;
+
+  @Field(() => Int, { nullable: true })
+  @IsOptional()
+  @IsNumber()
+  appointment_id?: number;
 }

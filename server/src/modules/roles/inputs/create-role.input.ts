@@ -1,4 +1,4 @@
-import { Field, ID, InputType } from '@nestjs/graphql';
+import { Field, InputType, Int } from '@nestjs/graphql';
 import {
   IsArray,
   IsNotEmpty,
@@ -20,7 +20,7 @@ export class CreateRoleInput {
   @IsString({ message: 'Description must be a string!' })
   description?: string;
 
-  @Field(() => [ID], { nullable: true })
+  @Field(() => [Int], { nullable: true })
   @IsOptional()
   @IsArray()
   permission_ids?: number[];

@@ -1,4 +1,4 @@
-import { Field, InputType, ID, Int } from '@nestjs/graphql';
+import { Field, InputType, Int } from '@nestjs/graphql';
 import {
   IsArray,
   IsNotEmpty,
@@ -9,17 +9,17 @@ import {
 
 @InputType()
 export class CreateOrderDetailInput {
-  @Field(() => ID)
+  @Field(() => Int)
   @IsNotEmpty()
   @IsNumber()
   order_id: number;
 
-  @Field(() => ID)
+  @Field(() => Int)
   @IsNotEmpty()
   @IsNumber()
   product_id: number;
 
-  @Field(() => ID)
+  @Field(() => Int)
   @IsNotEmpty()
   @IsNumber()
   variant_id: number;
@@ -64,17 +64,17 @@ export class CreateOrderDetailInput {
   @IsString()
   description?: string;
 
-  @Field(() => [ID], { defaultValue: [] })
+  @Field(() => [Int], { defaultValue: [] })
   @IsOptional()
   @IsArray()
   service_detail_ids?: number[];
 
-  @Field(() => [ID], { defaultValue: [] })
+  @Field(() => [Int], { defaultValue: [] })
   @IsOptional()
   @IsArray()
   tax_detail_ids?: number[];
 
-  @Field(() => [ID], { defaultValue: [] })
+  @Field(() => [Int], { defaultValue: [] })
   @IsOptional()
   @IsArray()
   discount_detail_ids?: number[];

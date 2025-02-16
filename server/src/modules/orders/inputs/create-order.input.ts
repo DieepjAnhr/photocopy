@@ -1,4 +1,4 @@
-import { Field, InputType, ID, Int, registerEnumType } from '@nestjs/graphql';
+import { Field, InputType, Int, registerEnumType } from '@nestjs/graphql';
 import {
   IsArray,
   IsEnum,
@@ -30,7 +30,7 @@ registerEnumType(EPaymentStatus, {
 
 @InputType()
 export class CreateOrderInput {
-  @Field(() => ID)
+  @Field(() => Int)
   @IsNotEmpty()
   @IsNumber()
   customer_id: number;
@@ -84,22 +84,22 @@ export class CreateOrderInput {
   @IsString()
   description?: string;
 
-  @Field(() => [ID], { defaultValue: [] })
+  @Field(() => [Int], { defaultValue: [] })
   @IsOptional()
   @IsArray()
   service_detail_ids?: number[];
 
-  @Field(() => [ID], { defaultValue: [] })
+  @Field(() => [Int], { defaultValue: [] })
   @IsOptional()
   @IsArray()
   tax_detail_ids?: number[];
 
-  @Field(() => [ID], { defaultValue: [] })
+  @Field(() => [Int], { defaultValue: [] })
   @IsOptional()
   @IsArray()
   discount_detail_ids?: number[];
 
-  @Field(() => [ID])
+  @Field(() => [Int])
   @IsOptional()
   @IsArray()
   order_detail_ids: number[];
