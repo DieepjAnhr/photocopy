@@ -3,6 +3,7 @@ import { Column, Entity, JoinTable, ManyToMany } from 'typeorm';
 import { AbstractEntity } from 'src/common/abstracts/entity.abstract';
 import { User } from 'src/modules/users/entities/user.entity';
 import { Permission } from 'src/modules/permissions/entities/permission.entity';
+import { MetadataResponse } from 'src/common/graphql/metadata.response';
 
 @ObjectType({ description: 'role' })
 @Entity({ name: 'roles' })
@@ -41,8 +42,8 @@ export class Role extends AbstractEntity {
 
 @ObjectType()
 export class GetRoleType {
-  @Field(() => Number, { nullable: true })
-  count?: number;
+  @Field(() => MetadataResponse, { nullable: true })
+  metadata?: MetadataResponse;
 
   @Field(() => [Role], { nullable: true })
   data?: Role[];

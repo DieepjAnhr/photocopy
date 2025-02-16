@@ -11,6 +11,7 @@ import { Category } from '../categories/entities/category.entity';
 import { AttributeModule } from '../attributes/attribute.module';
 import { CategoryModule } from '../categories/category.module';
 import { VariantModule } from '../variants/variant.module';
+import { FileUploadModule } from '../file-uploads/file-upload.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { VariantModule } from '../variants/variant.module';
     forwardRef(() => AttributeModule),
     forwardRef(() => CategoryModule),
     forwardRef(() => VariantModule),
+    forwardRef(() => FileUploadModule),
   ],
   providers: [ProductResolver, ProductService, ProductRepository],
   exports: [ProductService, ProductRepository],

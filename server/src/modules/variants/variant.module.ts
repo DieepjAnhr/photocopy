@@ -6,12 +6,14 @@ import { VariantResolver } from './variant.resolver';
 import { VariantService } from './variant.service';
 import { VariantRepository } from './variant.repository';
 import { AttributeModule } from '../attributes/attribute.module';
+import { FileUploadModule } from '../file-uploads/file-upload.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Variant]),
     LoggerModule,
     forwardRef(() => AttributeModule),
+    forwardRef(() => FileUploadModule),
   ],
   providers: [VariantResolver, VariantService, VariantRepository],
   exports: [VariantService, VariantRepository],

@@ -17,8 +17,11 @@ import { UseAuthGuard } from 'src/common/decorators/auth-guard.decorator';
 import { GetManyInput, GetOneInput } from 'src/common/graphql/query.input';
 import { CreateFileUploadInput } from './inputs/create-file-upload.input';
 import { CurrentUser } from 'src/common/decorators/user.decorator';
-import { PERMISSIONS } from 'src/common/shared/constant/permission.constant';
+import { PERMISSIONS } from 'src/common/shared/constants/permission.constant';
 import { UpdateFileUploadInput } from './inputs/update-file-upload.input';
+import { UseInterceptors } from '@nestjs/common';
+import { QueryOneInterceptor } from 'src/common/interceptors/query-one.interceptor';
+import { QueryManyInterceptor } from 'src/common/interceptors/query-many.interceptor';
 
 @Resolver(() => FileUpload)
 export class FileUploadResolver extends AbstractResolver<FileUploadService> {
@@ -31,6 +34,7 @@ export class FileUploadResolver extends AbstractResolver<FileUploadService> {
 
   @Query(() => FileUpload, { nullable: true })
   @UseAuthGuard([PERMISSIONS.VIEW_FILE])
+  @UseInterceptors(QueryOneInterceptor)
   async file(
     @Args({ name: 'query', nullable: true }) condition: GetOneInput<FileUpload>,
   ) {
@@ -39,6 +43,7 @@ export class FileUploadResolver extends AbstractResolver<FileUploadService> {
 
   @Query(() => GetFileUploadType)
   @UseAuthGuard([PERMISSIONS.VIEW_FILE])
+  @UseInterceptors(QueryManyInterceptor)
   async files(
     @Args({ name: 'query', nullable: true })
     query: GetManyInput<FileUpload>,

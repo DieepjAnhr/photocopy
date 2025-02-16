@@ -15,6 +15,8 @@ import { Attribute } from 'src/modules/attributes/entities/attribute.entity';
 import { Variant } from 'src/modules/variants/entities/variant.entity';
 import { OrderDetail } from 'src/modules/order-details/entities/order-detail.entity';
 import { EProductStatus } from 'src/common/shared/enums/product.enum';
+import { FileUpload } from 'src/modules/file-uploads/entities/file-upload.entity';
+import { MetadataResponse } from 'src/common/graphql/metadata.response';
 
 registerEnumType(EProductStatus, {
   name: 'EProductStatus',
@@ -88,6 +90,42 @@ export class Product extends AbstractEntity {
   @Column('int', { array: true })
   variant_ids: number[];
 
+  @ManyToMany(() => FileUpload, (attachment) => attachment.product_images, {
+    cascade: true,
+  })
+  @JoinTable({
+    name: 'product_images',
+    joinColumn: {
+      name: 'product_id',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'attachment_id',
+      referencedColumnName: 'id',
+    },
+  })
+  images: FileUpload[];
+
+  @ManyToMany(
+    () => FileUpload,
+    (attachment) => attachment.product_attachments,
+    {
+      cascade: true,
+    },
+  )
+  @JoinTable({
+    name: 'product_attachments',
+    joinColumn: {
+      name: 'product_id',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'attachment_id',
+      referencedColumnName: 'id',
+    },
+  })
+  attachments: FileUpload[];
+
   @ManyToMany(() => Category, (category) => category.products, {
     cascade: true,
   })
@@ -140,8 +178,8 @@ export class Product extends AbstractEntity {
 
 @ObjectType()
 export class GetProductType {
-  @Field(() => Number, { nullable: true })
-  count?: number;
+  @Field(() => MetadataResponse, { nullable: true })
+  metadata?: MetadataResponse;
 
   @Field(() => [Product], { nullable: true })
   data?: Product[];

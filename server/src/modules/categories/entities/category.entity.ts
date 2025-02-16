@@ -11,6 +11,7 @@ import { AbstractEntity } from 'src/common/abstracts/entity.abstract';
 import { Blog } from 'src/modules/blogs/entities/blog.entity';
 import { Product } from 'src/modules/products/entities/product.entity';
 import { ECategoryType } from 'src/common/shared/enums/category.enum';
+import { MetadataResponse } from 'src/common/graphql/metadata.response';
 
 registerEnumType(ECategoryType, {
   name: 'ECategoryType',
@@ -64,8 +65,8 @@ export class Category extends AbstractEntity {
 
 @ObjectType()
 export class GetCategoryType {
-  @Field(() => Number, { nullable: true })
-  count?: number;
+  @Field(() => MetadataResponse, { nullable: true })
+  metadata?: MetadataResponse;
 
   @Field(() => [Category], { nullable: true })
   data?: Category[];

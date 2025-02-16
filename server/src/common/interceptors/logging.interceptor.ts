@@ -17,10 +17,6 @@ export class HandleRequestInterceptor implements NestInterceptor {
     const timeStart = Date.now();
 
     const contextArgs = context.getArgs();
-    const { query } = contextArgs[1] ?? { query: {} };
-    if (query?.where) {
-      query.where = JSON.parse(query.where);
-    }
 
     const { fieldName } = contextArgs[3] ?? { fieldName: 'REST API' };
 

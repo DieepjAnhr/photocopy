@@ -4,7 +4,7 @@ import { GqlExecutionContext } from '@nestjs/graphql';
 import { AuthGuard } from '@nestjs/passport';
 import { GUARD_ROLE } from '../decorators/auth-guard.decorator';
 import { User } from 'src/modules/users/entities/user.entity';
-import { ALL_USER_PERMISSIONS } from '../shared/constant/permission.constant';
+import { ALL_USER_PERMISSIONS } from '../shared/constants/permission.constant';
 
 @Injectable()
 export class GraphqlPassportAuthGuard extends AuthGuard('jwt') {

@@ -15,11 +15,15 @@ import { User } from '../users/entities/user.entity';
 import { UseAuthGuard } from 'src/common/decorators/auth-guard.decorator';
 import { GetManyInput, GetOneInput } from 'src/common/graphql/query.input';
 import { CurrentUser } from 'src/common/decorators/user.decorator';
-import { PERMISSIONS } from 'src/common/shared/constant/permission.constant';
+import { PERMISSIONS } from 'src/common/shared/constants/permission.constant';
 import { GetVariantType, Variant } from './entities/variant.entity';
 import { VariantService } from './variant.service';
 import { CreateVariantInput } from './inputs/create-variant.input';
 import { UpdateVariantInput } from './inputs/update-variant.input';
+import { FileUpload } from '../file-uploads/entities/file-upload.entity';
+import { UseInterceptors } from '@nestjs/common';
+import { QueryOneInterceptor } from 'src/common/interceptors/query-one.interceptor';
+import { QueryManyInterceptor } from 'src/common/interceptors/query-many.interceptor';
 
 @Resolver(() => Variant)
 export class VariantResolver extends AbstractResolver<VariantService> {
@@ -32,6 +36,7 @@ export class VariantResolver extends AbstractResolver<VariantService> {
 
   @Query(() => Variant, { nullable: true })
   @UseAuthGuard([PERMISSIONS.VIEW_VARIANT])
+  @UseInterceptors(QueryOneInterceptor)
   async variant(
     @Args({ name: 'query', nullable: true }) condition: GetOneInput<Variant>,
   ) {
@@ -40,6 +45,7 @@ export class VariantResolver extends AbstractResolver<VariantService> {
 
   @Query(() => GetVariantType)
   @UseAuthGuard([PERMISSIONS.VIEW_VARIANT])
+  @UseInterceptors(QueryManyInterceptor)
   async variants(
     @Args({ name: 'query', nullable: true })
     query: GetManyInput<Variant>,
@@ -73,6 +79,17 @@ export class VariantResolver extends AbstractResolver<VariantService> {
     @CurrentUser() user: User,
   ) {
     return await this.variantService.delete(id, user);
+  }
+
+  @ResolveField(() => [FileUpload], { nullable: true })
+  async images(
+    @Parent() variant: Variant,
+    @Context() { loaders }: IGraphQLContext,
+  ) {
+    const images = await loaders.fileUploadsLoader.load(
+      variant.image_ids || [],
+    );
+    return images;
   }
 
   @ResolveField(() => User, { nullable: true })

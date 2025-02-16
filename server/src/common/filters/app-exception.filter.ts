@@ -11,8 +11,6 @@ export class AppExceptionFilter implements ExceptionFilter {
   constructor(private readonly logger: AppLogger) {}
 
   catch(exception: any) {
-    console.log(exception);
-
     if (this.isValidationException(exception)) {
       const message = exception.response.message.join(', ');
       this.logger.error(message, ERROR_CODES.BAD_REQUEST);

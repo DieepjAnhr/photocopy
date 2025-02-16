@@ -15,12 +15,15 @@ import { User } from '../users/entities/user.entity';
 import { UseAuthGuard } from 'src/common/decorators/auth-guard.decorator';
 import { GetManyInput, GetOneInput } from 'src/common/graphql/query.input';
 import { CurrentUser } from 'src/common/decorators/user.decorator';
-import { PERMISSIONS } from 'src/common/shared/constant/permission.constant';
+import { PERMISSIONS } from 'src/common/shared/constants/permission.constant';
 import { OrderDetail } from './entities/order-detail.entity';
 import { OrderDetailService } from './order-detail.service';
 import { GetOrderType } from '../orders/entities/order.entity';
 import { CreateOrderDetailInput } from './inputs/create-order-detail.input';
 import { UpdateOrderDetailInput } from './inputs/update-order-detail.input';
+import { UseInterceptors } from '@nestjs/common';
+import { QueryOneInterceptor } from 'src/common/interceptors/query-one.interceptor';
+import { QueryManyInterceptor } from 'src/common/interceptors/query-many.interceptor';
 
 @Resolver(() => OrderDetail)
 export class OrderDetailResolver extends AbstractResolver<OrderDetailService> {
@@ -33,6 +36,7 @@ export class OrderDetailResolver extends AbstractResolver<OrderDetailService> {
 
   @Query(() => OrderDetail, { nullable: true })
   @UseAuthGuard([PERMISSIONS.VIEW_FILE])
+  @UseInterceptors(QueryOneInterceptor)
   async orderDetail(
     @Args({ name: 'query', nullable: true })
     condition: GetOneInput<OrderDetail>,
@@ -42,6 +46,7 @@ export class OrderDetailResolver extends AbstractResolver<OrderDetailService> {
 
   @Query(() => GetOrderType)
   @UseAuthGuard([PERMISSIONS.VIEW_FILE])
+  @UseInterceptors(QueryManyInterceptor)
   async orderDetails(
     @Args({ name: 'query', nullable: true })
     query: GetManyInput<OrderDetail>,

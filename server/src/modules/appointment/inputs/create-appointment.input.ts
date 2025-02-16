@@ -5,6 +5,7 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
+  Matches,
 } from 'class-validator';
 import { EAppointmentStatus } from 'src/common/shared/enums/appointment.enum';
 
@@ -23,6 +24,14 @@ export class CreateAppointmentInput {
   @IsOptional()
   @IsString()
   name: string;
+
+  @Field(() => String)
+  @IsOptional()
+  @IsString()
+  @Matches(/^\+?[1-9]\d{1,14}$|^0\d{9}$/, {
+    message: 'Phone number must be in E!164 format!',
+  })
+  phone: string;
 
   @Field(() => String)
   @IsNotEmpty()

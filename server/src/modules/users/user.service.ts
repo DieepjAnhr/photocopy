@@ -3,14 +3,14 @@ import { UserRepository } from './user.repository';
 import { AbstractService } from 'src/common/abstracts/service.abstract';
 import { User } from './entities/user.entity';
 import { AppLogger } from 'src/common/logger/logger.service';
-import { RoleRepository } from '../roles/role.repository';
 import { DeepPartial } from 'typeorm';
+import { RoleService } from '../roles/role.service';
 
 @Injectable()
 export class UserService extends AbstractService<User, UserRepository> {
   constructor(
     private readonly userRepository: UserRepository,
-    private readonly roleRepository: RoleRepository,
+    private readonly roleService: RoleService,
     appLogger: AppLogger,
   ) {
     super(userRepository, appLogger);
@@ -21,7 +21,10 @@ export class UserService extends AbstractService<User, UserRepository> {
     this.logger.debug(
       `Create record by ${createdById} with arg: ${JSON.stringify(data)}`,
     );
-    const roles = await this.roleRepository.getByIds(data.role_ids);
+    const [roles] = await Promise.all([
+      this.roleService.getByIds(data.role_ids),
+    ]);
+
     const user = await this.userRepository.create({
       ...data,
       created_by: createdById,
@@ -46,11 +49,17 @@ export class UserService extends AbstractService<User, UserRepository> {
     });
     if (!user) return null;
 
-    if (data.role_ids) {
-      user.roles = await this.roleRepository.getByIds(data.role_ids);
-    }
+    const [roles] = await Promise.all([
+      data.role_ids
+        ? this.roleService.getByIds(data.role_ids)
+        : Promise.resolve(user.roles),
+    ]);
 
-    Object.assign(user, data, { updated_by: updatedById });
+    Object.assign(user, data, {
+      role_ids: roles.map((elm) => elm.id),
+      updated_by: updatedById,
+      roles,
+    });
 
     return this.userRepository.save(user);
   }

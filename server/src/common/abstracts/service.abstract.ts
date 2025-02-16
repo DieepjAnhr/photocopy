@@ -6,6 +6,7 @@ import {
   IRepoQueryMany,
   IRepoQueryOne,
 } from '../shared/interfaces/repository.input';
+import { MetadataResponse } from '../graphql/metadata.response';
 
 export abstract class AbstractService<T, R extends AbstractRepository<T>> {
   private readonly CLASS_NAME = this.constructor.name;
@@ -27,9 +28,14 @@ export abstract class AbstractService<T, R extends AbstractRepository<T>> {
 
   async getMany(args?: IRepoQueryMany<T>): Promise<IPaginationResponse<T>> {
     this.logger.debug(`Fetching many record with arg: ${JSON.stringify(args)}`);
-    const results = await this.repository.getPagination(args as any);
+    const { page, limit } = args?.pagination || {};
 
-    return results;
+    const { count, data } = await this.repository.getPagination(args as any);
+
+    return {
+      metadata: this.generateMetadata(count, page, limit),
+      data,
+    };
   }
 
   async getByIds(ids: number[]): Promise<T[]> {
@@ -90,6 +96,19 @@ export abstract class AbstractService<T, R extends AbstractRepository<T>> {
       verbose: (message: string) =>
         this._logger.verbose(message, this.CLASS_NAME),
       warn: (message: string) => this._logger.warn(message, this.CLASS_NAME),
+    };
+  }
+
+  private generateMetadata(
+    totalItem: number,
+    page: number,
+    pageSize: number,
+  ): MetadataResponse {
+    return {
+      total_item: totalItem,
+      total_page: Math.ceil(totalItem / pageSize),
+      current_page: page,
+      page_size: pageSize,
     };
   }
 }

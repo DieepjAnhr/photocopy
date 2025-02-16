@@ -13,12 +13,15 @@ import { CurrentUser } from 'src/common/decorators/user.decorator';
 import { AbstractResolver } from 'src/common/abstracts/resolver.abstract';
 import { AppLogger } from 'src/common/logger/logger.service';
 import { UseAuthGuard } from 'src/common/decorators/auth-guard.decorator';
-import { PERMISSIONS } from 'src/common/shared/constant/permission.constant';
+import { PERMISSIONS } from 'src/common/shared/constants/permission.constant';
 import { User } from '../users/entities/user.entity';
 import { Attribute, GetAttributeType } from './entities/attribute.entity';
 import { AttributeService } from './attribute.service';
 import { CreateAttributeInput } from './inputs/create-attribute.input';
 import { UpdateAttributeInput } from './inputs/update-attribute.input';
+import { UseInterceptors } from '@nestjs/common';
+import { QueryOneInterceptor } from 'src/common/interceptors/query-one.interceptor';
+import { QueryManyInterceptor } from 'src/common/interceptors/query-many.interceptor';
 
 @Resolver(() => Attribute)
 export class AttributeResolver extends AbstractResolver<AttributeService> {
@@ -31,6 +34,7 @@ export class AttributeResolver extends AbstractResolver<AttributeService> {
 
   @Query(() => Attribute, { nullable: true })
   @UseAuthGuard([PERMISSIONS.VIEW_ATTRIBUTE])
+  @UseInterceptors(QueryOneInterceptor)
   async attribute(
     @Args({ name: 'query', nullable: true }) condition: GetOneInput<Attribute>,
   ) {
@@ -41,6 +45,7 @@ export class AttributeResolver extends AbstractResolver<AttributeService> {
 
   @Query(() => GetAttributeType)
   @UseAuthGuard([PERMISSIONS.VIEW_ATTRIBUTE])
+  @UseInterceptors(QueryManyInterceptor)
   async attributes(
     @Args({ name: 'query', nullable: true }) query: GetManyInput<Attribute>,
   ) {

@@ -17,8 +17,11 @@ import { UpdateBlogInput } from './inputs/update-blog.input';
 import { AbstractResolver } from 'src/common/abstracts/resolver.abstract';
 import { AppLogger } from 'src/common/logger/logger.service';
 import { UseAuthGuard } from 'src/common/decorators/auth-guard.decorator';
-import { PERMISSIONS } from 'src/common/shared/constant/permission.constant';
+import { PERMISSIONS } from 'src/common/shared/constants/permission.constant';
 import { User } from '../users/entities/user.entity';
+import { UseInterceptors } from '@nestjs/common';
+import { QueryOneInterceptor } from 'src/common/interceptors/query-one.interceptor';
+import { QueryManyInterceptor } from 'src/common/interceptors/query-many.interceptor';
 
 @Resolver(() => Blog)
 export class BlogResolver extends AbstractResolver<BlogService> {
@@ -31,6 +34,7 @@ export class BlogResolver extends AbstractResolver<BlogService> {
 
   @Query(() => Blog, { nullable: true })
   @UseAuthGuard([PERMISSIONS.VIEW_BLOG])
+  @UseInterceptors(QueryOneInterceptor)
   async blog(
     @Args({ name: 'query', nullable: true }) condition: GetOneInput<Blog>,
   ) {
@@ -41,6 +45,7 @@ export class BlogResolver extends AbstractResolver<BlogService> {
 
   @Query(() => GetBlogType)
   @UseAuthGuard([PERMISSIONS.VIEW_BLOG])
+  @UseInterceptors(QueryManyInterceptor)
   async blogs(
     @Args({ name: 'query', nullable: true }) query: GetManyInput<Blog>,
   ) {

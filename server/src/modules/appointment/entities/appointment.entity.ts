@@ -1,7 +1,9 @@
 import { Field, ID, ObjectType, registerEnumType } from '@nestjs/graphql';
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany } from 'typeorm';
 import { AbstractEntity } from 'src/common/abstracts/entity.abstract';
 import { EAppointmentStatus } from 'src/common/shared/enums/appointment.enum';
+import { FileUpload } from 'src/modules/file-uploads/entities/file-upload.entity';
+import { MetadataResponse } from 'src/common/graphql/metadata.response';
 
 registerEnumType(EAppointmentStatus, {
   name: 'EAppointmentStatus',
@@ -21,25 +23,49 @@ export class Appointment extends AbstractEntity {
 
   @Field(() => String)
   @Column()
+  phone: string;
+
+  @Field(() => String)
+  @Column()
   content: string;
 
   @Field(() => Number, { nullable: true })
   @Column({ type: 'timestamp' })
   date: number;
 
+  @Field(() => EAppointmentStatus)
+  @Column({ type: 'enum', enum: EAppointmentStatus })
+  status: string;
+
   @Field(() => [ID], { nullable: true })
   @Column('int', { array: true, nullable: true })
   attachment_ids?: number[];
 
-  @Field(() => EAppointmentStatus)
-  @Column({ type: 'enum', enum: EAppointmentStatus })
-  status: string;
+  @ManyToMany(
+    () => FileUpload,
+    (attachment) => attachment.appointment_attachments,
+    {
+      cascade: true,
+    },
+  )
+  @JoinTable({
+    name: 'appointment_attachments',
+    joinColumn: {
+      name: 'appointment_id',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'attachment_id',
+      referencedColumnName: 'id',
+    },
+  })
+  attachments: FileUpload[];
 }
 
 @ObjectType()
 export class GetAppointmentType {
-  @Field(() => Number, { nullable: true })
-  count?: number;
+  @Field(() => MetadataResponse, { nullable: true })
+  metadata?: MetadataResponse;
 
   @Field(() => [Appointment], { nullable: true })
   data?: Appointment[];

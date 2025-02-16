@@ -15,6 +15,8 @@ import slugify from 'slugify';
 import { Product } from 'src/modules/products/entities/product.entity';
 import { OrderDetail } from 'src/modules/order-details/entities/order-detail.entity';
 import { Attribute } from 'src/modules/attributes/entities/attribute.entity';
+import { FileUpload } from 'src/modules/file-uploads/entities/file-upload.entity';
+import { MetadataResponse } from 'src/common/graphql/metadata.response';
 
 @ObjectType({ description: 'variant' })
 @Entity({ name: 'variants' })
@@ -39,10 +41,6 @@ export class Variant extends AbstractEntity {
   @Column({ nullable: true })
   code?: string;
 
-  @Field(() => [ID], { nullable: true })
-  @Column('int', { array: true, nullable: true })
-  image_ids: number[];
-
   @Field(() => String, { nullable: true })
   @Column()
   status: string;
@@ -63,6 +61,10 @@ export class Variant extends AbstractEntity {
   @Column({ nullable: true })
   description?: string;
 
+  @Field(() => [ID], { nullable: true })
+  @Column('int', { array: true, nullable: true })
+  image_ids: number[];
+
   @Field(() => [ID])
   @Column('int', { array: true })
   attribute_ids: number[];
@@ -72,6 +74,22 @@ export class Variant extends AbstractEntity {
   })
   @JoinColumn({ name: 'product_id' })
   product: Product;
+
+  @ManyToMany(() => FileUpload, (attachment) => attachment.variant_images, {
+    cascade: true,
+  })
+  @JoinTable({
+    name: 'variant_images',
+    joinColumn: {
+      name: 'variant_id',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'attachment_id',
+      referencedColumnName: 'id',
+    },
+  })
+  images: FileUpload[];
 
   @ManyToMany(() => Attribute, (attribute) => attribute.variants, {
     cascade: true,
@@ -106,8 +124,8 @@ export class Variant extends AbstractEntity {
 
 @ObjectType()
 export class GetVariantType {
-  @Field(() => Number, { nullable: true })
-  count?: number;
+  @Field(() => MetadataResponse, { nullable: true })
+  metadata?: MetadataResponse;
 
   @Field(() => [Variant], { nullable: true })
   data?: Variant[];

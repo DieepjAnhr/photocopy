@@ -6,10 +6,13 @@ import { CreatePermissionInput } from './inputs/create-permission.input';
 import { AbstractResolver } from 'src/common/abstracts/resolver.abstract';
 import { AppLogger } from 'src/common/logger/logger.service';
 import { UseAuthGuard } from 'src/common/decorators/auth-guard.decorator';
-import { PERMISSIONS } from 'src/common/shared/constant/permission.constant';
+import { PERMISSIONS } from 'src/common/shared/constants/permission.constant';
 import { CurrentUser } from 'src/common/decorators/user.decorator';
 import { User } from '../users/entities/user.entity';
 import { UpdatePermissionInput } from './inputs/update-permission.input';
+import { UseInterceptors } from '@nestjs/common';
+import { QueryOneInterceptor } from 'src/common/interceptors/query-one.interceptor';
+import { QueryManyInterceptor } from 'src/common/interceptors/query-many.interceptor';
 
 @Resolver(() => Permission)
 export class PermissionResolver extends AbstractResolver<PermissionService> {
@@ -22,6 +25,7 @@ export class PermissionResolver extends AbstractResolver<PermissionService> {
 
   @Query(() => Permission, { nullable: true })
   @UseAuthGuard([PERMISSIONS.VIEW_PERMISSION])
+  @UseInterceptors(QueryOneInterceptor)
   async permission(
     @Args({ name: 'query', nullable: true }) condition: GetOneInput<Permission>,
   ) {
@@ -30,6 +34,7 @@ export class PermissionResolver extends AbstractResolver<PermissionService> {
 
   @Query(() => GetPermissionType)
   @UseAuthGuard([PERMISSIONS.VIEW_PERMISSION])
+  @UseInterceptors(QueryManyInterceptor)
   async permissions(
     @Args({ name: 'query', nullable: true })
     query: GetManyInput<Permission>,

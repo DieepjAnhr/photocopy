@@ -7,6 +7,7 @@ import {
   EPaymentStatus,
   EShippingStatus,
 } from 'src/common/shared/enums/order.enum';
+import { MetadataResponse } from 'src/common/graphql/metadata.response';
 
 registerEnumType(EOrderStatus, {
   name: 'EOrderStatus',
@@ -102,8 +103,8 @@ export class Order extends AbstractEntity {
 
 @ObjectType()
 export class GetOrderType {
-  @Field(() => Number, { nullable: true })
-  count?: number;
+  @Field(() => MetadataResponse, { nullable: true })
+  metadata?: MetadataResponse;
 
   @Field(() => [Order], { nullable: true })
   data?: Order[];

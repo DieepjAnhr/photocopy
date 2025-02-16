@@ -10,6 +10,7 @@ import {
 import { AbstractEntity } from 'src/common/abstracts/entity.abstract';
 import slugify from 'slugify';
 import { Category } from 'src/modules/categories/entities/category.entity';
+import { MetadataResponse } from 'src/common/graphql/metadata.response';
 
 @ObjectType({ description: 'blog' })
 @Entity({ name: 'blogs' })
@@ -74,8 +75,8 @@ export class Blog extends AbstractEntity {
 
 @ObjectType()
 export class GetBlogType {
-  @Field(() => Number, { nullable: true })
-  count?: number;
+  @Field(() => MetadataResponse, { nullable: true })
+  metadata?: MetadataResponse;
 
   @Field(() => [Blog], { nullable: true })
   data?: Blog[];

@@ -1,11 +1,21 @@
 import { Field, ID, ObjectType, registerEnumType } from '@nestjs/graphql';
-import { BeforeInsert, BeforeUpdate, Column, Entity } from 'typeorm';
+import {
+  BeforeInsert,
+  BeforeUpdate,
+  Column,
+  Entity,
+  ManyToMany,
+} from 'typeorm';
 import slugify from 'slugify';
 import { AbstractEntity } from 'src/common/abstracts/entity.abstract';
 import {
   EFileStatus,
   EFileType,
 } from 'src/common/shared/enums/file-upload.enum';
+import { Appointment } from 'src/modules/appointment/entities/appointment.entity';
+import { Product } from 'src/modules/products/entities/product.entity';
+import { Variant } from 'src/modules/variants/entities/variant.entity';
+import { MetadataResponse } from 'src/common/graphql/metadata.response';
 
 registerEnumType(EFileStatus, {
   name: 'EFileStatus',
@@ -44,9 +54,17 @@ export class FileUpload extends AbstractEntity {
   @Column()
   owner_by: number;
 
-  @Field(() => ID, { nullable: true })
-  @Column({ nullable: true })
-  appointment_id?: number;
+  @ManyToMany(() => Appointment, (appointment) => appointment.attachments)
+  appointment_attachments: Appointment[];
+
+  @ManyToMany(() => Product, (product) => product.images)
+  product_images: Product[];
+
+  @ManyToMany(() => Product, (product) => product.attachments)
+  product_attachments: Product[];
+
+  @ManyToMany(() => Variant, (product) => product.images)
+  variant_images: Variant[];
 
   @BeforeInsert()
   @BeforeUpdate()
@@ -62,8 +80,8 @@ export class FileUpload extends AbstractEntity {
 
 @ObjectType()
 export class GetFileUploadType {
-  @Field(() => Number, { nullable: true })
-  count?: number;
+  @Field(() => MetadataResponse, { nullable: true })
+  metadata?: MetadataResponse;
 
   @Field(() => [FileUpload], { nullable: true })
   data?: FileUpload[];

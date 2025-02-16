@@ -4,6 +4,7 @@ import { AbstractEntity } from 'src/common/abstracts/entity.abstract';
 import { Order } from 'src/modules/orders/entities/order.entity';
 import { Product } from 'src/modules/products/entities/product.entity';
 import { Variant } from 'src/modules/variants/entities/variant.entity';
+import { MetadataResponse } from 'src/common/graphql/metadata.response';
 
 @ObjectType({ description: 'order_detail' })
 @Entity({ name: 'order_details' })
@@ -85,8 +86,8 @@ export class OrderDetail extends AbstractEntity {
 
 @ObjectType()
 export class GetOrderDetailType {
-  @Field(() => Number, { nullable: true })
-  count?: number;
+  @Field(() => MetadataResponse, { nullable: true })
+  metadata?: MetadataResponse;
 
   @Field(() => [OrderDetail], { nullable: true })
   data?: OrderDetail[];

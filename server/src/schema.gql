@@ -5,18 +5,22 @@
 """appointment"""
 type Appointment {
   attachment_ids: [ID!]
+  attachments: [FileUpload!]
   content: String!
   created_at: Float
   created_by: ID
+  creator: User
   customer_id: ID!
   date: Float
   deleted_at: Float
   deleted_by: ID
   id: ID!
   name: String!
+  phone: String!
   status: EAppointmentStatus!
   updated_at: Float
   updated_by: ID
+  updater: User
 }
 
 """attribute"""
@@ -81,6 +85,7 @@ input CreateAppointmentInput {
   customer_id: Int!
   date: Float!
   name: String!
+  phone: String!
   status: EAppointmentStatus!
 }
 
@@ -194,7 +199,7 @@ input CreateVariantInput {
   attribute_ids: [Int!]!
   code: String
   description: String
-  images: [Int!]
+  image_ids: [Int!]!
   price: Int!
   regular_price: Int!
   sale_price: Int
@@ -272,7 +277,6 @@ enum EShippingStatus {
 
 """file_upload"""
 type FileUpload {
-  appointment_id: ID
   created_at: Float
   created_by: ID
   creator: User
@@ -292,28 +296,28 @@ type FileUpload {
 }
 
 type GetAppointmentType {
-  count: Float
   data: [Appointment!]
+  metadata: MetadataResponse
 }
 
 type GetAttributeType {
-  count: Float
   data: [Attribute!]
+  metadata: MetadataResponse
 }
 
 type GetBlogType {
-  count: Float
   data: [Blog!]
+  metadata: MetadataResponse
 }
 
 type GetCategoryType {
-  count: Float
   data: [Category!]
+  metadata: MetadataResponse
 }
 
 type GetFileUploadType {
-  count: Float
   data: [FileUpload!]
+  metadata: MetadataResponse
 }
 
 input GetManyInput {
@@ -328,33 +332,33 @@ input GetOneInput {
 }
 
 type GetOrderType {
-  count: Float
   data: [Order!]
+  metadata: MetadataResponse
 }
 
 type GetPermissionType {
-  count: Float
-  data: [Permission!]
+  metadata: MetadataResponse
+  response: [Permission!]
 }
 
 type GetProductType {
-  count: Float
   data: [Product!]
+  metadata: MetadataResponse
 }
 
 type GetRoleType {
-  count: Float
   data: [Role!]
+  metadata: MetadataResponse
 }
 
 type GetUserType {
-  count: Float
   data: [User!]
+  metadata: MetadataResponse
 }
 
 type GetVariantType {
-  count: Float
   data: [Variant!]
+  metadata: MetadataResponse
 }
 
 input IPagination {
@@ -373,6 +377,13 @@ scalar JSON @specifiedBy(url: "http://www.ecma-international.org/publications/fi
 type JwtWithUser {
   jwt: String!
   user: User!
+}
+
+type MetadataResponse {
+  current_page: Float
+  page_size: Float
+  total_item: Float
+  total_page: Float
 }
 
 type Mutation {
@@ -486,6 +497,7 @@ type Permission {
 """product"""
 type Product {
   attachment_ids: [ID!]
+  attachments: [FileUpload!]
   attribute_ids: [ID!]!
   attributes: [Attribute!]
   category_ids: [ID!]!
@@ -498,6 +510,7 @@ type Product {
   description: String
   id: ID!
   image_ids: [ID!]
+  images: [FileUpload!]
   like: Int!
   name: String!
   price: Int!
@@ -575,6 +588,7 @@ input UpdateAppointmentInput {
   customer_id: Int
   date: Float
   name: String
+  phone: String
   status: EAppointmentStatus
 }
 
@@ -688,7 +702,7 @@ input UpdateVariantInput {
   attribute_ids: [Int!]
   code: String
   description: String
-  images: [Int!]
+  image_ids: [Int!]
   price: Int
   regular_price: Int
   sale_price: Int
@@ -730,6 +744,7 @@ type Variant {
   description: String
   id: ID!
   image_ids: [ID!]
+  images: [FileUpload!]
   price: Int!
   product_id: ID!
   regular_price: Int!

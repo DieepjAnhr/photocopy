@@ -18,7 +18,10 @@ import { UpdateUserInput } from './inputs/update-user.input';
 import { AbstractResolver } from 'src/common/abstracts/resolver.abstract';
 import { AppLogger } from 'src/common/logger/logger.service';
 import { UseAuthGuard } from 'src/common/decorators/auth-guard.decorator';
-import { PERMISSIONS } from 'src/common/shared/constant/permission.constant';
+import { PERMISSIONS } from 'src/common/shared/constants/permission.constant';
+import { UseInterceptors } from '@nestjs/common';
+import { QueryManyInterceptor } from 'src/common/interceptors/query-many.interceptor';
+import { QueryOneInterceptor } from 'src/common/interceptors/query-one.interceptor';
 
 @Resolver(() => User)
 export class UserResolver extends AbstractResolver<UserService> {
@@ -31,6 +34,7 @@ export class UserResolver extends AbstractResolver<UserService> {
 
   @Query(() => User, { nullable: true })
   @UseAuthGuard([PERMISSIONS.VIEW_USER])
+  @UseInterceptors(QueryOneInterceptor)
   async user(
     @Args({ name: 'query', nullable: true }) condition: GetOneInput<User>,
   ) {
@@ -41,6 +45,7 @@ export class UserResolver extends AbstractResolver<UserService> {
 
   @Query(() => GetUserType)
   @UseAuthGuard([PERMISSIONS.VIEW_USER])
+  @UseInterceptors(QueryManyInterceptor)
   async users(
     @Args({ name: 'query', nullable: true }) query: GetManyInput<User>,
   ) {

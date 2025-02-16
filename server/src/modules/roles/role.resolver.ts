@@ -17,9 +17,12 @@ import { User } from '../users/entities/user.entity';
 import { AppLogger } from 'src/common/logger/logger.service';
 import { AbstractResolver } from 'src/common/abstracts/resolver.abstract';
 import { UseAuthGuard } from 'src/common/decorators/auth-guard.decorator';
-import { PERMISSIONS } from 'src/common/shared/constant/permission.constant';
+import { PERMISSIONS } from 'src/common/shared/constants/permission.constant';
 import { CurrentUser } from 'src/common/decorators/user.decorator';
 import { UpdateRoleInput } from './inputs/update-role.input';
+import { UseInterceptors } from '@nestjs/common';
+import { QueryOneInterceptor } from 'src/common/interceptors/query-one.interceptor';
+import { QueryManyInterceptor } from 'src/common/interceptors/query-many.interceptor';
 
 @Resolver(() => Role)
 export class RoleResolver extends AbstractResolver<RoleService> {
@@ -32,6 +35,7 @@ export class RoleResolver extends AbstractResolver<RoleService> {
 
   @Query(() => Role, { nullable: true })
   @UseAuthGuard([PERMISSIONS.VIEW_ROLE])
+  @UseInterceptors(QueryOneInterceptor)
   async role(
     @Args({ name: 'query', nullable: true }) condition: GetOneInput<Role>,
   ) {
@@ -42,6 +46,7 @@ export class RoleResolver extends AbstractResolver<RoleService> {
 
   @Query(() => GetRoleType)
   @UseAuthGuard([PERMISSIONS.VIEW_ROLE])
+  @UseInterceptors(QueryManyInterceptor)
   async roles(
     @Args({ name: 'query', nullable: true }) query: GetManyInput<Role>,
   ) {

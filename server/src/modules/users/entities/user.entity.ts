@@ -10,6 +10,7 @@ import {
 import bcrypt from 'bcrypt';
 import { AbstractEntity } from 'src/common/abstracts/entity.abstract';
 import { Role } from 'src/modules/roles/entities/role.entity';
+import { MetadataResponse } from 'src/common/graphql/metadata.response';
 
 const BCRYPT_HASH_ROUNDS = 10;
 
@@ -90,8 +91,8 @@ export class User extends AbstractEntity {
 
 @ObjectType()
 export class GetUserType {
-  @Field(() => Number, { nullable: true })
-  count?: number;
+  @Field(() => MetadataResponse, { nullable: true })
+  metadata?: MetadataResponse;
 
   @Field(() => [User], { nullable: true })
   data?: User[];

@@ -1,4 +1,5 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { MetadataResponse } from 'src/common/graphql/metadata.response';
 import { Role } from 'src/modules/roles/entities/role.entity';
 import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
 
@@ -23,9 +24,9 @@ export class Permission {
 
 @ObjectType()
 export class GetPermissionType {
-  @Field(() => Number, { nullable: true })
-  count: number;
+  @Field(() => MetadataResponse, { nullable: true })
+  metadata?: MetadataResponse;
 
   @Field(() => [Permission], { nullable: true })
-  data: Permission[];
+  response?: Permission[];
 }

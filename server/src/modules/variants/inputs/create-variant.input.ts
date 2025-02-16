@@ -25,11 +25,6 @@ export class CreateVariantInput {
   @IsString()
   code?: string;
 
-  @Field(() => [Int], { nullable: true })
-  @IsOptional()
-  @IsArray()
-  images?: number[];
-
   @Field(() => String)
   @IsNotEmpty()
   @IsString()
@@ -56,6 +51,10 @@ export class CreateVariantInput {
   @Field(() => String, { nullable: true })
   @IsString()
   description?: string;
+
+  @Field(() => [Int])
+  @IsArray()
+  image_ids: number[];
 
   @Field(() => [Int])
   @IsArray()

@@ -15,13 +15,17 @@ import { User } from '../users/entities/user.entity';
 import { UseAuthGuard } from 'src/common/decorators/auth-guard.decorator';
 import { GetManyInput, GetOneInput } from 'src/common/graphql/query.input';
 import { CurrentUser } from 'src/common/decorators/user.decorator';
-import { PERMISSIONS } from 'src/common/shared/constant/permission.constant';
+import { PERMISSIONS } from 'src/common/shared/constants/permission.constant';
 import { GetProductType, Product } from './entities/product.entity';
 import { ProductService } from './product.service';
 import { CreateProductInput } from './inputs/create-product.input';
 import { Attribute } from '../attributes/entities/attribute.entity';
 import { Variant } from '../variants/entities/variant.entity';
 import { UpdateProductInput } from './inputs/update-product.input';
+import { FileUpload } from '../file-uploads/entities/file-upload.entity';
+import { UseInterceptors } from '@nestjs/common';
+import { QueryOneInterceptor } from 'src/common/interceptors/query-one.interceptor';
+import { QueryManyInterceptor } from 'src/common/interceptors/query-many.interceptor';
 
 @Resolver(() => Product)
 export class ProductResolver extends AbstractResolver<ProductService> {
@@ -34,6 +38,7 @@ export class ProductResolver extends AbstractResolver<ProductService> {
 
   @Query(() => Product, { nullable: true })
   @UseAuthGuard([PERMISSIONS.VIEW_FILE])
+  @UseInterceptors(QueryOneInterceptor)
   async product(
     @Args({ name: 'query', nullable: true }) condition: GetOneInput<Product>,
   ) {
@@ -42,6 +47,7 @@ export class ProductResolver extends AbstractResolver<ProductService> {
 
   @Query(() => GetProductType)
   @UseAuthGuard([PERMISSIONS.VIEW_FILE])
+  @UseInterceptors(QueryManyInterceptor)
   async products(
     @Args({ name: 'query', nullable: true })
     query: GetManyInput<Product>,
@@ -75,6 +81,28 @@ export class ProductResolver extends AbstractResolver<ProductService> {
     @CurrentUser() user: User,
   ) {
     return await this.productService.delete(id, user);
+  }
+
+  @ResolveField(() => [FileUpload], { nullable: true })
+  async images(
+    @Parent() product: Product,
+    @Context() { loaders }: IGraphQLContext,
+  ) {
+    const images = await loaders.fileUploadsLoader.load(
+      product.image_ids || [],
+    );
+    return images;
+  }
+
+  @ResolveField(() => [FileUpload], { nullable: true })
+  async attachments(
+    @Parent() product: Product,
+    @Context() { loaders }: IGraphQLContext,
+  ) {
+    const attachments = await loaders.fileUploadsLoader.load(
+      product.attachment_ids || [],
+    );
+    return attachments;
   }
 
   @ResolveField(() => [Attribute], { nullable: true })

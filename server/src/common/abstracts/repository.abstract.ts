@@ -51,14 +51,16 @@ export abstract class AbstractRepository<T> {
   private readonly CLASS_NAME = this.constructor.name;
   constructor(private readonly repository: Repository<T>) {}
 
-  async getOne(options: {
-    where?: IWhere<T>;
-    select?: string[];
-    relations?: string[];
-  }): Promise<T | null> {
-    const { where, select, relations } = options;
+  async getOne(
+    options: {
+      where?: IWhere<T>;
+      select?: string[];
+      relations?: string[];
+    } = {},
+  ): Promise<T | null> {
+    const { where = {}, select, relations } = options;
     return await this.repository.findOne({
-      where: this.parseQuery(where || {}),
+      where: this.parseQuery(where),
       select,
       relations,
     } as any);
@@ -71,11 +73,18 @@ export abstract class AbstractRepository<T> {
     select?: string[];
     relations?: string[];
   }) {
-    const { where, pagination, order, select, relations } = options || {};
-    const { page, limit } = pagination || {};
+    const {
+      where,
+      pagination: { page, limit },
+      order,
+      select,
+      relations,
+    } = options || {};
+
     const [data, count] = await this.repository.findAndCount({
-      where: this.parseQuery(where || {}),
-      ...(pagination && { skip: (page - 1) * limit, take: limit }),
+      where: this.parseQuery(where),
+      skip: (page - 1) * limit,
+      take: limit,
       order,
       select,
       relations,
@@ -84,7 +93,7 @@ export abstract class AbstractRepository<T> {
     return { count, data };
   }
 
-  async getByIds(ids: number[]): Promise<T[]> {
+  async getByIds(ids: number[] = []): Promise<T[]> {
     return await this.repository.find({ where: { id: In(ids) } as any });
   }
 

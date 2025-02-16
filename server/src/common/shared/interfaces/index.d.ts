@@ -1,3 +1,4 @@
+import { MetadataResponse } from 'src/common/graphql/metadata.response';
 import { IDataloader } from './dataloader.interface';
 
 declare global {
@@ -6,7 +7,7 @@ declare global {
   }
 
   interface IPaginationResponse<T> {
-    count: number;
-    data: T[];
+    metadata?: MetadataResponse;
+    data?: T[];
   }
 }
