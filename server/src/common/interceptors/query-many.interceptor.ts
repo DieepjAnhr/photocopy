@@ -17,18 +17,19 @@ export class QueryManyInterceptor implements NestInterceptor {
       return next.handle().pipe(map((data) => data));
     }
 
-    this.defaultWhereQuery(query);
-    this.defaultPaginationQuery(query);
+    this.handleWhereQuery(query);
+    this.handlePaginationQuery(query);
+
     contextArgs[1].query = query;
 
     return next.handle().pipe(map((data) => data));
   }
 
-  private defaultWhereQuery(query: any) {
+  private handleWhereQuery(query: any) {
     query.where = query?.where ? JSON.parse(query.where) : {};
   }
 
-  private defaultPaginationQuery(query: any) {
+  private handlePaginationQuery(query: any) {
     const paginationDefault = { page: 1, limit: 50 };
 
     query.pagination = query?.pagination
