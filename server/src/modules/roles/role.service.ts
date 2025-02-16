@@ -22,11 +22,14 @@ export class RoleService extends AbstractService<Role, RoleRepository> {
     this.logger.debug(
       `Create record by ${createdById} with arg: ${JSON.stringify(data)}`,
     );
+
     const permissions = await this.permissionRepository.getByIds(
       data.permission_ids,
     );
+
     const role = await this.roleRepository.create({
       ...data,
+      permission_ids: permissions.map((elm) => elm.id),
       created_by: createdById,
       updated_by: createdById,
       permissions,
@@ -43,10 +46,12 @@ export class RoleService extends AbstractService<Role, RoleRepository> {
     this.logger.debug(
       `Update record by ${updatedById} with arg: ${JSON.stringify(data)}`,
     );
+
     const role = await this.roleRepository.getOne({
       where: { id },
       relations: ['permissions'],
     });
+
     if (!role) return null;
 
     if (data.permission_ids) {
@@ -55,7 +60,10 @@ export class RoleService extends AbstractService<Role, RoleRepository> {
       );
     }
 
-    Object.assign(role, data, { updated_by: updatedById });
+    Object.assign(role, data, {
+      permission_ids: role.permissions.map((elm) => elm.id),
+      updated_by: updatedById,
+    });
 
     return this.roleRepository.save(role);
   }

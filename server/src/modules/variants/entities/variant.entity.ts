@@ -5,6 +5,8 @@ import {
   Column,
   Entity,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   OneToMany,
 } from 'typeorm';
@@ -12,6 +14,7 @@ import { AbstractEntity } from 'src/common/abstracts/entity.abstract';
 import slugify from 'slugify';
 import { Product } from 'src/modules/products/entities/product.entity';
 import { OrderDetail } from 'src/modules/order-details/entities/order-detail.entity';
+import { Attribute } from 'src/modules/attributes/entities/attribute.entity';
 
 @ObjectType({ description: 'variant' })
 @Entity({ name: 'variants' })
@@ -60,11 +63,31 @@ export class Variant extends AbstractEntity {
   @Column({ nullable: true })
   description?: string;
 
+  @Field(() => [ID])
+  @Column('int', { array: true })
+  attribute_ids: number[];
+
   @ManyToOne(() => Product, (product) => product.variants, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'product_id' })
   product: Product;
+
+  @ManyToMany(() => Attribute, (attribute) => attribute.variants, {
+    cascade: true,
+  })
+  @JoinTable({
+    name: 'variant_attributes',
+    joinColumn: {
+      name: 'variant_id',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'attribute_id',
+      referencedColumnName: 'id',
+    },
+  })
+  attributes: Attribute[];
 
   @OneToMany(() => OrderDetail, (orderDetail) => orderDetail.variant)
   order_details: OrderDetail[];

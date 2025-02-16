@@ -1,12 +1,5 @@
 import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
-import {
-  BeforeInsert,
-  BeforeUpdate,
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { AbstractEntity } from 'src/common/abstracts/entity.abstract';
 import { Order } from 'src/modules/orders/entities/order.entity';
 import { Product } from 'src/modules/products/entities/product.entity';
@@ -88,29 +81,6 @@ export class OrderDetail extends AbstractEntity {
   })
   @JoinColumn({ name: 'variant_id' })
   variant: Variant;
-
-  @BeforeInsert()
-  @BeforeUpdate()
-  async beforeInsertOrUpdate() {
-    try {
-      this.calculateTotalCost();
-      this.calculateFinalCost();
-    } catch (error) {
-      console.error('Error in BeforeInsert/BeforeUpdate blog:', error);
-      throw error;
-    }
-  }
-
-  calculateTotalCost() {
-    this.total_cost = this.price * this.quantity;
-  }
-
-  calculateFinalCost() {
-    this.final_cost =
-      this.total_cost + this.service_fee + this.tax - this.discount;
-
-    this.final_cost = this.final_cost < 0 ? 0 : this.final_cost;
-  }
 }
 
 @ObjectType()

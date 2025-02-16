@@ -3,6 +3,7 @@ import {
   IsArray,
   IsDate,
   IsEmail,
+  IsNotEmpty,
   IsOptional,
   IsString,
   Matches,
@@ -12,6 +13,7 @@ import {
 @InputType()
 export class CreateUserInput {
   @Field(() => String)
+  @IsNotEmpty()
   @IsString({ message: 'Phone must be a string!' })
   @Matches(/^\+?[1-9]\d{1,14}$|^0\d{9}$/, {
     message: 'Phone number must be in E!164 format!',
@@ -19,6 +21,7 @@ export class CreateUserInput {
   phone: string;
 
   @Field(() => String)
+  @IsNotEmpty()
   @IsString({ message: 'Password must be a string!' })
   @MinLength(4, { message: 'Password must be at least 4 characters long!' })
   password: string;
@@ -29,10 +32,12 @@ export class CreateUserInput {
   first_name?: string;
 
   @Field(() => String)
+  @IsNotEmpty()
   @IsString({ message: 'Last name must be a string!' })
   last_name: string;
 
   @Field(() => String)
+  @IsOptional()
   @IsEmail({}, { message: 'Email is not valid!' })
   email?: string;
 

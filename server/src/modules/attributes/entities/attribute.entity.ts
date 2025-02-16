@@ -2,6 +2,7 @@ import { Field, ObjectType } from '@nestjs/graphql';
 import { Column, Entity, ManyToMany } from 'typeorm';
 import { AbstractEntity } from 'src/common/abstracts/entity.abstract';
 import { Product } from 'src/modules/products/entities/product.entity';
+import { Variant } from 'src/modules/variants/entities/variant.entity';
 
 @ObjectType({ description: 'attribute' })
 @Entity({ name: 'attributes' })
@@ -16,6 +17,9 @@ export class Attribute extends AbstractEntity {
 
   @ManyToMany(() => Product, (product) => product.attributes)
   products: Product[];
+
+  @ManyToMany(() => Variant, (variant) => variant.attributes)
+  variants: Variant[];
 }
 
 @ObjectType()

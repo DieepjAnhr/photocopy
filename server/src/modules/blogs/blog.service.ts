@@ -3,6 +3,7 @@ import { BlogRepository } from './blog.repository';
 import { AbstractService } from 'src/common/abstracts/service.abstract';
 import { Blog } from './entities/blog.entity';
 import { AppLogger } from 'src/common/logger/logger.service';
+import { CategoryService } from '../categories/category.service';
 import { DeepPartial } from 'typeorm';
 import { User } from '../users/entities/user.entity';
 
@@ -10,6 +11,7 @@ import { User } from '../users/entities/user.entity';
 export class BlogService extends AbstractService<Blog, BlogRepository> {
   constructor(
     private readonly blogRepository: BlogRepository,
+    private readonly categoryService: CategoryService,
     appLogger: AppLogger,
   ) {
     super(blogRepository, appLogger);
@@ -20,10 +22,15 @@ export class BlogService extends AbstractService<Blog, BlogRepository> {
     this.logger.debug(
       `Create record by ${createdById} with arg: ${JSON.stringify(data)}`,
     );
+
+    const categories = await this.categoryService.getByIds(data.category_ids);
+
     const blog = await this.blogRepository.create({
       ...data,
+      category_ids: categories.map((elm) => elm.id),
       created_by: createdById,
       updated_by: createdById,
+      categories,
     });
     return blog;
   }
@@ -39,10 +46,18 @@ export class BlogService extends AbstractService<Blog, BlogRepository> {
     );
     const blog = await this.blogRepository.getOne({
       where: { id },
+      relations: ['categories'],
     });
     if (!blog) return null;
 
-    Object.assign(blog, data, { updated_by: updatedById });
+    if (data.category_ids) {
+      blog.categories = await this.categoryService.getByIds(data.category_ids);
+    }
+
+    Object.assign(blog, data, {
+      category_ids: blog.categories.map((elm) => elm.id),
+      updated_by: updatedById,
+    });
 
     return this.blogRepository.save(blog);
   }

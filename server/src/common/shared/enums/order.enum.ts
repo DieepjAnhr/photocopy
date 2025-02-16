@@ -1,0 +1,24 @@
+export enum EOrderStatus {
+  DRAFT = 'DRAFT',
+  WAITING_FOR_APPROVE = 'WAITING_FOR_APPROVE',
+  APPROVED = 'APPROVED',
+  PREPARING = 'PREPARING',
+  SHIPPING = 'SHIPPING',
+  COMPLETE = 'COMPLETE',
+  CANCEL = 'CANCEL',
+  REFUND = 'REFUND',
+}
+
+export enum EShippingStatus {
+  WAITING_FOR_SHIPPING = 'WAITING_FOR_SHIPPING',
+  SHIPPING = 'SHIPPING',
+  CANCEL = 'CANCEL',
+  REFUND = 'REFUND',
+}
+
+export enum EPaymentStatus {
+  UNPAID = 'UNPAID',
+  PAID = 'PAID',
+  DEBT = 'DEBT',
+  CANCEL = 'CANCEL',
+}

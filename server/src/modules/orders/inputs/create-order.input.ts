@@ -1,11 +1,32 @@
-import { Field, InputType, ID, Int } from '@nestjs/graphql';
+import { Field, InputType, ID, Int, registerEnumType } from '@nestjs/graphql';
 import {
   IsArray,
+  IsEnum,
   IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
 } from 'class-validator';
+import {
+  EOrderStatus,
+  EPaymentStatus,
+  EShippingStatus,
+} from 'src/common/shared/enums/order.enum';
+
+registerEnumType(EOrderStatus, {
+  name: 'EOrderStatus',
+  description: 'Enum for order statuses',
+});
+
+registerEnumType(EShippingStatus, {
+  name: 'EShippingStatus',
+  description: 'Enum for shipping statuses',
+});
+
+registerEnumType(EPaymentStatus, {
+  name: 'EPaymentStatus',
+  description: 'Enum for payment statuses',
+});
 
 @InputType()
 export class CreateOrderInput {
@@ -13,10 +34,6 @@ export class CreateOrderInput {
   @IsNotEmpty()
   @IsNumber()
   customer_id: number;
-
-  @Field(() => [ID])
-  @IsArray()
-  order_detail_ids: number[];
 
   @Field(() => Int, { defaultValue: 0 })
   @IsNotEmpty()
@@ -43,6 +60,25 @@ export class CreateOrderInput {
   @IsNumber()
   final_cost: number;
 
+  @Field(() => EOrderStatus)
+  @IsOptional()
+  @IsEnum(EOrderStatus, {
+    message: `Chỉ áp dụng các giá trị ${Object.values(EOrderStatus).join(', ')}!`,
+  })
+  status: string;
+
+  @Field(() => EShippingStatus)
+  @IsEnum(EShippingStatus, {
+    message: `Chỉ áp dụng các giá trị ${Object.values(EShippingStatus).join(', ')}!`,
+  })
+  shipping_status: string;
+
+  @Field(() => EPaymentStatus)
+  @IsEnum(EShippingStatus, {
+    message: `Chỉ áp dụng các giá trị ${Object.values(EShippingStatus).join(', ')}!`,
+  })
+  payment_status: string;
+
   @Field(() => String, { nullable: true })
   @IsOptional()
   @IsString()
@@ -62,4 +98,9 @@ export class CreateOrderInput {
   @IsOptional()
   @IsArray()
   discount_detail_ids?: number[];
+
+  @Field(() => [ID])
+  @IsOptional()
+  @IsArray()
+  order_detail_ids: number[];
 }

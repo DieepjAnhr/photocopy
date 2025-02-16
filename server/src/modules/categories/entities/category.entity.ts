@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ID, ObjectType, registerEnumType } from '@nestjs/graphql';
 import {
   BeforeInsert,
   BeforeUpdate,
@@ -10,6 +10,12 @@ import slugify from 'slugify';
 import { AbstractEntity } from 'src/common/abstracts/entity.abstract';
 import { Blog } from 'src/modules/blogs/entities/blog.entity';
 import { Product } from 'src/modules/products/entities/product.entity';
+import { ECategoryType } from 'src/common/shared/enums/category.enum';
+
+registerEnumType(ECategoryType, {
+  name: 'ECategoryType',
+  description: 'Enum for category types',
+});
 
 @ObjectType({ description: 'category' })
 @Entity({ name: 'categories' })
@@ -18,9 +24,13 @@ export class Category extends AbstractEntity {
   @Column()
   name: string;
 
-  @Field()
+  @Field(() => String)
   @Column()
   slug: string;
+
+  @Field(() => ECategoryType)
+  @Column({ type: 'enum', enum: ECategoryType })
+  type: string;
 
   @Field(() => ID, { nullable: true })
   @Column({ nullable: true })

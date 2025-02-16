@@ -10,6 +10,8 @@ import { FileUploadService } from 'src/modules/file-uploads/file-upload.service'
 import { ProductService } from 'src/modules/products/product.service';
 import { AttributeService } from 'src/modules/attributes/attribute.service';
 import { VariantService } from 'src/modules/variants/variant.service';
+import { OrderDetailService } from 'src/modules/order-details/order-detail.service';
+import { OrderService } from 'src/modules/orders/order.service';
 
 @Injectable()
 export class DataloaderService {
@@ -18,6 +20,8 @@ export class DataloaderService {
     private readonly blogService: BlogService,
     private readonly categoryService: CategoryService,
     private readonly fileUploadService: FileUploadService,
+    private readonly orderDetailService: OrderDetailService,
+    private readonly orderService: OrderService,
     private readonly permissionService: PermissionService,
     private readonly productService: ProductService,
     private readonly roleService: RoleService,
@@ -41,39 +45,39 @@ export class DataloaderService {
   createLoaders(): IDataloader {
     return {
       attributesLoader: this.createLoader((ids) =>
-        this.attributeService.getDataloader(ids),
+        this.attributeService.getByIds(ids),
       ),
 
-      blogsLoader: this.createLoader((ids) =>
-        this.blogService.getDataloader(ids),
-      ),
+      blogsLoader: this.createLoader((ids) => this.blogService.getByIds(ids)),
 
       categoriesLoader: this.createLoader((ids) =>
-        this.categoryService.getDataloader(ids),
+        this.categoryService.getByIds(ids),
       ),
 
       fileUploadLoader: this.createLoader((ids) =>
-        this.fileUploadService.getDataloader(ids),
+        this.fileUploadService.getByIds(ids),
       ),
 
+      orderDetailsLoader: this.createLoader((ids) =>
+        this.orderDetailService.getByIds(ids),
+      ),
+
+      ordersLoader: this.createLoader((ids) => this.orderService.getByIds(ids)),
+
       permissionsLoader: this.createLoader((ids) =>
-        this.permissionService.getDataloader(ids),
+        this.permissionService.getByIds(ids),
       ),
 
       productLoader: this.createLoader((ids) =>
-        this.productService.getDataloader(ids),
+        this.productService.getByIds(ids),
       ),
 
-      rolesLoader: this.createLoader((ids) =>
-        this.roleService.getDataloader(ids),
-      ),
+      rolesLoader: this.createLoader((ids) => this.roleService.getByIds(ids)),
 
-      usersLoader: this.createLoader((ids) =>
-        this.userService.getDataloader(ids),
-      ),
+      usersLoader: this.createLoader((ids) => this.userService.getByIds(ids)),
 
       variantsLoader: this.createLoader((ids) =>
-        this.variantService.getDataloader(ids),
+        this.variantService.getByIds(ids),
       ),
     };
   }

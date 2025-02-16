@@ -5,10 +5,10 @@ import { IsOptional, IsString } from 'class-validator';
 export class CreateAttributeInput {
   @Field(() => String, { nullable: true })
   @IsOptional()
-  @IsString({ message: 'Tiêu đề bài viết cần là chuỗi ký tự!' })
+  @IsString({ message: 'Loại thuộc tính cần là chuỗi ký tự!' })
   type: string;
 
   @Field(() => String)
-  @IsString({ message: 'Nội dung bài viết cần là chuỗi ký tự' })
+  @IsString({ message: 'Giá trị thuộc tính cần là chuỗi ký tự' })
   value: string;
 }

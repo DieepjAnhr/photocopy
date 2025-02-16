@@ -10,6 +10,6 @@ import { FileUploadRepository } from './file-upload.repository';
 @Module({
   imports: [TypeOrmModule.forFeature([FileUpload]), LoggerModule],
   providers: [FileUploadResolver, FileUploadService, FileUploadRepository],
-  exports: [FileUploadService],
+  exports: [FileUploadService, FileUploadRepository],
 })
 export class FileUploadModule {}

@@ -9,6 +9,6 @@ import { AttributeRepository } from './attribute.repository';
 @Module({
   imports: [TypeOrmModule.forFeature([Attribute]), LoggerModule],
   providers: [AttributeResolver, AttributeService, AttributeRepository],
-  exports: [AttributeService],
+  exports: [AttributeService, AttributeRepository],
 })
 export class AttributeModule {}

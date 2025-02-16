@@ -9,6 +9,6 @@ import { LoggerModule } from 'src/common/logger/logger.module';
 @Module({
   imports: [TypeOrmModule.forFeature([Permission]), LoggerModule],
   providers: [PermissionResolver, PermissionService, PermissionRepository],
-  exports: [PermissionService],
+  exports: [PermissionService, PermissionRepository],
 })
 export class PermissionModule {}

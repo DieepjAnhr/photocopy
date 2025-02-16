@@ -42,10 +42,12 @@ export class CreateVariantInput {
   regular_price: number;
 
   @Field(() => Int, { nullable: true })
+  @IsNotEmpty()
   @IsNumber()
   sale_price?: number;
 
   @Field(() => Int)
+  @IsNotEmpty()
   @IsNotEmpty()
   @IsNumber()
   @Min(0)
@@ -54,4 +56,8 @@ export class CreateVariantInput {
   @Field(() => String, { nullable: true })
   @IsString()
   description?: string;
+
+  @Field(() => [ID])
+  @IsArray()
+  attribute_ids: number[];
 }

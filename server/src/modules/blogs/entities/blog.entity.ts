@@ -30,8 +30,20 @@ export class Blog extends AbstractEntity {
   @Column({ nullable: true })
   short_description?: string;
 
-  @Field(() => [ID])
-  @Column('int', { array: true })
+  @Field(() => String, { nullable: true })
+  @Column({ nullable: true })
+  meta_title?: string;
+
+  @Field(() => String, { nullable: true })
+  @Column({ nullable: true })
+  meta_description?: string;
+
+  @Field(() => String, { nullable: true })
+  @Column({ nullable: true })
+  meta_robots?: string;
+
+  @Field(() => [ID], { nullable: true })
+  @Column('int', { array: true, nullable: true })
   category_ids: number[];
 
   @ManyToMany(() => Category, (category) => category.blogs, { cascade: true })

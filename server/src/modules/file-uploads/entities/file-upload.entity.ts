@@ -1,7 +1,21 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ID, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { BeforeInsert, BeforeUpdate, Column, Entity } from 'typeorm';
 import slugify from 'slugify';
 import { AbstractEntity } from 'src/common/abstracts/entity.abstract';
+import {
+  EFileStatus,
+  EFileType,
+} from 'src/common/shared/enums/file-upload.enum';
+
+registerEnumType(EFileStatus, {
+  name: 'EFileStatus',
+  description: 'Enum for file upload status',
+});
+
+registerEnumType(EFileType, {
+  name: 'EFileType',
+  description: 'Enum for file upload type',
+});
 
 @ObjectType({ description: 'file_upload' })
 @Entity({ name: 'file_uploads' })
@@ -10,20 +24,20 @@ export class FileUpload extends AbstractEntity {
   @Column()
   name: string;
 
-  @Field()
+  @Field(() => String)
   @Column()
   slug: string;
-
-  @Field()
-  @Column()
-  type: string;
 
   @Field(() => String)
   @Column()
   url: string;
 
-  @Field(() => String)
-  @Column()
+  @Field(() => EFileType)
+  @Column({ type: 'enum', enum: EFileType })
+  type: string;
+
+  @Field(() => EFileStatus)
+  @Column({ type: 'enum', enum: EFileStatus })
   status: string;
 
   @Field(() => ID)

@@ -32,7 +32,7 @@ export abstract class AbstractService<T, R extends AbstractRepository<T>> {
     return results;
   }
 
-  async getDataloader(ids: number[]): Promise<T[]> {
+  async getByIds(ids: number[]): Promise<T[]> {
     this.logger.debug(`Fetching dataloader with arg: ${JSON.stringify(ids)}`);
     const results = await this.repository.getByIds(ids);
 

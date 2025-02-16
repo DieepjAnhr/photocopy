@@ -1,7 +1,27 @@
-import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
-import { BeforeInsert, BeforeUpdate, Column, Entity, OneToMany } from 'typeorm';
+import { Field, ID, Int, ObjectType, registerEnumType } from '@nestjs/graphql';
+import { Column, Entity, OneToMany } from 'typeorm';
 import { AbstractEntity } from 'src/common/abstracts/entity.abstract';
 import { OrderDetail } from 'src/modules/order-details/entities/order-detail.entity';
+import {
+  EOrderStatus,
+  EPaymentStatus,
+  EShippingStatus,
+} from 'src/common/shared/enums/order.enum';
+
+registerEnumType(EOrderStatus, {
+  name: 'EOrderStatus',
+  description: 'Enum for order statuses',
+});
+
+registerEnumType(EShippingStatus, {
+  name: 'EShippingStatus',
+  description: 'Enum for shipping statuses',
+});
+
+registerEnumType(EPaymentStatus, {
+  name: 'EPaymentStatus',
+  description: 'Enum for payment statuses',
+});
 
 @ObjectType({ description: 'order' })
 @Entity({ name: 'orders' })
@@ -30,16 +50,24 @@ export class Order extends AbstractEntity {
   @Column()
   final_cost: number;
 
-  @Field(() => String)
+  @Field(() => Int, { defaultValue: 0 })
   @Column()
+  paid: number;
+
+  @Field(() => Int, { defaultValue: 0 })
+  @Column()
+  remaining: number;
+
+  @Field(() => EOrderStatus)
+  @Column({ type: 'enum', enum: EOrderStatus })
   status: string;
 
-  @Field(() => String)
-  @Column()
+  @Field(() => EShippingStatus)
+  @Column({ type: 'enum', enum: EShippingStatus })
   shipping_status: string;
 
-  @Field(() => String)
-  @Column()
+  @Field(() => EPaymentStatus)
+  @Column({ type: 'enum', enum: EPaymentStatus })
   payment_status: string;
 
   @Field(() => String, { nullable: true })
@@ -62,26 +90,14 @@ export class Order extends AbstractEntity {
   @Column('int', { array: true })
   discount_detail_ids: number[];
 
+  @Field(() => [ID])
+  @Column('int', { array: true })
+  payment_detail_ids: number[];
+
   @OneToMany(() => OrderDetail, (orderDetail) => orderDetail.order, {
     cascade: true,
   })
   order_details: OrderDetail[];
-
-  @BeforeInsert()
-  @BeforeUpdate()
-  async beforeInsertOrUpdate() {
-    try {
-      this.calculateFinalCost();
-    } catch (error) {
-      console.error('Error in BeforeInsert/BeforeUpdate blog:', error);
-      throw error;
-    }
-  }
-
-  calculateFinalCost() {
-    this.final_cost = this.total_cost + this.tax - this.discount;
-    this.final_cost = this.final_cost < 0 ? 0 : this.final_cost;
-  }
 }
 
 @ObjectType()

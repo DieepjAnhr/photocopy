@@ -9,6 +9,8 @@ import { AttributeModule } from 'src/modules/attributes/attribute.module';
 import { FileUploadModule } from 'src/modules/file-uploads/file-upload.module';
 import { ProductModule } from 'src/modules/products/product.module';
 import { VariantModule } from 'src/modules/variants/variant.module';
+import { OrderDetailModule } from 'src/modules/order-details/order-detail.module';
+import { OrderModule } from 'src/modules/orders/order.module';
 
 @Module({
   imports: [
@@ -16,6 +18,8 @@ import { VariantModule } from 'src/modules/variants/variant.module';
     BlogModule,
     CategoryModule,
     FileUploadModule,
+    OrderDetailModule,
+    OrderModule,
     PermissionModule,
     ProductModule,
     RoleModule,

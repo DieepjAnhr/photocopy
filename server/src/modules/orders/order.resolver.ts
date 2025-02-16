@@ -21,6 +21,7 @@ import { GetOrderType, Order } from '../orders/entities/order.entity';
 import { OrderService } from './order.service';
 import { CreateOrderInput } from './inputs/create-order.input';
 import { UpdateOrderInput } from './inputs/update-order.input';
+import { OrderDetail } from '../order-details/entities/order-detail.entity';
 
 @Resolver(() => Order)
 export class OrderResolver extends AbstractResolver<OrderService> {
@@ -75,6 +76,14 @@ export class OrderResolver extends AbstractResolver<OrderService> {
     @CurrentUser() user: User,
   ) {
     return await this.orderService.delete(id, user);
+  }
+
+  @ResolveField(() => [OrderDetail], { nullable: true })
+  async roles(@Parent() order: Order, @Context() { loaders }: IGraphQLContext) {
+    const orderDetails = await loaders.orderDetailsLoader.load(
+      order.order_detail_ids || [],
+    );
+    return orderDetails;
   }
 
   @ResolveField(() => User, { nullable: true })

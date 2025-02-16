@@ -5,9 +5,9 @@ import { Product } from './entities/product.entity';
 import { ProductRepository } from './product.repository';
 import { DeepPartial } from 'typeorm';
 import { User } from '../users/entities/user.entity';
-import { AttributeRepository } from '../attributes/attribute.repository';
-import { CategoryRepository } from '../categories/category.repository';
-import { VariantRepository } from '../variants/variant.repository';
+import { AttributeService } from '../attributes/attribute.service';
+import { CategoryService } from '../categories/category.service';
+import { VariantService } from '../variants/variant.service';
 
 @Injectable()
 export class ProductService extends AbstractService<
@@ -16,9 +16,9 @@ export class ProductService extends AbstractService<
 > {
   constructor(
     private readonly productRepository: ProductRepository,
-    private readonly attributeRepository: AttributeRepository,
-    private readonly categoryRepository: CategoryRepository,
-    private readonly variantRepository: VariantRepository,
+    private readonly attributeService: AttributeService,
+    private readonly categoryService: CategoryService,
+    private readonly variantService: VariantService,
     appLogger: AppLogger,
   ) {
     super(productRepository, appLogger);
@@ -30,18 +30,17 @@ export class ProductService extends AbstractService<
       `Create record by ${createdById} with arg: ${JSON.stringify(data)}`,
     );
 
-    const categories = await this.categoryRepository.getByIds(
-      data.category_ids,
-    );
+    const categories = await this.categoryService.getByIds(data.category_ids);
 
-    const attributes = await this.attributeRepository.getByIds(
-      data.attribute_ids,
-    );
+    const attributes = await this.attributeService.getByIds(data.attribute_ids);
 
-    const variants = await this.variantRepository.getByIds(data.variant_ids);
+    const variants = await this.variantService.getByIds(data.variant_ids);
 
     const product = await this.productRepository.create({
       ...data,
+      category_ids: categories.map((elm) => elm.id),
+      attribute_ids: attributes.map((elm) => elm.id),
+      variant_ids: variants.map((elm) => elm.id),
       created_by: createdById,
       updated_by: createdById,
       categories,
@@ -67,24 +66,27 @@ export class ProductService extends AbstractService<
     if (!product) return null;
 
     if (data.attribute_ids) {
-      product.attributes = await this.attributeRepository.getByIds(
+      product.attributes = await this.attributeService.getByIds(
         data.attribute_ids,
       );
     }
 
     if (data.category_ids) {
-      product.categories = await this.categoryRepository.getByIds(
+      product.categories = await this.categoryService.getByIds(
         data.category_ids,
       );
     }
 
     if (data.variant_ids) {
-      product.variants = await this.variantRepository.getByIds(
-        data.variant_ids,
-      );
+      product.variants = await this.variantService.getByIds(data.variant_ids);
     }
 
-    Object.assign(product, data, { updated_by: updatedById });
+    Object.assign(product, data, {
+      attribute_ids: product.attributes.map((elm) => elm.id),
+      category_ids: product.categories.map((elm) => elm.id),
+      variant_ids: product.variants.map((elm) => elm.id),
+      updated_by: updatedById,
+    });
 
     return this.productRepository.save(product);
   }

@@ -20,7 +20,7 @@ type Attribute {
 """blog"""
 type Blog {
   categories: [Blog!]
-  category_ids: [ID!]!
+  category_ids: [ID!]
   content: String!
   created_at: Float
   created_by: ID
@@ -28,6 +28,9 @@ type Blog {
   deleted_at: Float
   deleted_by: ID
   id: ID!
+  meta_description: String
+  meta_robots: String
+  meta_title: String
   short_description: String
   slug: String!
   title: String!
@@ -49,6 +52,7 @@ type Category {
   name: String!
   parent_id: ID
   slug: String!
+  type: ECategoryType!
   updated_at: Float
   updated_by: ID
   updater: User
@@ -60,20 +64,28 @@ input CreateAttributeInput {
 }
 
 input CreateBlogInput {
-  category_ids: ID
+  category_ids: [Int!]
   content: String!
-  title: String
+  meta_description: String
+  meta_robots: String
+  meta_title: String
+  short_description: String
+  title: String!
 }
 
 input CreateCategoryInput {
-  children_ids: ID
+  children_ids: [Int!]
   description: String
   name: String
-  parent_id: ID!
+  parent_id: Int = null
+  type: ECategoryType!
 }
 
 input CreateFileUploadInput {
   name: String!
+  owner_by: ID!
+  status: EFileStatus!
+  type: EFileType!
   url: String!
 }
 
@@ -101,8 +113,11 @@ input CreateOrderInput {
   discount_detail_ids: [ID!]! = []
   final_cost: Int! = 0
   order_detail_ids: [ID!]!
+  payment_status: EPaymentStatus!
   service_detail_ids: [ID!]! = []
   service_fee: Int! = 0
+  shipping_status: EShippingStatus!
+  status: EOrderStatus!
   tax: Int! = 0
   tax_detail_ids: [ID!]! = []
   total_cost: Int! = 0
@@ -126,7 +141,7 @@ input CreateProductInput {
   regular_price: Int!
   sale_price: Int
   sku: String
-  status: String!
+  status: EProductStatus!
   variant_ids: [ID!]!
 }
 
@@ -148,6 +163,7 @@ input CreateUserInput {
 }
 
 input CreateVariantInput {
+  attribute_ids: [ID!]!
   code: String
   description: String
   images: [ID!]
@@ -164,6 +180,61 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+"""Enum for category types"""
+enum ECategoryType {
+  BLOG
+  PRODUCT
+}
+
+"""Enum for file upload status"""
+enum EFileStatus {
+  ACTIVE
+  DEACTIVATED
+}
+
+"""Enum for file upload type"""
+enum EFileType {
+  EXCEL
+  IMAGE
+  OTHER
+  PDF
+  WORD
+}
+
+"""Enum for order statuses"""
+enum EOrderStatus {
+  APPROVED
+  CANCEL
+  COMPLETE
+  DRAFT
+  PREPARING
+  REFUND
+  SHIPPING
+  WAITING_FOR_APPROVE
+}
+
+"""Enum for payment statuses"""
+enum EPaymentStatus {
+  CANCEL
+  DEBT
+  PAID
+  UNPAID
+}
+
+"""Enum for product statuses"""
+enum EProductStatus {
+  ACTIVE
+  DEACTIVATED
+}
+
+"""Enum for shipping statuses"""
+enum EShippingStatus {
+  CANCEL
+  REFUND
+  SHIPPING
+  WAITING_FOR_SHIPPING
+}
+
 """file_upload"""
 type FileUpload {
   created_at: Float
@@ -176,8 +247,8 @@ type FileUpload {
   owner: User
   owner_by: ID!
   slug: String!
-  status: String!
-  type: String!
+  status: EFileStatus!
+  type: EFileType!
   updated_at: Float
   updated_by: ID
   updater: User
@@ -317,11 +388,15 @@ type Order {
   final_cost: Int!
   id: ID!
   order_detail_ids: [ID!]!
-  payment_status: String!
+  paid: Int!
+  payment_detail_ids: [ID!]!
+  payment_status: EPaymentStatus!
+  remaining: Int!
+  roles: [OrderDetail!]
   service_detail_ids: [ID!]!
   service_fee: Int!
-  shipping_status: String!
-  status: String!
+  shipping_status: EShippingStatus!
+  status: EOrderStatus!
   tax: Int!
   tax_detail_ids: [ID!]!
   total_cost: Int!
@@ -386,7 +461,7 @@ type Product {
   sale_price: Int!
   sku: String
   slug: String!
-  status: String!
+  status: EProductStatus!
   updated_at: Float
   updated_by: ID
   updater: User
@@ -453,20 +528,28 @@ input UpdateAttributeInput {
 }
 
 input UpdateBlogInput {
-  category_ids: ID
+  category_ids: [Int!]
   content: String
+  meta_description: String
+  meta_robots: String
+  meta_title: String
+  short_description: String
   title: String
 }
 
 input UpdateCategoryInput {
-  children_ids: ID
+  children_ids: [Int!]
   description: String
   name: String
-  parent_id: ID
+  parent_id: Int = null
+  type: ECategoryType
 }
 
 input UpdateFileUploadInput {
   name: String
+  owner_by: ID
+  status: EFileStatus
+  type: EFileType
   url: String
 }
 
@@ -494,8 +577,11 @@ input UpdateOrderInput {
   discount_detail_ids: [ID!] = []
   final_cost: Int = 0
   order_detail_ids: [ID!]
+  payment_status: EPaymentStatus
   service_detail_ids: [ID!] = []
   service_fee: Int = 0
+  shipping_status: EShippingStatus
+  status: EOrderStatus
   tax: Int = 0
   tax_detail_ids: [ID!] = []
   total_cost: Int = 0
@@ -514,7 +600,7 @@ input UpdateProductInput {
   regular_price: Int
   sale_price: Int
   sku: String
-  status: String
+  status: EProductStatus
   variant_ids: [ID!]
 }
 
@@ -536,6 +622,7 @@ input UpdateUserInput {
 }
 
 input UpdateVariantInput {
+  attribute_ids: [ID!]
   code: String
   description: String
   images: [ID!]
@@ -570,6 +657,7 @@ type User {
 
 """variant"""
 type Variant {
+  attribute_ids: [ID!]!
   code: String
   created_at: Float
   created_by: ID

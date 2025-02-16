@@ -1,4 +1,4 @@
-import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
+import { Field, ID, Int, ObjectType, registerEnumType } from '@nestjs/graphql';
 import {
   BeforeInsert,
   BeforeUpdate,
@@ -14,6 +14,12 @@ import { Category } from 'src/modules/categories/entities/category.entity';
 import { Attribute } from 'src/modules/attributes/entities/attribute.entity';
 import { Variant } from 'src/modules/variants/entities/variant.entity';
 import { OrderDetail } from 'src/modules/order-details/entities/order-detail.entity';
+import { EProductStatus } from 'src/common/shared/enums/product.enum';
+
+registerEnumType(EProductStatus, {
+  name: 'EProductStatus',
+  description: 'Enum for product statuses',
+});
 
 @ObjectType({ description: 'product' })
 @Entity({ name: 'products' })
@@ -38,10 +44,6 @@ export class Product extends AbstractEntity {
   @Column('int', { array: true, nullable: true })
   images: string[];
 
-  @Field(() => String)
-  @Column()
-  status: string;
-
   @Field(() => Int)
   @Column()
   regular_price: number;
@@ -61,6 +63,10 @@ export class Product extends AbstractEntity {
   @Field(() => Int, { defaultValue: 0 })
   @Column()
   rate: number;
+
+  @Field(() => EProductStatus)
+  @Column()
+  status: string;
 
   @Field(() => String, { nullable: true })
   @Column({ nullable: true })

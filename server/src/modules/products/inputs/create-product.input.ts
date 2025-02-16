@@ -1,12 +1,19 @@
-import { Field, InputType, ID, Int } from '@nestjs/graphql';
+import { Field, InputType, ID, Int, registerEnumType } from '@nestjs/graphql';
 import {
   IsArray,
+  IsEnum,
   IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
   Min,
 } from 'class-validator';
+import { EProductStatus } from 'src/common/shared/enums/product.enum';
+
+registerEnumType(EProductStatus, {
+  name: 'EProductStatus',
+  description: 'Enum for product statuses',
+});
 
 @InputType()
 export class CreateProductInput {
@@ -29,11 +36,6 @@ export class CreateProductInput {
   @IsOptional()
   @IsArray()
   images?: string[];
-
-  @Field(() => String)
-  @IsNotEmpty()
-  @IsString()
-  status: string;
 
   @Field(() => Int)
   @IsNotEmpty()
@@ -58,6 +60,13 @@ export class CreateProductInput {
   @Field(() => Int, { defaultValue: 0 })
   @IsNumber()
   rate: number;
+
+  @Field(() => EProductStatus)
+  @IsNotEmpty()
+  @IsEnum(EProductStatus, {
+    message: `Chỉ áp dụng các giá trị ${Object.values(EProductStatus).join(', ')}!`,
+  })
+  status: string;
 
   @Field(() => String, { nullable: true })
   @IsString()
