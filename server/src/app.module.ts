@@ -1,8 +1,6 @@
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
-import { JSONResolver } from 'graphql-scalars';
-import { join } from 'path';
 import { UserModule } from './modules/users/user.module';
 import { RoleModule } from './modules/roles/role.module';
 import { DataloaderModule } from './common/dataloader/dataloader.module';
@@ -12,8 +10,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PermissionModule } from './modules/permissions/permission.module';
 import { getEnvPath } from './common/helpers/env.helper';
 import { envValidation } from './common/helpers/env.validation';
-import { GraphQLError } from 'graphql';
-import { ERROR_CODES } from './common/exceptions/constant.exception';
 import { LoggerModule } from './common/logger/logger.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { BlogModule } from './modules/blogs/blog.module';
@@ -25,58 +21,29 @@ import { OrderDetailModule } from './modules/order-details/order-detail.module';
 import { AttributeModule } from './modules/attributes/attribute.module';
 import { VariantModule } from './modules/variants/variant.module';
 import { AppointmentModule } from './modules/appointment/appointment.module';
+import { typeOrmConfig } from './common/configs/typeorm.config';
+import { graphqlConfig } from './common/configs/graphql.config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       envFilePath: getEnvPath(`${__dirname}/..`),
+      isGlobal: true,
       validate: envValidation,
     }),
     GraphQLModule.forRootAsync<ApolloDriverConfig>({
       driver: ApolloDriver,
       imports: [DataloaderModule],
-      inject: [DataloaderService],
-      useFactory: async (dataloaderService: DataloaderService) => {
-        return {
-          resolvers: { JSON: JSONResolver },
-          playground: false,
-          sortSchema: true,
-          autoSchemaFile: join(process.cwd(), `src/schema.gql`),
-          context: () => ({
-            loaders: dataloaderService.createLoaders(),
-          }),
-          formatError: (error: GraphQLError) => {
-            const extensions = error?.extensions;
-
-            return {
-              status: extensions?.code || ERROR_CODES.UNKNOWN_ERROR,
-              message: error.message,
-              path: error.path || null,
-              extensions: {
-                code: extensions?.code,
-              },
-            };
-          },
-        };
-      },
+      inject: [DataloaderService, ConfigService],
+      useFactory: async (
+        dataloaderService: DataloaderService,
+        configService: ConfigService,
+      ) => graphqlConfig(dataloaderService, configService),
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: () => ({
-        type: 'postgres',
-        host: 'localhost',
-        port: 5432,
-        username: 'admin',
-        password: 'abcd1234!@#$',
-        database: 'photocopy',
-        schema: 'public',
-        entities: ['dist/**/*.entity.js'],
-        autoLoadEntities: true,
-        dropSchema: false,
-        synchronize: true,
-        logging: true,
-      }),
+      useFactory: typeOrmConfig,
     }),
     LoggerModule,
     AuthModule,
